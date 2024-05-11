@@ -168,7 +168,7 @@ function startGame() {
     // document.addEventListener("keydown", keyDownHandler, false);
     // document.addEventListener("keyup", keyUpHandler, false);
     document.addEventListener("mousemove", mouseMove, false);
-    document.addEventListener("touchmove", touchMove, false);
+    document.addEventListener("touchstart", touchMove, false);
     interval = setInterval(draw, 10);
 }
 
@@ -179,13 +179,8 @@ function mouseMove(e) {
 }
 
 function touchMove(e) {
-    for (let i = 0; i < e.changedTouches.length; i++) {
-        console.log(`touchpoint[${i}].pageX = ${e.changedTouches[i].pageX}`);
-        console.log(`touchpoint[${i}].pageY = ${e.changedTouches[i].pageY}`);
-        mouseX = e.changedTouches[i].pageX  - canvas.getBoundingClientRect().left;
+        mouseX = e.originalEvent.touches[0].pageX  - canvas.getBoundingClientRect().left;
         document.getElementById("idk").innerHTML = "<p>" + mouseX + "</p>";
-        
-      }  
 }
 
 function keyDownHandler(e) {
