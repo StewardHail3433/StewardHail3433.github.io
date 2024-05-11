@@ -31,7 +31,7 @@ ctx.strokeStyle = "rgb(0, 0, 0)";
 ctx.stroke();
 ctx.closePath();
 
-
+let mouseX = 0
 let rightPressed = false;
 let leftPressed = false;
 
@@ -143,13 +143,19 @@ function draw() {
     }
     
 
-    if (rightPressed) {
+    // if (rightPressed) {
+    //     paddleX = Math.min(paddleX + paddleDx, canvas.width - paddleWidth);
+    //   } else if (leftPressed) {
+    //     paddleX = Math.max(paddleX - paddleDx, 0);
+    //   }
+    if(paddleX +paddleWidth/2 > mouseX+3 && paddleX +paddleWidth/2 < mouseX-3){}
+    else{
+      if (mouseX > paddleX + paddleWidth/2) {
         paddleX = Math.min(paddleX + paddleDx, canvas.width - paddleWidth);
-      } else if (leftPressed) {
+      } else {
         paddleX = Math.max(paddleX - paddleDx, 0);
       }
-      
-
+    }
     if(ballColorIndex == 7) {
         ballColorIndex = 0;
     }
@@ -159,9 +165,15 @@ function draw() {
 }
 
 function startGame() {
-    document.addEventListener("keydown", keyDownHandler, false);
-    document.addEventListener("keyup", keyUpHandler, false);
+    // document.addEventListener("keydown", keyDownHandler, false);
+    // document.addEventListener("keyup", keyUpHandler, false);
+    document.addEventListener("mousemove", mouseMove, false);
     interval = setInterval(draw, 10);
+}
+
+function mouseMove(e) {
+    mouseX = e.clientX  - canvas.getBoundingClientRect().left;
+    console.log(mouseX);
 }
 
 function keyDownHandler(e) {
