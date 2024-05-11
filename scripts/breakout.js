@@ -216,7 +216,7 @@ document.getElementById("runButton").addEventListener("click", function () {
     this.disabled = true;
 });
 
-let selected = "mouse";
+let selected = "touch";
 function controls() {
     
     document.getElementById("touch").addEventListener("click", function () {
