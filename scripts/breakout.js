@@ -31,7 +31,7 @@ ctx.strokeStyle = "rgb(0, 0, 0)";
 ctx.stroke();
 ctx.closePath();
 
-let mouseX = 0
+let mouseX = canvas.width / 2;
 let rightPressed = false;
 let leftPressed = false;
 
@@ -175,12 +175,17 @@ function startGame() {
 function mouseMove(e) {
     mouseX = e.clientX  - canvas.getBoundingClientRect().left;
     console.log(mouseX);
-    document.getElementById("idk").innerHTML = "<p>" +mouseX +"</p>";
+    document.getElementById("idk").innerHTML = "<p>" + mouseX + "</p>";
 }
 
 function touchMove(e) {
-    mouseX = e.changedTouches[0].pageX  - canvas.getBoundingClientRect().left;
-    document.getElementById("idk").innerHTML = "<p>" +mouseX +"</p>";
+    for (let i = 0; i < e.changedTouches.length; i++) {
+        console.log(`touchpoint[${i}].pageX = ${e.changedTouches[i].pageX}`);
+        console.log(`touchpoint[${i}].pageY = ${e.changedTouches[i].pageY}`);
+        mouseX = e.changedTouches[i].pageX  - canvas.getBoundingClientRect().left;
+        document.getElementById("idk").innerHTML = "<p>" + mouseX + "</p>";
+        
+      }  
 }
 
 function keyDownHandler(e) {
