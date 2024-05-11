@@ -177,6 +177,15 @@ function mouseMove(e) {
     console.log(mouseX);
 }
 
+function touchMove(e) {
+    for (let i = 0; i < e.changedTouches.length; i++) {
+        console.log(`touchpoint[${i}].pageX = ${e.changedTouches[i].pageX}`);
+        console.log(`touchpoint[${i}].pageY = ${e.changedTouches[i].pageY}`);
+        document.getElementById("idk").innerHTML = "" + e.changedTouches[i].pageX;
+        mouseX = e.changedTouches[i].pageX  - canvas.getBoundingClientRect().left;
+      }  
+}
+
 function keyDownHandler(e) {
     if (e.key === "Right" || e.key === "ArrowRight" || e.key === "d" ) {
         rightPressed = true;
