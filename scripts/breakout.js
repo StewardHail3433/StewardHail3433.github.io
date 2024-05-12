@@ -167,6 +167,7 @@ function draw() {
 }
 
 function startGame() {
+    document.addEventListener("touchstart", touchMove, false);
     switch(selected) {
         case "key":
             document.addEventListener("keydown", keyDownHandler, false);
