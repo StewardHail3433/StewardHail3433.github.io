@@ -142,13 +142,13 @@ function draw() {
         clearInterval(this.interval);}
     }
     
-    if(selected == "key") {
-        if (rightPressed) {
-            paddleX = Math.min(paddleX + paddleDx, canvas.width - paddleWidth);
-        } else if (leftPressed) {
-            paddleX = Math.max(paddleX - paddleDx, 0);
-        }
-    } else {
+    // if(selected == "key") {
+    //     if (rightPressed) {
+    //         paddleX = Math.min(paddleX + paddleDx, canvas.width - paddleWidth);
+    //     } else if (leftPressed) {
+    //         paddleX = Math.max(paddleX - paddleDx, 0);
+    //     }
+    // } else {
         if(paddleX +paddleWidth/2 > mouseX+3 && paddleX +paddleWidth/2 < mouseX-3){}
         else{
         if (mouseX > paddleX + paddleWidth/2) {
@@ -157,7 +157,7 @@ function draw() {
             paddleX = Math.max(paddleX - paddleDx, 0);
         }
         }
-    }
+    // }
     if(ballColorIndex == 7) {
         ballColorIndex = 0;
     }
@@ -214,6 +214,9 @@ function keyUpHandler(e) {
 document.getElementById("runButton").addEventListener("click", function () {
     startGame();
     this.disabled = true;
+    document.getElementById("touch").disabled = true;
+    document.getElementById("mouse").disabled = true;
+    document.getElementById("key").disabled = true;
 });
 
 let selected = "touch";
