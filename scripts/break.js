@@ -168,7 +168,7 @@ function startGame() {
     // document.addEventListener("keydown", keyDownHandler, false);
     // document.addEventListener("keyup", keyUpHandler, false);
     document.addEventListener("mousemove", mouseMove, false);
-    document.addEventListener("touchstart", touchMove, false);
+    document.addEventListener("touchmove", touchMove, false);
     interval = setInterval(draw, 10);
 }
 
