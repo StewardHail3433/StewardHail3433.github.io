@@ -142,22 +142,20 @@ function draw() {
         clearInterval(this.interval);}
     }
     
-    // if(selected == "key") {
-    //     if (rightPressed) {
-    //         paddleX = Math.min(paddleX + paddleDx, canvas.width - paddleWidth);
-    //     } else if (leftPressed) {
-    //         paddleX = Math.max(paddleX - paddleDx, 0);
-    //     }
-    // } else {
-        if(paddleX +paddleWidth/2 > mouseX+3 && paddleX +paddleWidth/2 < mouseX-3){}
-        else{
-        if (mouseX > paddleX + paddleWidth/2) {
-            paddleX = Math.min(paddleX + paddleDx, canvas.width - paddleWidth);
-        } else {
-            paddleX = Math.max(paddleX - paddleDx, 0);
-        }
-        }
-    // }
+
+    // if (rightPressed) {
+    //     paddleX = Math.min(paddleX + paddleDx, canvas.width - paddleWidth);
+    //   } else if (leftPressed) {
+    //     paddleX = Math.max(paddleX - paddleDx, 0);
+    //   }
+    if(paddleX +paddleWidth/2 > mouseX+3 && paddleX +paddleWidth/2 < mouseX-3){}
+    else{
+      if (mouseX > paddleX + paddleWidth/2) {
+        paddleX = Math.min(paddleX + paddleDx, canvas.width - paddleWidth);
+      } else {
+        paddleX = Math.max(paddleX - paddleDx, 0);
+      }
+    }
     if(ballColorIndex == 7) {
         ballColorIndex = 0;
     }
@@ -167,21 +165,10 @@ function draw() {
 }
 
 function startGame() {
+    // document.addEventListener("keydown", keyDownHandler, false);
+    // document.addEventListener("keyup", keyUpHandler, false);
     document.addEventListener("mousemove", mouseMove, false);
     document.addEventListener("touchstart", touchMove, false);
-    switch(selected) {
-        case "key":
-            // document.addEventListener("keydown", keyDownHandler, false);
-            // document.addEventListener("keyup", keyUpHandler, false);
-            break;
-        case "mouse":
-            
-            break;
-        case "touch":
-            document.addEventListener("touchstart", touchMove, false);
-            break;
-    }
-    clearInterval(interval)
     interval = setInterval(draw, 10);
 }
 
@@ -216,23 +203,4 @@ function keyUpHandler(e) {
 document.getElementById("runButton").addEventListener("click", function () {
     startGame();
     this.disabled = true;
-    document.getElementById("touch").disabled = true;
-    document.getElementById("mouse").disabled = true;
-    document.getElementById("key").disabled = true;
 });
-
-let selected = "touch";
-function controls() {
-    
-    document.getElementById("touch").addEventListener("click", function () {
-        selected = "touch";
-    })
-    document.getElementById("mouse").addEventListener("click", function () {
-        selected = "mouse";
-    })
-    document.getElementById("key").addEventListener("click", function () {
-        selected = "key";
-    })
-    document.getElementById("selected").innerHTML = "<p>Selected: " + selected + "</p>";
-}
-interval = setInterval(controls, 10);
