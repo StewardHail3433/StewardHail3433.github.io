@@ -167,14 +167,15 @@ function draw() {
 }
 
 function startGame() {
+    document.addEventListener("mousemove", mouseMove, false);
     document.addEventListener("touchstart", touchMove, false);
     switch(selected) {
         case "key":
-            document.addEventListener("keydown", keyDownHandler, false);
-            document.addEventListener("keyup", keyUpHandler, false);
+            // document.addEventListener("keydown", keyDownHandler, false);
+            // document.addEventListener("keyup", keyUpHandler, false);
             break;
         case "mouse":
-            document.addEventListener("mousemove", mouseMove, false);
+            
             break;
         case "touch":
             document.addEventListener("touchstart", touchMove, false);
