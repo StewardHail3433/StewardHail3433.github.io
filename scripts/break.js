@@ -168,7 +168,25 @@ function startGame() {
     // document.addEventListener("keydown", keyDownHandler, false);
     // document.addEventListener("keyup", keyUpHandler, false);
     document.addEventListener("mousemove", mouseMove, false);
-    document.addEventListener("touchmove", touchMove, false);
+    document.addEventListener("touchstart", (e) => {
+        const touch = e.touches?.[0]
+        if (!touch) {
+            return
+        }
+        // you can treat `touch` as you would the mouse event in `mousedown`
+        mouseX = touch.clientX - canvas.getBoundingClientRect().left;
+        
+    })
+    document.addEventListener("touchmove", (e) => {
+        const touch = e.touches?.[0]
+        if (!touch) {
+            return
+        }
+        // you can treat `touch` as you would the mouse event in `mousedown`
+        mouseX = touch.clientX - canvas.getBoundingClientRect().left;
+        
+    })
+    
     interval = setInterval(draw, 10);
 }
 
