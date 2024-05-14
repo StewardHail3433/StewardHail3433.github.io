@@ -1,12 +1,23 @@
+@import "nav.css";
+
 * {
     padding: 0;
     margin: 0;
+}
+
+body {
+    margin: 5;
+    background:darkorchid;
 }
 
 canvas {
     background: #2b8eff;
     display: block;
     margin: 0 auto;
+}
+
+p {
+    color: gold;
 }
 
   
