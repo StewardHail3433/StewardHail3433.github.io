@@ -13,4 +13,10 @@ if(screen.availWidth>screen.availHeight) {
     //document.getElementById("test").innerHTML = "<p>" +screen.availWidth + ", " + screen.availHeight + "<br>"+screen.width + ", " + screen.height +"</p>" ;
 }
 
-
+function isTouchDevice() {
+    return (('ontouchstart' in window) ||
+       (navigator.maxTouchPoints > 0) ||
+       (navigator.msMaxTouchPoints > 0));
+  }
+  
+document.getElementById("test").innerHTML = "<p>" + isTouchDevice() + "</p>";
