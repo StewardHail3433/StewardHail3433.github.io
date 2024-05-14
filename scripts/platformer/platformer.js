@@ -4,13 +4,13 @@ const ctx = canvas.getContext("2d");
 const runButton = document.getElementById("runButton");
 
 if(screen.availWidth>screen.availHeight) {
-    ctx.canvas.width = screen.availWidth*.7;
+    ctx.canvas.width = screen.availWidth*.8;
     ctx.canvas.height = screen.availHeight*.7;
-    document.getElementById("test").innerHTML = "<p>" +screen.availWidth + ", " + screen.availHeight + "<br>"+ctx.canvas.width + ", " + ctx.canvas.height +"</p>" ;
+    //document.getElementById("test").innerHTML = "<p>" +screen.availWidth + ", " + screen.availHeight + "<br>"+ctx.canvas.width + ", " + ctx.canvas.height +"</p>" ;
 } else {
     ctx.canvas.width = screen.width;
     ctx.canvas.height = screen.height;
-    document.getElementById("test").innerHTML = "<p>" +screen.availWidth + ", " + screen.availHeight + "<br>"+screen.width + ", " + screen.height +"</p>" ;
+    //document.getElementById("test").innerHTML = "<p>" +screen.availWidth + ", " + screen.availHeight + "<br>"+screen.width + ", " + screen.height +"</p>" ;
 }
 
 
