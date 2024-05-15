@@ -39,27 +39,33 @@ function update() {
 }
 function touchStart(event) {
     for(let button of buttons) {
-        button.touchButton(event.touches[0], canvas);
-        event.preventDefault();
-        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start";
-        button.setInputDown(true);
+        for(let i = 0; i < event.touches.length; i++) {
+            button.touchButton(event.touches[0], canvas);
+            event.preventDefault();
+            document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start";
+            button.setInputDown(true);
+        }
     }
 }
 function touchMove(event) {
     for(let button of buttons) {
         if(button.isInputDown()) {
-            button.touchButton(event.touches[0], canvas); 
-            event.preventDefault(); 
-            document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid";
+            for(let i = 0; i < event.touches.length; i++) {
+                button.touchButton(event.touches[0], canvas); 
+                event.preventDefault(); 
+                document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid";
+            }
         }
     }
 }
 function touchEnd(event) {
     for(let button of buttons) {
-        button.touchButton(event.touches[0], canvas); 
-        event.preventDefault(); 
-        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end";
-        button.setInputDown(false);
+        for(let i = 0; i < event.touches.length; i++) {
+            button.touchButton(event.touches[i], canvas); 
+            event.preventDefault(); 
+            document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end";
+            button.setInputDown(false);
+        }
     }
 }
 
@@ -78,6 +84,7 @@ function mouseMove(event) {
             event.preventDefault(); 
             document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid";
         }
+        event.preventDefault();
     }
 }
 function mouseUp(event) {
