@@ -7,7 +7,7 @@ const ctx = canvas.getContext("2d");
 const runButton = document.getElementById("runButton");
 let interval;
 
-var button = new Button(canvas, 10, 10, 40, 40, "red");
+var buttons = [new Button(canvas, 10, 10, 40, 40, "red"), new Button(canvas, 70, 10, 40, 40, "red"), new Button(canvas, 10, 70, 40, 40, "red")];
 
 
 if (screen.availWidth > screen.availHeight) {
@@ -27,53 +27,67 @@ function isTouchDevice() {
 }
 
 document.getElementById("test").innerHTML = "<p>" + isTouchDevice() + "</p>";
-button.test();
+//buttons.test();
 function update() {
-    button.draw(ctx);
-    if (button.isPressed() && button.isInputDown()) {
-        button.setColor("green");
-    } else {
-        button.setColor("red");
+    for(let button of buttons) {
+        button.draw(ctx);
+        if (button.isPressed() && button.isInputDown()) {
+            button.setColor("green");
+        } else {
+            button.setColor("red");
+        }
     }
 }
 function touchStart(event) {
-    button.touchButton(event.touches[0], canvas);
-    event.preventDefault();
-    document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start";
-    button.setInputDown(true);
+    for(let button of buttons) {
+        button.touchButton(event.touches[0], canvas);
+        event.preventDefault();
+        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start";
+        button.setInputDown(true);
+    }
 }
 function touchMove(event) {
-    if(button.isInputDown()) {
-        button.touchButton(event.touches[0], canvas); 
-        event.preventDefault(); 
-        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid";
+    for(let button of buttons) {
+        if(button.isInputDown()) {
+            button.touchButton(event.touches[0], canvas); 
+            event.preventDefault(); 
+            document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid";
+        }
     }
 }
 function touchEnd(event) {
-    button.touchButton(event.touches[0], canvas); 
-    event.preventDefault(); 
-    document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end";
-    button.setInputDown(false);
+    for(let button of buttons) {
+        button.touchButton(event.touches[0], canvas); 
+        event.preventDefault(); 
+        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end";
+        button.setInputDown(false);
+    }
 }
 
 function mouseDown(event) {
-    button.touchButton(event, canvas);
-    event.preventDefault();
-    document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start";
-    button.setInputDown(true);
+    for(let button of buttons) {
+        button.touchButton(event, canvas);
+        event.preventDefault();
+        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start";
+        button.setInputDown(true);
+    }
 }
 function mouseMove(event) {
-    if(button.getInputDown()) {
-        button.touchButton(event, canvas); 
-        event.preventDefault(); 
-        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid";
+    for(let button of buttons) {
+        if(button.isInputDown()) {
+            button.touchButton(event, canvas); 
+            event.preventDefault(); 
+            document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid";
+        }
     }
 }
 function mouseUp(event) {
-    button.touchButton(event, canvas); 
-    event.preventDefault(); 
-    document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end";
-    button.setInputDown(false);
+    for(let button of buttons) {
+        button.touchButton(event, canvas); 
+        event.preventDefault(); 
+        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end";
+        button.setInputDown(false);
+    }
 }
 
 runButton.addEventListener("click", function () {
