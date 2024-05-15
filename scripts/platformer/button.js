@@ -29,18 +29,19 @@ export default class Button {
 
     touchButton(event) {
         event.preventDefault();
-        target_touches = event.targetTouches;
+        //target_touches = event.targetTouches;
+        document.getElementById("test2").innerText = (event.touches[0].pageX - this.#canvas.getBoundingClientRect().left)+ ", " + (event.touches[0].pageY - this.#canvas.getBoundingClientRect().top)
 
-        for (i = 0; i < target_touches.length; i++) {
+        //for (i = 0; i < target_touches.length; i++) {
 
             touch = target_touches[i];
-            document.getElementById("test").innerHTML = "<p>" + (touch.clientX - this.#canvas.getBoundingClientRect().left)+ ", " + (touch.clientY - this.#canvas.getBoundingClientRect().top) + "</p>";
-            if (containsPoint((touch.clientX - this.#canvas.getBoundingClientRect().left), (touch.clientY - this.#canvas.getBoundingClientRect().top))) {
+            
+            if (containsPoint((event.touches[0].pageX - this.#canvas.getBoundingClientRect().left), (event.touches[0].pageY - this.#canvas.getBoundingClientRect().top))) {
   
               pressed = true;
-              break;
+              //break;
             }
-          }
+        //  }
     }
 
     containsPoint(x, y) {
