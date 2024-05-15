@@ -63,7 +63,7 @@ function mouseDown(event) {
     button.setInputDown(true);
 }
 function mouseMove(event) {
-    if(button.getInputDown()) {
+    if(button.isInputDown()) {
         button.touchButton(event, canvas); 
         event.preventDefault(); 
         document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid";
