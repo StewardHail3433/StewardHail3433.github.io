@@ -43,7 +43,6 @@ function touchStart(event) {
     button.setInputDown(true);
 }
 function touchMove(event) {
-    button.setInputDown(true);
     if(button.isInputDown()) {
         button.touchButton(event.touches[0], canvas); 
         event.preventDefault(); 
