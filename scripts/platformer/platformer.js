@@ -38,7 +38,6 @@ function update() {
 }
 function touchStart(event) {
     button.touchButton(event.touches[0], canvas);
-    event.touches[0].preventDefault();
     event.preventDefault();
     document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start";
     button.setInputDown(true);
@@ -46,14 +45,12 @@ function touchStart(event) {
 function touchMove(event) {
     if(button.isInputDown()) {
         button.touchButton(event.touches[0], canvas); 
-        event.touches[0].preventDefault();
         event.preventDefault(); 
         document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid " + button.isInputDown();
     }
 }
 function touchEnd(event) {
-    button.touchButton(event.touches[0], canvas);
-    event.touches[0].preventDefault(); 
+    button.touchButton(event.touches[0], canvas); 
     event.preventDefault(); 
     document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end";
     button.setInputDown(false);
