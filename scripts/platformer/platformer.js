@@ -27,7 +27,6 @@ function isTouchDevice() {
 }
 
 document.getElementById("test").innerHTML = "<p>" + isTouchDevice() + "</p>";
-//buttons.test();
 function update() {
     for(let button of buttons) {
         button.draw(ctx);
@@ -94,7 +93,7 @@ runButton.addEventListener("click", function () {
     if (isTouchDevice()) {
         canvas.addEventListener("touchstart", function (event) {touchStart(event)}, { passive: false });
         canvas.addEventListener("touchmove", function (event) {touchMove(event)}, { passive: false });
-        canvas.addEventListener("touchend", function (event) {mouseUp(event)}, { passive: false });
+        canvas.addEventListener("touchend", function (event) {touchEnd(event)}, { passive: false });
     } else {
         canvas.addEventListener("mousedown", function (event) {mouseDown(event)}, { passive: false });
         canvas.addEventListener("mousemove", function (event) {mouseMove(event)}, { passive: false });
