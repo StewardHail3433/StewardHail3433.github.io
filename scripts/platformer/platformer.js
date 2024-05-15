@@ -44,11 +44,11 @@ function touchStart(event) {
 }
 function touchMove(event) {
     button.setInputDown(true);
-    //if(button.isInputDown()) {
+    if(button.isInputDown()) {
         button.touchButton(event.touches[0], canvas); 
         event.preventDefault(); 
         document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid " + button.isInputDown();
-    //}
+    }
 }
 function touchEnd(event) {
     button.touchButton(event.touches[0], canvas); 
