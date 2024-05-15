@@ -77,15 +77,15 @@ function mouseUp(event) {
 }
 
 runButton.addEventListener("click", function () {
-    if (isTouchDevice()) {
+    //if (isTouchDevice()) {
         canvas.addEventListener("touchend", function (event) {touchStart(event)}, { passive: false });
         canvas.addEventListener("touchmove", function (event) {touchMove(event)}, { passive: false });
         canvas.addEventListener("touchstart", function (event) {touchEnd(event)}, { passive: false });
-    } else {
+    //} else {
         canvas.addEventListener("mousedown", function (event) {mouseDown(event)}, { passive: false });
         canvas.addEventListener("mousemove", function (event) {mouseMove(event)}, { passive: false });
         canvas.addEventListener("mouseup", function (event) {mouseUp(event)}, { passive: false });
-    }
+    //}
 
     interval = setInterval(update, 10);
     this.disable = false;
