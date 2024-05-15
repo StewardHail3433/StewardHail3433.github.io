@@ -1,10 +1,10 @@
 export default class Button {
-    canvas = document.getElementById("platformerCanvas");
     #x
     #y
     #width
     #height
     #color
+    #inputDown
     #pressed
 
     constructor(canvas, x, y, width, height, color) {
@@ -32,12 +32,13 @@ export default class Button {
         if(this.containsPoint((event.pageX - canvas.getBoundingClientRect().left), (event.pageY - canvas.getBoundingClientRect().top))){
             this.#pressed = true;
         } else {
+            this.#inputDown = false;
             this.#pressed = false;
         }
     }
 
     containsPoint(x, y) {
-        if (x < this.#x || x > this.#x + this.#width || y < this.#y || y > this.#y + this.#width) {
+        if (x < this.#x || x > this.#x + this.#width || y < this.#y || y > this.#y + this.#height) {
           return false;
   
         }
@@ -46,7 +47,11 @@ export default class Button {
     }
 
     setColor(color) {
-        this.#color = color
+        this.#color = color;
+    }
+
+    setInputDown(input) {
+        this.#inputDown = input;
     }
 
     getX() {
@@ -67,6 +72,10 @@ export default class Button {
 
     getColor() {
         return this.#color;
+    }
+
+    isInputDown() {
+        return this.#inputDown;
     }
 
     isPressed() {

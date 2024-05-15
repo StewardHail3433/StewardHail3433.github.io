@@ -9,6 +9,7 @@ let interval;
 
 var button = new Button(canvas, 10, 10, 40, 40, "red");
 
+
 if (screen.availWidth > screen.availHeight) {
     ctx.canvas.width = screen.availWidth * .8;
     ctx.canvas.height = screen.availHeight * .7;
@@ -29,24 +30,61 @@ document.getElementById("test").innerHTML = "<p>" + isTouchDevice() + "</p>";
 button.test();
 function update() {
     button.draw(ctx);
-    if (button.isPressed()) {
+    if (button.isPressed() && button.isInputDown()) {
         button.setColor("green");
     } else {
         button.setColor("red");
     }
 }
-function touchMove(e) {
-    e.p
+function touchStart(event) {
+    button.touchButton(event.touches[0], canvas);
+    event.preventDefault();
+    document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start";
+    button.setInputDown(true);
 }
+function touchMove(event) {
+    if(button.isInputDown()) {
+        button.touchButton(event.touches[0], canvas); 
+        event.preventDefault(); 
+        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid";
+    }
+}
+function touchEnd(event) {
+    button.touchButton(event.touches[0], canvas); 
+    event.preventDefault(); 
+    document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end";
+    button.setInputDown(false);
+}
+
+function mouseDown(event) {
+    button.touchButton(event, canvas);
+    event.preventDefault();
+    document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start";
+    button.setInputDown(true);
+}
+function mouseMove(event) {
+    if(button.getInputDown()) {
+        button.touchButton(event, canvas); 
+        event.preventDefault(); 
+        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid";
+    }
+}
+function mouseUp(event) {
+    button.touchButton(event, canvas); 
+    event.preventDefault(); 
+    document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end";
+    button.setInputDown(false);
+}
+
 runButton.addEventListener("click", function () {
     if (isTouchDevice()) {
-        canvas.addEventListener("touchend", function (event) { button.touchButton(event.touches[0], canvas); event.preventDefault(); document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start" }, { passive: false });
-        canvas.addEventListener("touchmove", function (event) { button.touchButton(event.touches[0], canvas); event.preventDefault(); document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid" }, { passive: false });
-        canvas.addEventListener("touchstart", function (event) { button.touchButton(event.touches[0], canvas); event.preventDefault(); document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end" }, { passive: false });
+        canvas.addEventListener("touchend", function (event) {touchStart(event)}, { passive: false });
+        canvas.addEventListener("touchmove", function (event) {touchMove(event)}, { passive: false });
+        canvas.addEventListener("touchstart", function (event) {touchEnd(event)}, { passive: false });
     } else {
-        canvas.addEventListener("mousedown", function (event) { button.touchButton(event, canvas); event.preventDefault(); document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start" }, { passive: false });
-        canvas.addEventListener("mousemove", function (event) { button.touchButton(event, canvas); event.preventDefault(); document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid" }, { passive: false });
-        canvas.addEventListener("mouseend", function (event) { button.touchButton(event, canvas); event.preventDefault(); document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end" }, { passive: false });
+        canvas.addEventListener("mousedown", function (event) {mouseDown(event)}, { passive: false });
+        canvas.addEventListener("mousemove", function (event) {mouseMove(event)}, { passive: false });
+        canvas.addEventListener("mouseup", function (event) {mouseUp(event)}, { passive: false });
     }
 
     interval = setInterval(update, 10);
