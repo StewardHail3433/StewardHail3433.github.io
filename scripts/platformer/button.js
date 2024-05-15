@@ -1,5 +1,5 @@
 export default class Button {
-    #canvas
+    canvas = document.getElementById("platformerCanvas");
     #x
     #y
     #width
@@ -8,7 +8,7 @@ export default class Button {
     #pressed
 
     constructor(canvas, x, y, width, height, color) {
-        this.#canvas = canvas;
+        //this.canvas = canvas;
         this.#x = x;
         this.#y = y;
         this.#width = width;
@@ -27,21 +27,9 @@ export default class Button {
         ctx.closePath();
     }
 
-    touchButton(event) {
-        event.preventDefault();
-        //target_touches = event.targetTouches;
-        document.getElementById("test2").innerText = (event.touches[0].pageX - this.#canvas.getBoundingClientRect().left)+ ", " + (event.touches[0].pageY - this.#canvas.getBoundingClientRect().top)
-
-        //for (i = 0; i < target_touches.length; i++) {
-
-            touch = target_touches[i];
-            
-            if (containsPoint((event.touches[0].pageX - this.#canvas.getBoundingClientRect().left), (event.touches[0].pageY - this.#canvas.getBoundingClientRect().top))) {
-  
-              pressed = true;
-              //break;
-            }
-        //  }
+    touchButton(event, canvas) {
+        console.log("touch");
+        document.getElementById("test2").innerText = (event.pageX - canvas.getBoundingClientRect().left) + ", " + (event.pageY - canvas.getBoundingClientRect().top);
     }
 
     containsPoint(x, y) {

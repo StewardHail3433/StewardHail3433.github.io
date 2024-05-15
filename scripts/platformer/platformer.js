@@ -35,11 +35,17 @@ function update() {
         button.setColor("red");
     }
 }
-
+function touchMove(e) {
+    e.p
+}
 runButton.addEventListener("click", function () {
-    canvas.addEventListener("touchend", button.touchButton, {passive:false});
-    canvas.addEventListener("touchmove", button.touchButton, {passive:false});
-    canvas.addEventListener("touchstart", button.touchButton, {passive:false});
+    canvas.addEventListener("touchend", function (event) {button.touchButton(event.touches[0]);}, {passive:false});
+    canvas.addEventListener("touchmove", function (event) {button.touchButton(event.touches[0]); event.preventDefault()}, {passive:false});
+    canvas.addEventListener("touchstart", function (event) {button.touchButton(event.touches[0]);}, {passive:false});
+
+    canvas.addEventListener("mousedown", function (event) {button.touchButton(event, canvas)}, {passive:false});
+    canvas.addEventListener("mousemove", function (event) {button.touchButton(event, canvas)}, {passive:false});
+    canvas.addEventListener("mouseend", function (event) {button.touchButton(event, canvas)}, {passive:false});
 
     interval = setInterval(update, 10);
     this.disable = false;
