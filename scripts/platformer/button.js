@@ -27,13 +27,27 @@ export default class Button {
         ctx.closePath();
     }
 
-    touchButton(event, canvas) {
-        document.getElementById("test2").innerText = (event.pageX - canvas.getBoundingClientRect().left) + ", " + (event.pageY - canvas.getBoundingClientRect().top);
+    mouseButton(event, canvas) {
+        document.getElementById("test2").innerText = (event.pageX - canvas.getBoundingClientRect().left) + ", " + (event.pageY - canvas.getBoundingClientRect().top) + " ";
         if(this.containsPoint((event.pageX - canvas.getBoundingClientRect().left), (event.pageY - canvas.getBoundingClientRect().top))){
             this.#pressed = true;
         } else {
             this.#inputDown = false;
             this.#pressed = false;
+        }
+    }
+
+    touchButton(event, canvas) {
+        document.getElementById("test2").innerText = (event.pageX - canvas.getBoundingClientRect().left) + ", " + (event.pageY - canvas.getBoundingClientRect().top) + " " + event.touches.length;
+        for(let i = 0; i < event.touches.length; i++) {
+            event = event.touches[i];
+            if(this.containsPoint((event.pageX - canvas.getBoundingClientRect().left), (event.pageY - canvas.getBoundingClientRect().top))){
+                this.#pressed = true;
+                break;
+            } else {
+                this.#inputDown = false;
+                this.#pressed = false;
+            }
         }
     }
 

@@ -50,11 +50,9 @@ function touchStart(event) {
 function touchMove(event) {
     for(let button of buttons) {
         if(button.isInputDown()) {
-            for(let i = 0; i < event.touches.length; i++) {
                 button.touchButton(event.touches[0], canvas); 
                 event.preventDefault(); 
                 document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid";
-            }
         }
     }
 }
@@ -71,7 +69,7 @@ function touchEnd(event) {
 
 function mouseDown(event) {
     for(let button of buttons) {
-        button.touchButton(event, canvas);
+        button.mouseButton(event, canvas);
         event.preventDefault();
         document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start";
         button.setInputDown(true);
@@ -80,7 +78,7 @@ function mouseDown(event) {
 function mouseMove(event) {
     for(let button of buttons) {
         if(button.isInputDown()) {
-            button.touchButton(event, canvas); 
+            button.mouseButton(event, canvas); 
             event.preventDefault(); 
             document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid";
         }
@@ -89,7 +87,7 @@ function mouseMove(event) {
 }
 function mouseUp(event) {
     for(let button of buttons) {
-        button.touchButton(event, canvas); 
+        button.mouseButton(event, canvas); 
         event.preventDefault(); 
         document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end";
         button.setInputDown(false);
