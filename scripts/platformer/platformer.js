@@ -39,13 +39,15 @@ function touchMove(e) {
     e.p
 }
 runButton.addEventListener("click", function () {
-    canvas.addEventListener("touchend", function (event) { button.touchButton(event.touches[0], canvas); event.preventDefault(); document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start" }, { passive: false });
-    canvas.addEventListener("touchmove", function (event) { button.touchButton(event.touches[0], canvas); event.preventDefault(); document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid" }, { passive: false });
-    canvas.addEventListener("touchstart", function (event) { button.touchButton(event.touches[0], canvas); event.preventDefault(); document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end" }, { passive: false });
-
-    canvas.addEventListener("mousedown", function (event) { button.touchButton(event, canvas); event.preventDefault(); document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start" }, { passive: false });
-    canvas.addEventListener("mousemove", function (event) { button.touchButton(event, canvas); event.preventDefault(); document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid" }, { passive: false });
-    canvas.addEventListener("mouseend", function (event) { button.touchButton(event, canvas); event.preventDefault(); document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end" }, { passive: false });
+    if (isTouchDevice()) {
+        canvas.addEventListener("touchend", function (event) { button.touchButton(event.touches[0], canvas); event.preventDefault(); document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start" }, { passive: false });
+        canvas.addEventListener("touchmove", function (event) { button.touchButton(event.touches[0], canvas); event.preventDefault(); document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid" }, { passive: false });
+        canvas.addEventListener("touchstart", function (event) { button.touchButton(event.touches[0], canvas); event.preventDefault(); document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end" }, { passive: false });
+    } else {
+        canvas.addEventListener("mousedown", function (event) { button.touchButton(event, canvas); event.preventDefault(); document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start" }, { passive: false });
+        canvas.addEventListener("mousemove", function (event) { button.touchButton(event, canvas); event.preventDefault(); document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid" }, { passive: false });
+        canvas.addEventListener("mouseend", function (event) { button.touchButton(event, canvas); event.preventDefault(); document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end" }, { passive: false });
+    }
 
     interval = setInterval(update, 10);
     this.disable = false;

@@ -28,17 +28,19 @@ export default class Button {
     }
 
     touchButton(event, canvas) {
-        console.log("touch");
         document.getElementById("test2").innerText = (event.pageX - canvas.getBoundingClientRect().left) + ", " + (event.pageY - canvas.getBoundingClientRect().top);
+        if(this.containsPoint((event.pageX - canvas.getBoundingClientRect().left), (event.pageY - canvas.getBoundingClientRect().top))){
+            this.#pressed = true;
+        } else {
+            this.#pressed = false;
+        }
     }
 
     containsPoint(x, y) {
         if (x < this.#x || x > this.#x + this.#width || y < this.#y || y > this.#y + this.#width) {
-  
           return false;
   
         }
-  
         return true;
   
     }
