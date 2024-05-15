@@ -34,6 +34,7 @@ export default class Button {
         for (i = 0; i < target_touches.length; i++) {
 
             touch = target_touches[i];
+            document.getElementById("test").innerHTML = "<p>" + (touch.clientX - this.#canvas.getBoundingClientRect().left)+ ", " + (touch.clientY - this.#canvas.getBoundingClientRect().top) + "</p>";
             if (containsPoint((touch.clientX - this.#canvas.getBoundingClientRect().left), (touch.clientY - this.#canvas.getBoundingClientRect().top))) {
   
               pressed = true;
