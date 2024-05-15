@@ -43,11 +43,12 @@ function touchStart(event) {
     button.setInputDown(true);
 }
 function touchMove(event) {
-    //if(button.isInputDown()) {
+    button.setInputDown(true);
+    if(button.isInputDown()) {
         button.touchButton(event.touches[0], canvas); 
         event.preventDefault(); 
         document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid " + button.isInputDown();
-    //}
+    }
 }
 function touchEnd(event) {
     button.touchButton(event.touches[0], canvas); 
