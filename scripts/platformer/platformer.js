@@ -83,10 +83,12 @@ function mouseMove(event) {
 }
 function mouseUp(event) {
     for(let button of buttons) {
-        button.mouseButton(event, canvas); 
-        event.preventDefault(); 
-        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end1";
-        button.setInputDown(false);
+        if(button.isInputDown()) {
+            button.mouseButton(event, canvas); 
+            event.preventDefault(); 
+            document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end1";
+            button.setInputDown(false);
+        }
     }
 }
 
