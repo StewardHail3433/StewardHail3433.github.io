@@ -39,6 +39,7 @@ export default class Button {
 
     touchButton(event, canvas) {
         for(let i = 0; i < event.touches.length; i++) {
+            document.getElementById("test3").innerText = "" + i;
             touch = event.touches[i];
             document.getElementById("test2").innerText = (touch.pageX - canvas.getBoundingClientRect().left) + ", " + (touch.pageY - canvas.getBoundingClientRect().top) + " " + event.touches.length;
             if(this.containsPoint((touch.pageX - canvas.getBoundingClientRect().left), (touch.pageY - canvas.getBoundingClientRect().top))){

@@ -58,7 +58,7 @@ function touchEnd(event) {
     for(let button of buttons) {
         button.touchButton(event, canvas); 
         event.preventDefault(); 
-        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end123";
+        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end2";
         button.setInputDown(false);
     }
 }
@@ -85,7 +85,7 @@ function mouseUp(event) {
     for(let button of buttons) {
         button.mouseButton(event, canvas); 
         event.preventDefault(); 
-        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end123";
+        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end1";
         button.setInputDown(false);
     }
 }
