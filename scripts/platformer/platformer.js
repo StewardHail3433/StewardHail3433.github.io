@@ -85,7 +85,7 @@ function mouseUp(event) {
     for(let button of buttons) {
         button.mouseButton(event, canvas); 
         event.preventDefault(); 
-        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end";
+        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end123";
         button.setInputDown(false);
     }
 }
