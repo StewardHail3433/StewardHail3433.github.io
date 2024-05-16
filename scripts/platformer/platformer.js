@@ -85,16 +85,16 @@ function mouseUp(event) {
     for(let button of buttons) {
         button.mouseButton(event, canvas); 
         event.preventDefault(); 
-        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end1";
+        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end";
         button.setInputDown(false);
     }
 }
 
 runButton.addEventListener("click", function () {
     if (isTouchDevice()) {
-        canvas.addEventListener("touchstart", function (event) {mouseDown(event.touches[0])}, { passive: false });
-        canvas.addEventListener("touchmove", function (event) {mouseMove(event.touches[0])}, { passive: false });
-        canvas.addEventListener("touchend", function (event) {mouseUp(event.touches[0])}, { passive: false });
+        canvas.addEventListener("touchstart", function (event) {touchStart(event)}, { passive: false });
+        canvas.addEventListener("touchmove", function (event) {touchMove(event)}, { passive: false });
+        canvas.addEventListener("touchend", function (event) {touchEnd(event)}, { passive: false });
     } else {
         canvas.addEventListener("mousedown", function (event) {mouseDown(event)}, { passive: false });
         canvas.addEventListener("mousemove", function (event) {mouseMove(event)}, { passive: false });
