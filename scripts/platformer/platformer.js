@@ -39,18 +39,16 @@ function update() {
 }
 function touchStart(event) {
     for(let button of buttons) {
-        for(let i = 0; i < event.touches.length; i++) {
-            button.touchButton(event.touches[0], canvas);
-            event.preventDefault();
-            document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start";
-            button.setInputDown(true);
-        }
+        button.touchButton(event, canvas);
+        event.preventDefault();
+        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start";
+        button.setInputDown(true);
     }
 }
 function touchMove(event) {
     for(let button of buttons) {
         if(button.isInputDown()) {
-                button.touchButton(event.touches[0], canvas); 
+                button.touchButton(event, canvas); 
                 event.preventDefault(); 
                 document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid";
         }
@@ -58,12 +56,10 @@ function touchMove(event) {
 }
 function touchEnd(event) {
     for(let button of buttons) {
-        for(let i = 0; i < event.touches.length; i++) {
-            button.touchButton(event.touches[i], canvas); 
-            event.preventDefault(); 
-            document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end";
-            button.setInputDown(false);
-        }
+        button.touchButton(event, canvas); 
+        event.preventDefault(); 
+        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end";
+        button.setInputDown(false);
     }
 }
 

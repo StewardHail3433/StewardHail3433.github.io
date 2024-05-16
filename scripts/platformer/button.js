@@ -38,10 +38,10 @@ export default class Button {
     }
 
     touchButton(event, canvas) {
-        document.getElementById("test2").innerText = (event.pageX - canvas.getBoundingClientRect().left) + ", " + (event.pageY - canvas.getBoundingClientRect().top) + " " + event.touches.length;
         for(let i = 0; i < event.touches.length; i++) {
-            event = event.touches[i];
-            if(this.containsPoint((event.pageX - canvas.getBoundingClientRect().left), (event.pageY - canvas.getBoundingClientRect().top))){
+            touch = event.touches[i];
+            document.getElementById("test2").innerText = (touch.pageX - canvas.getBoundingClientRect().left) + ", " + (touch.pageY - canvas.getBoundingClientRect().top) + " " + event.touches.length;
+            if(this.containsPoint((touch.pageX - canvas.getBoundingClientRect().left), (touch.pageY - canvas.getBoundingClientRect().top))){
                 this.#pressed = true;
                 break;
             } else {
