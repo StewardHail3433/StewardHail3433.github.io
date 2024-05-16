@@ -43,7 +43,7 @@ export default class Button {
             document.getElementById("test2").innerText = (touch.pageX - canvas.getBoundingClientRect().left) + ", " + (touch.pageY - canvas.getBoundingClientRect().top) + " " + event.touches.length;
             if(this.containsPoint((touch.pageX - canvas.getBoundingClientRect().left), (touch.pageY - canvas.getBoundingClientRect().top))){
                 this.#pressed = true;
-                break;
+                i = 999;
             } else {
                 this.#inputDown = false;
                 this.#pressed = false;
