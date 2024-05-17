@@ -1,4 +1,3 @@
-import Entity from "./entity.js";
 export default class Player {
     #x;
     #y;
