@@ -38,18 +38,21 @@ export default class Button {
     }
 
     touchButton( /** @type {Event} */ event, canvas) {
-        for(let i = 0; i < event.changedTouches.length; i++) {
-            document.getElementById("test3").innerText = "" + i;
-            touch = event.changedTouches[i].target;
-            document.getElementById("test2").innerText = (touch.pageX - canvas.getBoundingClientRect().left) + ", " + (touch.pageY - canvas.getBoundingClientRect().top) + " " + event.touches.length;
-            if(this.containsPoint((touch.pageX - canvas.getBoundingClientRect().left), (touch.pageY - canvas.getBoundingClientRect().top))){
+        const rect = canvas.getBoundingClientRect();
+        for (let i = 0; i < event.touches.length; i++) {
+            const x = event.touches[i].pageX - rect.left;
+            const y = event.touches[i].pageY - rect.top;
+            document.getElementById("test2").innerText = `${x}, ${y} `;
+            if (this.containsPoint(x, y)) {
                 this.#pressed = true;
-                i = 999;
-            } else {
-                this.#inputDown = false;
-                this.#pressed = false;
+                //this.#inputDown = true;
+                return;
             }
         }
+        this.#inputDown = false;
+        this.#pressed = false;
+
+
     }
 
     containsPoint(x, y) {
