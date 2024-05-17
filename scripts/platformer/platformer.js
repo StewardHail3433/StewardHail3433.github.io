@@ -52,37 +52,33 @@ function update() {
         buttonUpdate();
     }
 }
-function touchStart(/** @type {Event} */ event) {
-    for(let button of buttons) {
-        if(!button.isPressed()) {
-            button.touchButton(event, canvas);
+function touchStart(event) {
+    for (let button of buttons) {
+        button.touchButton(event, canvas);
+        if (button.isPressed()) {
+            button.setInputDown(true);
         }
-        event.preventDefault();
-        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start";
-        button.setInputDown(true);
     }
+    event.preventDefault();
 }
+
 function touchMove(event) {
-    for(let button of buttons) {
-        if(button.isInputDown()) {
-                if(!button.isPressed()) {
-                    button.touchButton(event, canvas);
-                }
-                event.preventDefault(); 
-                document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid";
-        }
+    for (let button of buttons) {
+        button.touchButton(event, canvas);
     }
+    event.preventDefault();
 }
+
 function touchEnd(event) {
-    for(let button of buttons) {
-        if(!button.isPressed()) {
-            button.touchButton(event, canvas);
+    for (let button of buttons) {
+        button.touchButton(event, canvas);
+        if (!button.isPressed()) {
+            button.setInputDown(false);
         }
-        event.preventDefault(); 
-        document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end2";
-        button.setInputDown(false);
     }
+    event.preventDefault();
 }
+
 
 function mouseDown(event) {
     for(let button of buttons) {
