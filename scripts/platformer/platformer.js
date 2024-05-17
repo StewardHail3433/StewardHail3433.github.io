@@ -38,8 +38,23 @@ function buttonUpdate() {
         button.draw(ctx);
         if (button.isPressed() && button.isInputDown()) {
             button.setColor("green");
+            if(button.getName() == "left") {
+                player.moveLeft();
+            }
+            if(button.getName() == "right") {
+                player.moveRight();
+            }
+            if(button.getName() == "jump") {
+                player.moveJump();
+            }
         } else {
             button.setColor("red");
+            if(button.getName() == "left") {
+                player.moveLeftStop();
+            }
+            if(button.getName() == "right") {
+                player.moveRightStop();
+            }
         }
     }
 }
@@ -48,9 +63,9 @@ function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     player.update();
     player.draw();
-    if(isTouchDevice()) {
+    //if(isTouchDevice()) {
         buttonUpdate();
-    }
+    //}
 }
 function touchStart(event) {
     for (let button of buttons) {
@@ -113,14 +128,15 @@ function mouseUp(event) {
 
 runButton.addEventListener("click", function () {
     if (isTouchDevice()) {
-        buttons = [new Button(canvas, 10, 10, 40, 40, "red"), new Button(canvas, 70, 10, 40, 40, "red"), new Button(canvas, 10, 70, 40, 40, "red")];
+        buttons = [new Button(canvas, 10, 10, 40, 40, "red", "left"), new Button(canvas, 70, 10, 40, 40, "red", "right"), new Button(canvas, 10, 70, 40, 40, "red", "jump")];
         canvas.addEventListener("touchstart", function (event) {touchStart(event)}, { passive: false });
         canvas.addEventListener("touchmove", function (event) {touchMove(event)}, { passive: false });
         canvas.addEventListener("touchend", function (event) {touchEnd(event)}, { passive: false });
     } else {
-        // canvas.addEventListener("mousedown", function (event) {mouseDown(event)}, { passive: false });
-        // canvas.addEventListener("mousemove", function (event) {mouseMove(event)}, { passive: false });
-        // canvas.addEventListener("mouseup", function (event) {mouseUp(event)}, { passive: false });
+        buttons = [new Button(canvas, 10, 10, 40, 40, "red", "left"), new Button(canvas, 70, 10, 40, 40, "red", "right"), new Button(canvas, 10, 70, 40, 40, "red", "jump")];
+        canvas.addEventListener("mousedown", function (event) {mouseDown(event)}, { passive: false });
+        canvas.addEventListener("mousemove", function (event) {mouseMove(event)}, { passive: false });
+        canvas.addEventListener("mouseup", function (event) {mouseUp(event)}, { passive: false });
     }
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);

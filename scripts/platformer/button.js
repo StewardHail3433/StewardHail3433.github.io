@@ -6,14 +6,16 @@ export default class Button {
     #color
     #inputDown
     #pressed
+    #name
 
-    constructor(canvas, x, y, width, height, color) {
+    constructor(canvas, x, y, width, height, color, name) {
         //this.canvas = canvas;
         this.#x = x;
         this.#y = y;
         this.#width = width;
         this.#height = height;
         this.#color = color;
+        this.#name = name;
     }
 
     draw(/** @type {CanvasRenderingContext2D} */ ctx) {
@@ -95,6 +97,9 @@ export default class Button {
 
     getColor() {
         return this.#color;
+    }
+    getName() {
+        return this.#name;
     }
 
     isInputDown() {
