@@ -43,7 +43,7 @@ export default class Button {
             const x = event.touches[i].pageX - rect.left;
             const y = event.touches[i].pageY - rect.top;
             document.getElementById("test2").innerText = `${x}, ${y} `;
-            if (this.containsPoint(x, y)) {
+            if (this.containsPoint(x, y) && !this.#pressed) {
                 this.#pressed = true;
                 //this.#inputDown = true;
                 return;
