@@ -1,4 +1,5 @@
 import Button from "./button.js";
+import Player from "./player.js";
 
 
 const canvas = document.getElementById("platformerCanvas");
@@ -7,7 +8,6 @@ const ctx = canvas.getContext("2d");
 const runButton = document.getElementById("runButton");
 let interval;
 
-var buttons = [new Button(canvas, 10, 10, 40, 40, "red"), new Button(canvas, 70, 10, 40, 40, "red"), new Button(canvas, 10, 70, 40, 40, "red")];
 
 
 if (screen.availWidth > screen.availHeight) {
@@ -26,8 +26,14 @@ function isTouchDevice() {
         (navigator.msMaxTouchPoints > 0));
 }
 
-document.getElementById("test").innerHTML = "<p>" + isTouchDevice() + "</p>";
-function update() {
+
+//entity
+var player = new Player(ctx);
+
+document.getElementById("test").innerHTML = "<p>" + ctx.canvas.height + "</p>";
+
+var buttons;
+function buttonUpdate() {
     for(let button of buttons) {
         button.draw(ctx);
         if (button.isPressed() && button.isInputDown()) {
@@ -37,7 +43,16 @@ function update() {
         }
     }
 }
-function touchStart(event) {
+
+function update() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    player.update();
+    player.draw();
+    if(isTouchDevice()) {
+        buttonUpdate();
+    }
+}
+function touchStart(/** @type {Event} */ event) {
     for(let button of buttons) {
         button.touchButton(event, canvas);
         event.preventDefault();
@@ -94,15 +109,39 @@ function mouseUp(event) {
 
 runButton.addEventListener("click", function () {
     if (isTouchDevice()) {
+        buttons = [new Button(canvas, 10, 10, 40, 40, "red"), new Button(canvas, 70, 10, 40, 40, "red"), new Button(canvas, 10, 70, 40, 40, "red")];
         canvas.addEventListener("touchstart", function (event) {touchStart(event)}, { passive: false });
         canvas.addEventListener("touchmove", function (event) {touchMove(event)}, { passive: false });
         canvas.addEventListener("touchend", function (event) {touchEnd(event)}, { passive: false });
     } else {
-        canvas.addEventListener("mousedown", function (event) {mouseDown(event)}, { passive: false });
-        canvas.addEventListener("mousemove", function (event) {mouseMove(event)}, { passive: false });
-        canvas.addEventListener("mouseup", function (event) {mouseUp(event)}, { passive: false });
+        // canvas.addEventListener("mousedown", function (event) {mouseDown(event)}, { passive: false });
+        // canvas.addEventListener("mousemove", function (event) {mouseMove(event)}, { passive: false });
+        // canvas.addEventListener("mouseup", function (event) {mouseUp(event)}, { passive: false });
     }
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
 
     interval = setInterval(update, 10);
-    this.disable = false;
+    this.disable = true;
 })
+
+function keyDownHandler(e) {
+    if (e.key === " " || e.key === "w") {
+        player.moveJump();
+    }
+    if (e.key === "a") {
+        player.moveLeft();
+    }
+    if (e.key === "d") {
+        player.moveRight();
+    }
+}
+
+function keyUpHandler(e) {
+    if (e.key === "a") {
+        player.moveLeftStop();
+    }
+    if (e.key === "d") {
+        player.moveRightStop();
+    }
+}

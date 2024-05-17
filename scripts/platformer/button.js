@@ -16,7 +16,7 @@ export default class Button {
         this.#color = color;
     }
 
-    draw(ctx) {
+    draw(/** @type {CanvasRenderingContext2D} */ ctx) {
         ctx.beginPath();
         ctx.rect(this.#x, this.#y, this.#width, this.#height);
         ctx.fillStyle = this.#color;
@@ -27,7 +27,7 @@ export default class Button {
         ctx.closePath();
     }
 
-    mouseButton(event, canvas) {
+    mouseButton(/** @type {Event} */ event, canvas) {
         document.getElementById("test2").innerText = (event.pageX - canvas.getBoundingClientRect().left) + ", " + (event.pageY - canvas.getBoundingClientRect().top) + " ";
         if(this.containsPoint((event.pageX - canvas.getBoundingClientRect().left), (event.pageY - canvas.getBoundingClientRect().top))){
             this.#pressed = true;
@@ -37,7 +37,7 @@ export default class Button {
         }
     }
 
-    touchButton(event, canvas) {
+    touchButton( /** @type {Event} */ event, canvas) {
         for(let i = 0; i < event.changedTouches.length; i++) {
             document.getElementById("test3").innerText = "" + i;
             touch = event.changedTouches[i].target;
