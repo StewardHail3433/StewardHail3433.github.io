@@ -32,7 +32,7 @@ var player = new Player(ctx);
 
 document.getElementById("test").innerHTML = "<p>" + ctx.canvas.height + "</p>";
 
-var buttons;
+/** @type {Button} */var buttons;
 function buttonUpdate() {
     for(let button of buttons) {
         button.draw(ctx);
@@ -63,8 +63,10 @@ function touchStart(event) {
 }
 
 function touchMove(event) {
-    for (let button of buttons) {
-        button.touchButton(event, canvas);
+    for (let /** @type {Button} */ button of buttons) {
+        if(button.isInputDown()) {
+            button.touchButton(event, canvas);
+        }
     }
     event.preventDefault();
 }
