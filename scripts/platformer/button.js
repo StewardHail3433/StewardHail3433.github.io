@@ -40,11 +40,11 @@ export default class Button {
     touchButton( /** @type {Event} */ event, canvas) {
         const rect = canvas.getBoundingClientRect();
         let touchWithinButton = false;
-
+        if(this.#pressed != true) {
         for (let i = 0; i < event.touches.length; i++) {
             const x = event.touches[i].pageX - rect.left;
             const y = event.touches[i].pageY - rect.top;
-            document.getElementById("test2").innerText = `${x}, ${y} =)`;
+            document.getElementById("test2").innerText = `${x}, ${y} =()`;
 
             if (this.containsPoint(x, y)) {
                 touchWithinButton = true;
@@ -54,6 +54,7 @@ export default class Button {
 
         this.#pressed = touchWithinButton;
         this.#inputDown = touchWithinButton;
+        }
 
 
 
