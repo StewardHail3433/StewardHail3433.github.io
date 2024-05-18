@@ -5,7 +5,7 @@ export default class Map {
 
     /** @type {CanvasRenderingContext2D} */ #ctx;
 
-    #xVel = 0;
+    #xVel = 0.75;
     constructor(    /** @type {CanvasRenderingContext2D} */ ctx) {
         this.#ctx = ctx;
         fetch("./scripts/platformer/resources/map.txt")
@@ -44,18 +44,18 @@ export default class Map {
 
     
 
-    update(move) {
+    update(move, deltaTime) {
         if(move === "left") {
-            this.#xVel = 2;
+            this.#xVel = 0.75 * deltaTime;
         } else if(move === "right"){
-            this.#xVel = -2;
+            this.#xVel = -0.75 * deltaTime;
         } else {
             this.#xVel = 0;
         }
 
         for(let i = 0; i < this.#map.length; i++) {
             for(let j = 0; j < this.#map[i].length; j++) {
-                this.#map[i][j].x -=  this.#xVel;
+                this.#map[i][j].x =  Math.round(this.#map[i][j].x - this.#xVel);
             }
         }
     }

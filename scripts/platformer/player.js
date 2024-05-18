@@ -3,7 +3,7 @@ import Block from "./block.js";
 export default class Player {
     #x;
     #y;
-    #xVel = 2;
+    #xVel = 0.75;
     #yVel = 0;
     #width;
     #height;
@@ -23,15 +23,10 @@ export default class Player {
         this.#width = ctx.canvas.width*0.01953125;
         this.#height = ctx.canvas.width*0.01953125;
         this.#ctx = ctx;
-
-        setInterval(() => {
-            this.applyGravity();
-        }, 50);
-
     }
 
-    applyGravity() {
-        this.#yVel += 0.1; // Simulate gravity increment
+    applyGravity(deltaTime) {
+        this.#yVel += 0.01 * deltaTime*0.25; // Simulate gravity increment
     }
 
     draw() {
@@ -45,15 +40,17 @@ export default class Player {
         this.#ctx.closePath();
     }
 
-    update(/** @type {Block[][]} */  map) {
-        this.#y += this.#yVel;
+    update(/** @type {Block[][]} */  map, deltaTime) {
+        this.applyGravity(deltaTime);
+
+        this.#y += this.#yVel * deltaTime;
         if (this.#x >= this.#ctx.canvas.width / 2 - this.#width / 2 && this.#x <= this.#ctx.canvas.width / 2 + this.#width / 2) {
             this.#isAtMiddle = true;
             
             if (this.nearLeftEnd(map)) {
                 this.#moveMapRight = false;
                 if (this.#isLeft) {
-                    this.#x -= this.#xVel;
+                    this.#x -= this.#xVel * deltaTime;
                 }
                 if (this.#isRight) {
                     this.#moveMapLeft = true;
@@ -68,7 +65,7 @@ export default class Player {
                     this.#moveMapRight = false;
                 }
                 if (this.#isRight) {
-                    this.#x += this.#xVel;
+                    this.#x += this.#xVel * deltaTime;
                 } 
             } else {
                 if (this.#isLeft) {
@@ -87,10 +84,10 @@ export default class Player {
             this.#moveMapLeft = false;
             this.#moveMapRight = false;
             if (this.#isLeft) {
-                this.#x -= this.#xVel;
+                this.#x -= this.#xVel * deltaTime;
             }
             if (this.#isRight) {
-                this.#x += this.#xVel;
+                this.#x += this.#xVel * deltaTime;
             }
         }
 
@@ -98,6 +95,8 @@ export default class Player {
             this.#y = this.#ctx.canvas.height - this.#height;
             this.#yVel = 0;
         }
+
+        console.log("x: " + this.#x +", y: " + this.#y +", xVel: " + this.#x + ", yVel: " +this.#yVel);
 
     }
 
@@ -122,8 +121,8 @@ export default class Player {
     }
 
     moveJump() {
-        if(this.#y + this.#width >= 525){
-            this.#yVel = -1;
+        if(this.#y + this.#width >= this.#ctx.canvas.height && this.#yVel === 0){
+            this.#yVel = -0.75;
         }
     }
 

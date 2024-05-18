@@ -34,9 +34,8 @@ var player = new Player(ctx);
 document.getElementById("test").innerHTML = "<p>" + ctx.canvas.height + "</p>";
 
 /** @type {Button} */var buttons;
-function buttonUpdate() {
+function buttonUpdate(deltaTime) {
     for(let button of buttons) {
-        button.draw(ctx);
         if (button.isPressed() && button.isInputDown() && mouseFocus == true) {
             button.setColor("green");
             if(button.getName() == "left") {
@@ -64,23 +63,50 @@ function buttonUpdate() {
     }
 }
 
-function update() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+function update(deltaTime) {
     if(player.moveMapLeft) {
-        map.update("left");
+        map.update("left", deltaTime);
     } else if(player.moveMapRight) {
-        map.update("right");
+        map.update("right", deltaTime);
     } else{
-        map.update("none");
+        map.update("none", deltaTime);
     }
-    map.draw();
-    player.update(map.map);
-    player.draw();
+    player.update(map.map, deltaTime);
     
     //if(isTouchDevice()) {
-        buttonUpdate();
+        buttonUpdate(deltaTime);
     //}
 }
+
+const fixedTimeStep = 1000/60; // 60 frames per second
+
+let lastFrameTime = 0;
+let accumulatedTime = 0;
+
+function gameLoop(timestamp) {
+    const deltaTime = timestamp - lastFrameTime;
+    lastFrameTime = timestamp;
+    accumulatedTime += deltaTime;
+
+    while (accumulatedTime >= fixedTimeStep) {
+        update(deltaTime);
+        accumulatedTime -= fixedTimeStep;
+    }
+
+    render();
+
+    requestAnimationFrame(gameLoop);
+}
+
+function render() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    map.draw();
+    player.draw();
+    for(let button of buttons) {
+        button.draw(ctx);
+    }
+}
+
 function touchStart(event) {
     for (let button of buttons) {
         button.touchButton(event, canvas);
@@ -156,7 +182,9 @@ runButton.addEventListener("click", function () {
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
 
-    interval = setInterval(update, 10);
+    // Start the game loop
+    requestAnimationFrame(gameLoop);
+
     this.disable = true;
 })
 
