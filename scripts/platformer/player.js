@@ -3,7 +3,7 @@ import Block from "./block.js";
 export default class Player {
     #x;
     #y;
-    #xVel = 0.75;
+    #xVel = 0.25;
     #yVel = 0;
     #width;
     #height;
@@ -26,7 +26,7 @@ export default class Player {
     }
 
     applyGravity(deltaTime) {
-        this.#yVel += 0.01 * deltaTime*0.25; // Simulate gravity increment
+        this.#yVel += 0.01 * deltaTime*0.25;
     }
 
     draw() {
@@ -96,16 +96,18 @@ export default class Player {
             this.#yVel = 0;
         }
 
-        console.log("x: " + this.#x +", y: " + this.#y +", xVel: " + this.#x + ", yVel: " +this.#yVel);
+        //console.log("x: " + this.#x +", y: " + this.#y +", xVel: " + this.#xVel + ", yVel: " +this.#yVel);
 
     }
 
     moveLeft(){
+        this.#xVel = 0.25;
         this.#isLeft = true;
         
     }
 
     moveRight() {
+        this.#xVel = 0.25;
         this.#isRight = true;
         
     }
@@ -126,12 +128,24 @@ export default class Player {
         }
     }
 
+    get isAtMiddle() {
+        return this.#isAtMiddle;
+    }
+
     get moveMapLeft() {
         return this.#moveMapLeft;
     }
 
     get moveMapRight() {
         return this.#moveMapRight;
+    }
+
+    set moveMapLeft(x) {
+        this.#moveMapLeft = x;
+    }
+
+    set moveMapRight(x) {
+        this.#moveMapRight = x;
     }
 
     nearEnd(map) {
@@ -143,6 +157,43 @@ export default class Player {
     }
 
     nearRightEnd(map) {
-        return map[0][map[0].length-1].x - this.#x < this.#ctx.canvas.width
+        return map[0][map[0].length-1].x - this.#x < this.#ctx.canvas.width;
+    }
+
+    get x() {
+        return this.#x;
+    }
+
+    get y() {
+        return this.#y;
+    }
+
+    get width() {
+        return this.#width;
+    }
+
+    get height() {
+        return this.#height;
+    }
+
+    get xVel() {
+        return this.#xVel;
+    }
+    get yVel() {
+        return this.#yVel;
+    }
+
+    set xVel(x) {
+        this.#xVel = x;
+    }
+    set yVel(x) {
+        this.#yVel = x;
+    }
+    set x(x){
+        this.#x = x
+    }
+
+    set y(x) {
+        this.#y = x;        
     }
 }

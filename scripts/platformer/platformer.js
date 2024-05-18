@@ -1,13 +1,13 @@
 import Button from "./button.js";
 import Player from "./player.js";
 import Map from "./map.js"
+import collisionChecker from "./collisionChecker.js";
 
 
 const canvas = document.getElementById("platformerCanvas");
 /** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext("2d");
 const runButton = document.getElementById("runButton");
-let interval;
 
 var map = new Map(ctx);
 
@@ -28,6 +28,8 @@ function isTouchDevice() {
 }
 
 var mouseFocus = false;
+
+var cChecker = new collisionChecker;
 //entity
 var player = new Player(ctx);
 
@@ -65,13 +67,45 @@ function buttonUpdate(deltaTime) {
 
 function update(deltaTime) {
     if(player.moveMapLeft) {
-        map.update("left", deltaTime);
+        map.update("left", player.xVel, deltaTime);
     } else if(player.moveMapRight) {
-        map.update("right", deltaTime);
+        map.update("right", player.xVel, deltaTime);
     } else{
-        map.update("none", deltaTime);
+        map.update("none", player.xVel, deltaTime);
     }
+    
     player.update(map.map, deltaTime);
+    for(let i = 0; i < map.map.length; i++) {
+        for(let j = 0; j < map.map[i].length; j++) {
+            let dir = cChecker.collisionPlayerBlock(player, map.map[i][j]);
+            if (dir === "left" || dir === "right") {
+                if (!player.isAtMiddle) {
+                    player.xVel = 0;
+                    if (dir === "left") {
+                        player.x = map.map[i][j].x + map.map[i][j].width;
+                    } else if (dir === "right") {
+                        player.x = map.map[i][j].x - player.width;
+                    }
+                } else {
+                    if (dir === "right") {
+                    player.moveMapLeft = false;
+                    console.log("hi");}
+                    if (dir === "left") {
+                    player.moveMapRight = false;
+                    console.log("hi2")}
+                }
+            } else if (dir === "up" || dir === "down") {
+                player.yVel = 0;
+                if (dir === "up") {
+                    player.y = map.map[i][j].y + map.map[i][j].height;
+                } else if (dir === "down") {
+                    player.y = map.map[i][j].y - player.height;
+                }
+            }
+
+
+        }
+    }
     
     //if(isTouchDevice()) {
         buttonUpdate(deltaTime);

@@ -5,7 +5,7 @@ export default class Map {
 
     /** @type {CanvasRenderingContext2D} */ #ctx;
 
-    #xVel = 0.75;
+    #xVel = 0.25;
     constructor(    /** @type {CanvasRenderingContext2D} */ ctx) {
         this.#ctx = ctx;
         fetch("./scripts/platformer/resources/map.txt")
@@ -19,9 +19,10 @@ export default class Map {
                     this.#map[i][j] = new Block(this.#ctx);
                     this.#map[i][j].value = lines[i].split(" ")[j] ;
                     this.#map[i][j].x = j*32;
-                    this.#map[i][j].y = i*32;
+                    this.#map[i][j].y = i*32 +16;
                     this.#map[i][j].width = 32;
                     this.#map[i][j].height = 32;
+                    this.#map[i][j].blockAction();
                 }
             }
         })
@@ -34,7 +35,7 @@ export default class Map {
             for(let j = 0; j < this.#map[i].length; j++) {
                 this.#map[i][j].blockAction();
                 this.#ctx.beginPath();
-                this.#ctx.rect(this.#map[i][j].x, this.#map[i][j].y+yOffset, this.#map[i][j].width, this.#map[i][j].height);
+                this.#ctx.rect(this.#map[i][j].x, this.#map[i][j].y, this.#map[i][j].width, this.#map[i][j].height);
                 
                 this.#ctx.fill();
                 this.#ctx.closePath();
@@ -44,11 +45,11 @@ export default class Map {
 
     
 
-    update(move, deltaTime) {
+    update(move, xVel, deltaTime) {
         if(move === "left") {
-            this.#xVel = 0.75 * deltaTime;
+            this.#xVel = xVel * deltaTime;
         } else if(move === "right"){
-            this.#xVel = -0.75 * deltaTime;
+            this.#xVel = -xVel * deltaTime;
         } else {
             this.#xVel = 0;
         }

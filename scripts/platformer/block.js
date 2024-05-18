@@ -5,6 +5,7 @@ export default class Block {
     #height;
     #value;
     #ctx;
+    #collision = false;
     constructor(ctx) {
         this.#ctx = ctx;
     }
@@ -12,14 +13,19 @@ export default class Block {
     blockAction() {
         if (this.#value === "1") {
             this.#ctx.fillStyle = "blue";
+            this.#collision = true;
         } else if (this.#value === "2") {
             this.#ctx.fillStyle = "purple";
+            this.#collision = false;
         } else if (this.#value === "3") {
             this.#ctx.fillStyle = "orange";
+            this.#collision = false;
         } else if (this.#value === "4") {
             this.#ctx.fillStyle = "MediumSeaGreen";
+            this.#collision = false;
         } else {
             this.#ctx.fillStyle = "yellow";
+            this.#collision = false;
         }
     }
     // Getters
@@ -43,24 +49,32 @@ export default class Block {
         return this.#value;
     }
 
+    get collision() {
+        return this.#collision;
+    }
+
     // Setters
-    set x(value) {
-        this.#x = value;
+    set x(x) {
+        this.#x = x;
     }
 
-    set y(value) {
-        this.#y = value;
+    set y(x) {
+        this.#y = x;
     }
 
-    set width(value) {
-        this.#width = value;
+    set width(x) {
+        this.#width = x;
     }
 
-    set height(value) {
-        this.#height = value;
+    set height(x) {
+        this.#height = x;
     }
 
-    set value(value) {
-        this.#value = value;
+    set value(x) {
+        this.#value = x;
+    }
+
+    set collision(x) {
+        this.#collision = x;
     }
 }
