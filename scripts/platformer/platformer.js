@@ -99,6 +99,7 @@ function update(deltaTime) {
                 if (dir === "up") {
                     player.y = map.map[i][j].y + map.map[i][j].height;
                 } else if (dir === "down") {
+                    player.canJump = true;
                     player.y = map.map[i][j].y - player.height;
                 }
             }

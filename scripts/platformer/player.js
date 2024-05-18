@@ -9,6 +9,7 @@ export default class Player {
     #height;
     #color = "blue";
     #alive = "alive";
+    #canJump = true;
 
     #isLeft = false;
     #isRight = false;
@@ -123,7 +124,7 @@ export default class Player {
     }
 
     moveJump() {
-        if(this.#y + this.#width >= this.#ctx.canvas.height && this.#yVel === 0){
+        if(this.#canJump && this.#yVel === 0){
             this.#yVel = -0.75;
         }
     }
@@ -157,7 +158,7 @@ export default class Player {
     }
 
     nearRightEnd(map) {
-        return map[0][map[0].length-1].x - this.#x < this.#ctx.canvas.width;
+        return map[0][map[0].length-1].x - this.#x < this.#ctx.canvas.width/2+2;
     }
 
     get x() {
@@ -195,5 +196,9 @@ export default class Player {
 
     set y(x) {
         this.#y = x;        
+    }
+
+    set canJump(x) {
+        this.#canJump = x;        
     }
 }
