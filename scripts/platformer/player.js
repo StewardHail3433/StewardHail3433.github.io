@@ -1,3 +1,5 @@
+import Block from "./block.js";
+
 export default class Player {
     #x;
     #y;
@@ -8,7 +10,7 @@ export default class Player {
     #color = "blue";
     #alive = "alive";
 
-    #isleft = false;
+    #isLeft = false;
     #isRight = false;
     #isAtMiddle = false;
     #moveMapLeft = false;
@@ -29,7 +31,7 @@ export default class Player {
     }
 
     applyGravity() {
-        this.#yVel += 0.05; // Simulate gravity increment
+        this.#yVel += 0.1; // Simulate gravity increment
     }
 
     draw() {
@@ -43,21 +45,50 @@ export default class Player {
         this.#ctx.closePath();
     }
 
-    update() {
+    update(/** @type {Block[][]} */  map) {
         this.#y += this.#yVel;
-
-        if(this.#x >= this.#ctx.canvas.width/2-this.#width/2){
+        if (this.#x >= this.#ctx.canvas.width / 2 - this.#width / 2 && this.#x <= this.#ctx.canvas.width / 2 + this.#width / 2) {
             this.#isAtMiddle = true;
-            if(this.#isleft == true) {
-                this.#x -= this.#xVel;
-            } 
-            if (this.#isRight) {
-                this.#moveMapLeft = true;
+            
+            if (this.nearLeftEnd(map)) {
+                this.#moveMapRight = false;
+                if (this.#isLeft) {
+                    this.#x -= this.#xVel;
+                }
+                if (this.#isRight) {
+                    this.#moveMapLeft = true;
+                } else {
+                    this.#moveMapLeft = false;
+                }
+            } else if (this.nearRightEnd(map)) {
+                this.#moveMapLeft = false;
+                if (this.#isLeft) {
+                    this.#moveMapRight = true;
+                } else {
+                    this.#moveMapRight = false;
+                }
+                if (this.#isRight) {
+                    this.#x += this.#xVel;
+                } 
+            } else {
+                if (this.#isLeft) {
+                    this.#moveMapRight = true;
+                } else {
+                    this.#moveMapRight = false;
+                }
+                if (this.#isRight) {
+                    this.#moveMapLeft = true;
+                } else {
+                    this.#moveMapLeft = false;
+                }
             }
         } else {
-            if(this.#isleft == true) {
+            this.#isAtMiddle = false;
+            this.#moveMapLeft = false;
+            this.#moveMapRight = false;
+            if (this.#isLeft) {
                 this.#x -= this.#xVel;
-            } 
+            }
             if (this.#isRight) {
                 this.#x += this.#xVel;
             }
@@ -71,24 +102,48 @@ export default class Player {
     }
 
     moveLeft(){
-        this.#isleft = true;
+        this.#isLeft = true;
+        
     }
 
     moveRight() {
         this.#isRight = true;
+        
     }
 
     moveLeftStop() {
-        this.#isleft = false;
+        this.#isLeft = false;
+        
     }
 
     moveRightStop() {
         this.#isRight = false;
+        
     }
 
     moveJump() {
         if(this.#y + this.#width >= 525){
             this.#yVel = -1;
         }
+    }
+
+    get moveMapLeft() {
+        return this.#moveMapLeft;
+    }
+
+    get moveMapRight() {
+        return this.#moveMapRight;
+    }
+
+    nearEnd(map) {
+        return nearLeftEnd(map) || nearRightEnd(map);
+    }
+
+    nearLeftEnd(map) {
+        return Math.abs(map[0][0].x - this.#x) <= this.#ctx.canvas.width/2+2;
+    }
+
+    nearRightEnd(map) {
+        return map[0][map[0].length-1].x - this.#x < this.#ctx.canvas.width
     }
 }

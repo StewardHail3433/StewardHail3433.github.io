@@ -1,5 +1,6 @@
 import Button from "./button.js";
 import Player from "./player.js";
+import Map from "./map.js"
 
 
 const canvas = document.getElementById("platformerCanvas");
@@ -8,7 +9,7 @@ const ctx = canvas.getContext("2d");
 const runButton = document.getElementById("runButton");
 let interval;
 
-
+var map = new Map(ctx);
 
 if (screen.availWidth > screen.availHeight) {
     ctx.canvas.width = screen.availWidth * .8;
@@ -26,7 +27,7 @@ function isTouchDevice() {
         (navigator.msMaxTouchPoints > 0));
 }
 
-
+var mouseFocus = false;
 //entity
 var player = new Player(ctx);
 
@@ -36,24 +37,28 @@ document.getElementById("test").innerHTML = "<p>" + ctx.canvas.height + "</p>";
 function buttonUpdate() {
     for(let button of buttons) {
         button.draw(ctx);
-        if (button.isPressed() && button.isInputDown()) {
+        if (button.isPressed() && button.isInputDown() && mouseFocus == true) {
             button.setColor("green");
             if(button.getName() == "left") {
                 player.moveLeft();
+                console.log("LeftStart");
             }
             if(button.getName() == "right") {
                 player.moveRight();
+                console.log("rightStart");
             }
             if(button.getName() == "jump") {
                 player.moveJump();
             }
-        } else {
+        } else if(mouseFocus) {
             button.setColor("red");
             if(button.getName() == "left") {
                 player.moveLeftStop();
+                console.log("LeftStop");
             }
             if(button.getName() == "right") {
                 player.moveRightStop();
+                console.log("RightStop");
             }
         }
     }
@@ -61,8 +66,17 @@ function buttonUpdate() {
 
 function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    player.update();
+    if(player.moveMapLeft) {
+        map.update("left");
+    } else if(player.moveMapRight) {
+        map.update("right");
+    } else{
+        map.update("none");
+    }
+    map.draw();
+    player.update(map.map);
     player.draw();
+    
     //if(isTouchDevice()) {
         buttonUpdate();
     //}
@@ -78,8 +92,8 @@ function touchStart(event) {
 }
 
 function touchMove(event) {
-    for (let /** @type {Button} */ button of buttons) {
-        if(button.isInputDown()) {
+    for (let button of buttons) {
+        if (button.isInputDown()) {
             button.touchButton(event, canvas);
         }
     }
@@ -98,6 +112,7 @@ function touchEnd(event) {
 
 
 function mouseDown(event) {
+    mouseFocus = true;
     for(let button of buttons) {
         button.mouseButton(event, canvas);
         event.preventDefault();
@@ -146,22 +161,27 @@ runButton.addEventListener("click", function () {
 })
 
 function keyDownHandler(e) {
+    mouseFocus = false;
     if (e.key === " " || e.key === "w") {
         player.moveJump();
     }
     if (e.key === "a") {
         player.moveLeft();
+        
     }
     if (e.key === "d") {
         player.moveRight();
+        
     }
 }
 
 function keyUpHandler(e) {
     if (e.key === "a") {
         player.moveLeftStop();
+        
     }
     if (e.key === "d") {
         player.moveRightStop();
+        
     }
 }
