@@ -31,7 +31,7 @@ export default class Button {
 
     mouseButton(/** @type {Event} */ event, canvas) {
         document.getElementById("test2").innerText = (event.pageX - canvas.getBoundingClientRect().left) + ", " + (event.pageY - canvas.getBoundingClientRect().top) + " ";
-        if(this.containsPoint((event.pageX - canvas.getBoundingClientRect().left), (event.pageY - canvas.getBoundingClientRect().top))){
+        if (this.containsPoint((event.pageX - canvas.getBoundingClientRect().left), (event.pageY - canvas.getBoundingClientRect().top))) {
             this.#pressed = true;
         } else {
             this.#inputDown = false;
@@ -64,11 +64,11 @@ export default class Button {
 
     containsPoint(x, y) {
         if (x < this.#x || x > this.#x + this.#width || y < this.#y || y > this.#y + this.#height) {
-          return false;
-  
+            return false;
+
         }
         return true;
-  
+
     }
 
     setColor(color) {

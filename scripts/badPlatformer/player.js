@@ -7,7 +7,7 @@ export default class Player {
     #yVel = 0;
     #width;
     #height;
-    #color = "blue";
+    #color = "#0FFF50";
     #alive = "alive";
     #canJump = true;
 
@@ -19,15 +19,15 @@ export default class Player {
     /** @type {CanvasRenderingContext2D} */ #ctx;
 
     constructor(/** @type {CanvasRenderingContext2D} */ ctx) {
-        this.#x = ctx.canvas.width/5-ctx.canvas.width*0.01953125;
-        this.#y = ctx.canvas.height-ctx.canvas.height/5-ctx.canvas.height*0.01953125;
-        this.#width = ctx.canvas.width*0.01953125;
-        this.#height = ctx.canvas.width*0.01953125;
+        this.#x = 10;
+        this.#y = ctx.canvas.height - ctx.canvas.height / 5 - ctx.canvas.height * 0.01953125;
+        this.#width = ctx.canvas.width * 0.01953125;
+        this.#height = ctx.canvas.width * 0.01953125;
         this.#ctx = ctx;
     }
 
     applyGravity(deltaTime) {
-        this.#yVel += 0.01 * deltaTime*0.25;
+        this.#yVel += 0.01 * deltaTime * 0.25;
     }
 
     draw() {
@@ -47,7 +47,7 @@ export default class Player {
         this.#y += this.#yVel * deltaTime;
         if (this.#x >= this.#ctx.canvas.width / 2 - this.#width / 2 && this.#x <= this.#ctx.canvas.width / 2 + this.#width / 2) {
             this.#isAtMiddle = true;
-            
+
             if (this.nearLeftEnd(map)) {
                 this.#moveMapRight = false;
                 if (this.#isLeft) {
@@ -67,7 +67,7 @@ export default class Player {
                 }
                 if (this.#isRight) {
                     this.#x += this.#xVel * deltaTime;
-                } 
+                }
             } else {
                 if (this.#isLeft) {
                     this.#moveMapRight = true;
@@ -92,7 +92,7 @@ export default class Player {
             }
         }
 
-        if (this.#y + this.#height >= this.#ctx.canvas.height) { 
+        if (this.#y + this.#height >= this.#ctx.canvas.height) {
             this.#y = this.#ctx.canvas.height - this.#height;
             this.#yVel = 0;
         }
@@ -101,30 +101,30 @@ export default class Player {
 
     }
 
-    moveLeft(){
+    moveLeft() {
         this.#xVel = 0.25;
         this.#isLeft = true;
-        
+
     }
 
     moveRight() {
         this.#xVel = 0.25;
         this.#isRight = true;
-        
+
     }
 
     moveLeftStop() {
         this.#isLeft = false;
-        
+
     }
 
     moveRightStop() {
         this.#isRight = false;
-        
+
     }
 
     moveJump() {
-        if(this.#canJump && this.#yVel === 0){
+        if (this.#canJump && this.#yVel === 0) {
             this.#yVel = -0.75;
         }
     }
@@ -154,11 +154,11 @@ export default class Player {
     }
 
     nearLeftEnd(map) {
-        return Math.abs(map[0][0].x - this.#x) <= this.#ctx.canvas.width/2+2;
+        return Math.abs(map[0][0].x - this.#x) <= this.#ctx.canvas.width / 2 + 2;
     }
 
     nearRightEnd(map) {
-        return map[0][map[0].length-1].x - this.#x < this.#ctx.canvas.width/2+2;
+        return map[0][map[0].length - 1].x - this.#x < this.#ctx.canvas.width / 2 + 2;
     }
 
     get x() {
@@ -190,15 +190,15 @@ export default class Player {
     set yVel(x) {
         this.#yVel = x;
     }
-    set x(x){
+    set x(x) {
         this.#x = x
     }
 
     set y(x) {
-        this.#y = x;        
+        this.#y = x;
     }
 
     set canJump(x) {
-        this.#canJump = x;        
+        this.#canJump = x;
     }
 }

@@ -37,27 +37,27 @@ document.getElementById("test").innerHTML = "<p>" + ctx.canvas.height + "</p>";
 
 /** @type {Button} */var buttons;
 function buttonUpdate(deltaTime) {
-    for(let button of buttons) {
+    for (let button of buttons) {
         if (button.isPressed() && button.isInputDown() && mouseFocus == true) {
             button.setColor("green");
-            if(button.getName() == "left") {
+            if (button.getName() == "left") {
                 player.moveLeft();
                 console.log("LeftStart");
             }
-            if(button.getName() == "right") {
+            if (button.getName() == "right") {
                 player.moveRight();
                 console.log("rightStart");
             }
-            if(button.getName() == "jump") {
+            if (button.getName() == "jump") {
                 player.moveJump();
             }
-        } else if(mouseFocus) {
+        } else if (mouseFocus) {
             button.setColor("red");
-            if(button.getName() == "left") {
+            if (button.getName() == "left") {
                 player.moveLeftStop();
                 console.log("LeftStop");
             }
-            if(button.getName() == "right") {
+            if (button.getName() == "right") {
                 player.moveRightStop();
                 console.log("RightStop");
             }
@@ -66,17 +66,17 @@ function buttonUpdate(deltaTime) {
 }
 
 function update(deltaTime) {
-    if(player.moveMapLeft) {
+    if (player.moveMapLeft) {
         map.update("left", player.xVel, deltaTime);
-    } else if(player.moveMapRight) {
+    } else if (player.moveMapRight) {
         map.update("right", player.xVel, deltaTime);
-    } else{
+    } else {
         map.update("none", player.xVel, deltaTime);
     }
-    
+
     player.update(map.map, deltaTime);
-    for(let i = 0; i < map.map.length; i++) {
-        for(let j = 0; j < map.map[i].length; j++) {
+    for (let i = 0; i < map.map.length; i++) {
+        for (let j = 0; j < map.map[i].length; j++) {
             let dir = cChecker.collisionPlayerBlock(player, map.map[i][j]);
             if (dir === "left" || dir === "right") {
                 if (!player.isAtMiddle) {
@@ -88,11 +88,11 @@ function update(deltaTime) {
                     }
                 } else {
                     if (dir === "right") {
-                    player.moveMapLeft = false;
-                    console.log("hi");}
+                        player.moveMapLeft = false;
+                    }
                     if (dir === "left") {
-                    player.moveMapRight = false;
-                    console.log("hi2")}
+                        player.moveMapRight = false;
+                    }
                 }
             } else if (dir === "up" || dir === "down") {
                 player.yVel = 0;
@@ -107,13 +107,13 @@ function update(deltaTime) {
 
         }
     }
-    
+
     //if(isTouchDevice()) {
-        buttonUpdate(deltaTime);
+    buttonUpdate(deltaTime);
     //}
 }
 
-const fixedTimeStep = 1000/60; // 60 frames per second
+const fixedTimeStep = 1000 / 60; // 60 frames per second
 
 let lastFrameTime = 0;
 let accumulatedTime = 0;
@@ -137,7 +137,7 @@ function render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     map.draw();
     player.draw();
-    for(let button of buttons) {
+    for (let button of buttons) {
         button.draw(ctx);
     }
 }
@@ -174,7 +174,7 @@ function touchEnd(event) {
 
 function mouseDown(event) {
     mouseFocus = true;
-    for(let button of buttons) {
+    for (let button of buttons) {
         button.mouseButton(event, canvas);
         event.preventDefault();
         document.getElementById("test2").innerText = document.getElementById("test2").innerText + " start";
@@ -182,20 +182,20 @@ function mouseDown(event) {
     }
 }
 function mouseMove(event) {
-    for(let button of buttons) {
-        if(button.isInputDown()) {
-            button.mouseButton(event, canvas); 
-            event.preventDefault(); 
+    for (let button of buttons) {
+        if (button.isInputDown()) {
+            button.mouseButton(event, canvas);
+            event.preventDefault();
             document.getElementById("test2").innerText = document.getElementById("test2").innerText + " mid";
         }
         event.preventDefault();
     }
 }
 function mouseUp(event) {
-    for(let button of buttons) {
-        if(button.isInputDown()) {
-            button.mouseButton(event, canvas); 
-            event.preventDefault(); 
+    for (let button of buttons) {
+        if (button.isInputDown()) {
+            button.mouseButton(event, canvas);
+            event.preventDefault();
             document.getElementById("test2").innerText = document.getElementById("test2").innerText + " end1";
             button.setInputDown(false);
         }
@@ -205,14 +205,14 @@ function mouseUp(event) {
 runButton.addEventListener("click", function () {
     if (isTouchDevice()) {
         buttons = [new Button(canvas, 10, 10, 40, 40, "red", "left"), new Button(canvas, 70, 10, 40, 40, "red", "right"), new Button(canvas, 10, 70, 40, 40, "red", "jump")];
-        canvas.addEventListener("touchstart", function (event) {touchStart(event)}, { passive: false });
-        canvas.addEventListener("touchmove", function (event) {touchMove(event)}, { passive: false });
-        canvas.addEventListener("touchend", function (event) {touchEnd(event)}, { passive: false });
+        canvas.addEventListener("touchstart", function (event) { touchStart(event) }, { passive: false });
+        canvas.addEventListener("touchmove", function (event) { touchMove(event) }, { passive: false });
+        canvas.addEventListener("touchend", function (event) { touchEnd(event) }, { passive: false });
     } else {
         buttons = [new Button(canvas, 10, 10, 40, 40, "red", "left"), new Button(canvas, 70, 10, 40, 40, "red", "right"), new Button(canvas, 10, 70, 40, 40, "red", "jump")];
-        canvas.addEventListener("mousedown", function (event) {mouseDown(event)}, { passive: false });
-        canvas.addEventListener("mousemove", function (event) {mouseMove(event)}, { passive: false });
-        canvas.addEventListener("mouseup", function (event) {mouseUp(event)}, { passive: false });
+        canvas.addEventListener("mousedown", function (event) { mouseDown(event) }, { passive: false });
+        canvas.addEventListener("mousemove", function (event) { mouseMove(event) }, { passive: false });
+        canvas.addEventListener("mouseup", function (event) { mouseUp(event) }, { passive: false });
     }
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
@@ -230,21 +230,21 @@ function keyDownHandler(e) {
     }
     if (e.key === "a") {
         player.moveLeft();
-        
+
     }
     if (e.key === "d") {
         player.moveRight();
-        
+
     }
 }
 
 function keyUpHandler(e) {
     if (e.key === "a") {
         player.moveLeftStop();
-        
+
     }
     if (e.key === "d") {
         player.moveRightStop();
-        
+
     }
 }
