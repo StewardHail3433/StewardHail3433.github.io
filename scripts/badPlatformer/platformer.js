@@ -220,7 +220,7 @@ runButton.addEventListener("click", function () {
     // Start the game loop
     requestAnimationFrame(gameLoop);
 
-    this.disable = true;
+    this.disabled = true;
 })
 
 function keyDownHandler(e) {
