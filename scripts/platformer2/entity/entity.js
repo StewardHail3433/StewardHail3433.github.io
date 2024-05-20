@@ -11,6 +11,7 @@ export default class Entity {
         this.grounded = false;
         this.movingLeft = false;
         this.movingRight = false;
+        this.isJumping = false;
         /** @type {CanvasRenderingContext2D} */ this.ctx = ctx;
     }
 
@@ -33,10 +34,7 @@ export default class Entity {
         if (!this.grounded) {
             this.vy += this.gravity;
         } 
-        // Bounce floor
-        // else{
-        //     this.vy = -this.speed;
-        // }
+        
 
         this.x += this.vx * deltaTime;
         this.y += this.vy * deltaTime;
@@ -45,6 +43,7 @@ export default class Entity {
             this.y = this.ctx.canvas.height - this.height;
             this.vy = 0;
             this.grounded = true;
+            this.isJumping = false;
         } else {
             this.grounded = false;
         }
