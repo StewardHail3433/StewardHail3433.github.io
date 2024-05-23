@@ -17,14 +17,19 @@ export default class Map {
             /** @type {String[]} */ let lines = text.trim().split('\n');
                 for (let i = 0; i < lines.length; i++) {
                     this.map[i] = [];
-                    let startingY = -(lines.length * this.tileSize) + ctx.canvas.height - this.tileSize
+                    let startingY = (lines.length * -this.tileSize) + ctx.canvas.height;
                     for (let j = 0; j < lines[i].split(" ").length; j++) {
                         this.map[i][j] = new Tile(this.ctx);
                         this.map[i][j].value = lines[i].split(" ")[j];
                         this.map[i][j].x = j * this.tileSize;
-                        this.map[i][j].y =  (startingY + (i + 1) * this.tileSize);
+                        this.map[i][j].y =  (startingY + i * this.tileSize);
                         this.map[i][j].width = this.tileSize;
                         this.map[i][j].height = this.tileSize;
+                        if(this.map[i][j].value === "1") {
+                            this.map[i][j].collision = true;
+                        } else{
+                            this.map[i][j].collision = false;
+                        }
                         console.log(this.map[i][j])
                     }
                 }
@@ -53,7 +58,7 @@ export default class Map {
 
 
     update(deltaTime) {
-        
+
     }
 
     get  /** @type {Block[][]} */ map() {
