@@ -1,4 +1,5 @@
 
+import Enemy from "./entity/enemy.js";
 import Entity from "./entity/entity.js";
 import Player from "./entity/player.js";
 import Map from "./map/map.js";
@@ -10,7 +11,7 @@ ctx.canvas.width = screen.availWidth * .8;
 ctx.canvas.height = screen.availHeight * .7;
 
 let player = new Player(50, 50, 20, 20, 0.3, 0.01, ctx);
-let ent = new Entity(50, 50, 20, 20, 0.3, 0.005, ctx);
+let ent = new Enemy(50, 50, 20, 20, 0.2, 0.005, ctx);
 
 let map = new Map(ctx);
 
@@ -50,7 +51,7 @@ function gameLoop(timestamp) {
 }
 
 function update(deltaTime) {
-    ent.update(deltaTime);
+    ent.update(deltaTime, player);
     player.update(deltaTime);
 }
 
