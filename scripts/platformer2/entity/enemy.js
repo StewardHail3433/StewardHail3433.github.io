@@ -24,6 +24,11 @@ export default class Enemy extends Entity {
                 this.movingRight = false;
             }
 
+            if(Math.abs(player.x+player.width/2 - this.x+this.width/2) < 20 && player.y + 10 < this.y) {
+                this.tryJumping = true
+            } else {
+                this.tryJumping = false;
+            }
             //this.movingLeft = false;
             //this.movingLeft = Math.random()*100 > 50;
             this.actionCount = 0;
