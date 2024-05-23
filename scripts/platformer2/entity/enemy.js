@@ -25,7 +25,7 @@ export default class Enemy extends Entity {
             }
 
             if(Math.abs(player.x+player.width/2 - this.x+this.width/2) < 20 && player.y + 10 < this.y) {
-                this.tryJumping = true
+                this.tryJumping = true;
             } else {
                 this.tryJumping = false;
             }
@@ -37,6 +37,11 @@ export default class Enemy extends Entity {
             if(this.x+this.width >= this.ctx.canvas.width){
                 this.movingLeft = true;
             }
+        }
+        if(this.tryJumping && this.grounded) {
+            this.vy = -this.speed;
+            this.isJumping = true;
+            this.grounded = false;
         }
         
         super.update(deltaTime);
