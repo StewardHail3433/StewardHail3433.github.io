@@ -1,5 +1,6 @@
 
 import Enemy from "./entity/enemy.js";
+import CollisionChecker from "./collisionChecker.js";
 import Entity from "./entity/entity.js";
 import Player from "./entity/player.js";
 import Map from "./map/map.js";
@@ -14,6 +15,7 @@ let player;
 let ent;
 
 let map;
+let collisionChecker;
 
 const FPS = 60;
 const fixedTimeStep = 1000 / FPS;
@@ -51,6 +53,8 @@ function gameLoop(timestamp) {
 }
 
 function update(deltaTime) {
+    collisionChecker.entitiyTileCollision(player, map.map)
+    collisionChecker.entitiyTileCollision(ent, map.map)
     ent.update(deltaTime, player);
     player.update(deltaTime);
 }
@@ -64,9 +68,10 @@ function render() {
 
 document.getElementById("runButton").addEventListener("click", function () {
     player = new Player(50, 50, 20, 20, 0.3, 0.01, ctx);
-    ent = new Enemy(50, 50, 20, 20, 0.2, 0.005, ctx);
+    ent = new Enemy(50, 50, 20, 20, 2, 0.005, ctx);
 
     map = new Map(ctx);
+    collisionChecker = new CollisionChecker();
     requestAnimationFrame(gameLoop);
     this.disabled = true;
 })

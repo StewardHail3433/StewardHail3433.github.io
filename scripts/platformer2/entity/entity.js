@@ -43,9 +43,8 @@ export default class Entity {
             this.y = this.ctx.canvas.height - this.height;
             this.vy = 0;
             this.grounded = true;
-            this.isJumping = false;
         } else {
-            this.grounded = false;
+            //this.grounded = false;
         }
         
     }
