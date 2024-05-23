@@ -11,8 +11,20 @@ export default class Enemy extends Entity {
 
     update(deltaTime, player) {
         if(this.actionCount == this.actionLock) {
-            this.movingRight = Math.random()*100 > 50;
-            this.movingLeft = false;
+            if(player.x > this.x){
+                this.movingRight = true;
+                this.movingLeft =false;
+            }
+            if(player.x < this.x){
+                this.movingRight = false;
+                this.movingLeft =true;
+            }
+            if(player.x + this.width +1 > this.x && player.x - 1 < this.x + this.width) {
+                this.movingLeft = false;
+                this.movingRight = false;
+            }
+
+            //this.movingLeft = false;
             //this.movingLeft = Math.random()*100 > 50;
             this.actionCount = 0;
         } else {
