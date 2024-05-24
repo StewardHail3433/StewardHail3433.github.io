@@ -68,7 +68,7 @@ function render() {
 
 document.getElementById("runButton").addEventListener("click", function () {
     player = new Player(50, 50, 20, 20, 0.3, 0.01, ctx);
-    ent = new Enemy(50, 50, 20, 20, 2, 0.005, ctx);
+    ent = new Enemy(50, 50, 20, 20, 0.2, 0.005, ctx);
 
     map = new Map(ctx);
     collisionChecker = new CollisionChecker();
