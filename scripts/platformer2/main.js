@@ -53,8 +53,8 @@ function gameLoop(timestamp) {
 }
 
 function update(deltaTime) {
-    collisionChecker.entitiyTileCollision(player, map.map)
-    collisionChecker.entitiyTileCollision(ent, map.map)
+    collisionChecker.entityTileCollision(player, map.map);
+    collisionChecker.entityTileCollision(ent, map.map)
     ent.update(deltaTime, player);
     player.update(deltaTime);
 }
@@ -67,12 +67,15 @@ function render() {
 }
 
 document.getElementById("runButton").addEventListener("click", function () {
-    player = new Player(50, 50, 20, 20, 0.3, 0.01, ctx);
-    ent = new Enemy(50, 50, 20, 20, 0.2, 0.005, ctx);
+    player = new Player(0, 0, 20, 20, 0.3, 0.01, ctx);
+    ent = new Enemy(0, 0, 20, 20, 0.2, 0.005, ctx);
 
     map = new Map(ctx);
     collisionChecker = new CollisionChecker();
     requestAnimationFrame(gameLoop);
+    canvas.setAttribute('tabindex','0');
+    canvas.focus();
+
     this.disabled = true;
 })
 
@@ -82,6 +85,6 @@ canvas.addEventListener('keydown', function(e) {
 });
 
 canvas.addEventListener('keyup', function(e) {
-    player.keyUpInput(e.key);
+    player.keyUpInput(e.key, ent);
     console.log("end: " +e.key);
 });

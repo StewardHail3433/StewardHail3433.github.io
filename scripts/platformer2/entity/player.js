@@ -33,7 +33,7 @@ export default class Player extends Entity {
         }
     }
 
-    keyUpInput(/** @type {KeyboardEvent} */ key) {
+    keyUpInput(/** @type {KeyboardEvent} */ key, enemy) {
         if(key === "a" || key === "ArrowLeft") {
             this.movingLeft = false;
         }
@@ -42,6 +42,12 @@ export default class Player extends Entity {
         }
         if(key === "w" || key === "ArrowUp" || key === " ") {
             this.tryJumping = false;
+        }
+        if(key === "r") {
+            this.x = 50;
+            enemy.x = 50;
+            this.y = 50;
+            enemy.y = 50;
         }
     }
 }
