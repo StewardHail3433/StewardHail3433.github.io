@@ -43,5 +43,9 @@ export default class Player extends Entity {
         if(key === "w" || key === "ArrowUp" || key === " ") {
             this.tryJumping = false;
         }
+        if(key === "r") {
+            this.x = 50;
+            this.y = 50;
+        }
     }
 }

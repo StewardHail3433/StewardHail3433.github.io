@@ -33,19 +33,20 @@ export default class Entity {
         }
         if (!this.grounded) {
             this.vy += this.gravity;
+            console.log("gravity");
         } 
         
 
         this.x += this.vx * deltaTime;
         this.y += this.vy * deltaTime;
 
-        if (this.y + this.height >= this.ctx.canvas.height) {
-            this.y = this.ctx.canvas.height - this.height;
-            this.vy = 0;
-            this.grounded = true;
-        } else {
-            //this.grounded = false;
-        }
+        // if (this.y + this.height >= this.ctx.canvas.height) {
+        //     this.y = this.ctx.canvas.height - this.height;
+        //     this.vy = 0;
+        //     this.grounded = true;
+        // } else {
+        //     //this.grounded = false;
+        // }
         
     }
 

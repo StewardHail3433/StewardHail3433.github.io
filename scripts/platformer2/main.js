@@ -10,7 +10,7 @@ const canvas = document.getElementById('gameCanvas');
 ctx.canvas.width = screen.availWidth * .8;
 ctx.canvas.height = screen.availHeight * .7;
 
-let player = new Player(50, 50, 20, 20, 0.3, 0.01, ctx);
+let player = new Player(0, 0, 20, 20, 0.3, 0.01, ctx);
 let ent = new Entity(50, 50, 20, 20, 0.3, 0.005, ctx);
 
 let map = new Map(ctx);
@@ -52,7 +52,7 @@ function gameLoop(timestamp) {
 }
 
 function update(deltaTime) {
-    collisionChecker.entitiyTileCollision(player, map.map)
+    collisionChecker.entityTileCollision(player, map.map)
     ent.update(deltaTime);
     player.update(deltaTime);
 }
@@ -66,6 +66,9 @@ function render() {
 
 document.getElementById("runButton").addEventListener("click", function () {
     requestAnimationFrame(gameLoop);
+    canvas.setAttribute('tabindex','0');
+    canvas.focus();
+
     this.disabled = true;
 })
 
