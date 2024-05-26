@@ -10,11 +10,14 @@ const canvas = document.getElementById('gameCanvas');
 ctx.canvas.width = screen.availWidth * .8;
 ctx.canvas.height = screen.availHeight * .7;
 
-let player = new Player(0, 0, 20, 20, 0.3, 0.01, ctx);
-let ent = new Entity(50, 50, 20, 20, 0.3, 0.005, ctx);
+
 
 let map = new Map(ctx);
 let collisionChecker = new CollisionChecker();
+
+
+let player = new Player(0, 0, 20, 20, 0.3, 0.01, ctx, collisionChecker, map.map);
+let ent = new Entity(50, 50, 20, 20, 0.3, 0.005, ctx, collisionChecker, map.map);
 
 const FPS = 60;
 const fixedTimeStep = 1000 / FPS;
@@ -52,7 +55,6 @@ function gameLoop(timestamp) {
 }
 
 function update(deltaTime) {
-    collisionChecker.entityTileCollision(player, map.map)
     ent.update(deltaTime);
     player.update(deltaTime);
 }

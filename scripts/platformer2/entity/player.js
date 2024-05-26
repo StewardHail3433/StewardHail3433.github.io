@@ -2,9 +2,9 @@ import Entity from "./entity.js";
 
 export default class Player extends Entity {
     
-    constructor(x, y, width = 50, height = 50, speed = 0, gravity = 0.5,/** @type {CanvasRenderingContext2D} */ ctx) {
-        super(x, y, width, height, speed, gravity, ctx);
-        this.tryJumping = false;
+    constructor(x, y, width = 50, height = 50, speed = 0, gravity = 0.5,/** @type {CanvasRenderingContext2D} */ ctx, collision, map) {
+        super(x, y, width, height, speed, gravity, ctx, collision, map);
+        
     }
 
     update(deltaTime) {
@@ -13,6 +13,18 @@ export default class Player extends Entity {
             this.isJumping = true;
             this.grounded = false;
         }
+        if(this.tryMovingLeft){
+            this.movingLeft = true;
+        } else{
+            this.movingLeft = false;
+        }
+
+        if(this.tryMovingRight){
+            this.movingRight = true;
+        } else{
+            this.movingRight = false;
+        }
+        console.log(this.grounded)
         super.update(deltaTime);
     }
 
@@ -23,10 +35,10 @@ export default class Player extends Entity {
 
     keyDownInput(/** @type {KeyboardEvent} */ key) {
         if(key === "a" || key === "ArrowLeft") {
-            this.movingLeft = true;
+            this.tryMovingLeft = true;
         }
         if(key === "d" || key === "ArrowRight") {
-            this.movingRight = true;
+            this.tryMovingRight = true;
         }
         if(key === "w" || key === "ArrowUp" || key === " ") {
             this.tryJumping = true;
@@ -35,10 +47,10 @@ export default class Player extends Entity {
 
     keyUpInput(/** @type {KeyboardEvent} */ key) {
         if(key === "a" || key === "ArrowLeft") {
-            this.movingLeft = false;
+            this.tryMovingLeft = false;
         }
         if(key === "d" || key === "ArrowRight") {
-            this.movingRight = false;
+            this.tryMovingRight = false;
         }
         if(key === "w" || key === "ArrowUp" || key === " ") {
             this.tryJumping = false;

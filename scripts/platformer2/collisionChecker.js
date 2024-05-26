@@ -15,45 +15,38 @@ export default class CollisionChecker {
                     const tileRight = map[i][j].x + map[i][j].width;
                     const tileTop = map[i][j].y;
                     const tileBottom = map[i][j].y + map[i][j].height;
-                    if(playerBottom >= tileTop && playerTop <= tileBottom && playerRight >= tileLeft && playerLeft <= tileRight) {
-                        if(playerBottom - entity.vy >= tileTop && entity.grounded == false && entity.vy > 0 ) {
-                            entity.y = tileTop - entity.height;
-                            entity.vy = 0;
-                            entity.grounded = true;
-                            entity.isJumping = false;
-                            break;
-                        }
-                    } //else if(playerBottom < tileTop) {
-                    //     entity.grounded = false;
-                        
-                    // }
-                    if(playerBottom <= tileBottom && playerTop >= tileTop && playerRight >= tileLeft && playerLeft <= tileLeft) {
-                        if(playerRight + entity.vx >= tileLeft && entity.movingRight) {
-                            entity.x = tileLeft - entity.width;
-                            entity.vx =0;
-                            entity.movingRight =false;
-                            //console.log("hi");
-                        }
-                    }
                     
-                    if (playerBottom <= tileBottom && playerTop >= tileTop && playerLeft <= tileRight && playerRight >= tileRight) {
-                        if (playerLeft + entity.vx <= tileRight && entity.movingLeft) {
-                            entity.x = tileRight;
-                            entity.vx = 0;
-                            entity.movingLeft = false;
-                        }
+                    //  collision from top
+                    if (playerBottom + entity.vy >= tileTop && playerTop < tileTop && playerRight > tileLeft && playerLeft < tileRight) {
+                        entity.y = tileTop - entity.height;
+                        entity.vy = 0;
+                        entity.grounded = true;
                     }
 
-                    // Check for collision from bottom
-                    if (playerTop <= tileBottom && playerBottom >= tileTop && playerRight >= tileLeft && playerLeft <= tileRight) {
-                        if (playerTop + entity.vy <= tileBottom && entity.vy < 0) {
-                            entity.y = tileBottom;
-                            entity.vy = 0;
-                        }
+                    //  collision from right
+                    if (playerRight + entity.vx >= tileLeft && playerLeft < tileLeft && playerBottom > tileTop && playerTop < tileBottom) {
+                        entity.x = tileLeft - entity.width;
+                        entity.vx = 0;
+                        entity.movingRight = false;
                     }
+
+                    // collision from left
+                    if (playerLeft + entity.vx <= tileRight && playerRight > tileRight && playerBottom > tileTop && playerTop < tileBottom) {
+                        entity.x = tileRight;
+                        entity.vx = 0;
+                        entity.movingLeft = false;
+                    }
+
+                    //  collision from bottom
+                    if (playerTop + entity.vy <= tileBottom && playerBottom > tileBottom && playerRight > tileLeft && playerLeft < tileRight) {
+                        entity.y = tileBottom;
+                        entity.vy = 0;
+                    }
+
 
                 }
             }
         }
+        
     }
 }
