@@ -63,13 +63,18 @@ document.getElementById("runButton").addEventListener("click", function () {
 })
 
 canvas.addEventListener('keydown', function(e) {
+    e.preventDefault();
     player.keyDownInput(e.key);
     ui.keyDownInput(e.key);
 });
 
 canvas.addEventListener('keyup', function(e) {
+    e.preventDefault();
     player.keyUpInput(e.key);
 });
 
-canvas.addEventListener('click', function(e) {ui.onClickInput(e)}, false);
+canvas.addEventListener('click', function(e) {
+    e.preventDefault();
+    ui.onClickInput(e);
+}, false);
 

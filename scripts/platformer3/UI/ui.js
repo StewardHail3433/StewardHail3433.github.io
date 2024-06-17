@@ -69,8 +69,8 @@ export default class UI {
             height: ctxMain.canvas.height,
             x: ctxMain.canvas.width - ctxMain.canvas.width * (1/8),
             y: 0,
-            ySpacing: 40,
-            fontSize: 20
+            ySpacing: ctxMain.canvas.width * (1/8)/12.8*2,
+            fontSize: ctxMain.canvas.width * (1/8)/12.8
         }
         
         this.ctxMain = ctxMain;
