@@ -25,6 +25,8 @@ for (let i = 0; i < col; i++) {
     }
 }
 
+var img = [new Image(), new Image(), new Image(),new Image(), new Image(), new Image()];
+
 function render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < row; i++) {
@@ -36,7 +38,7 @@ function render() {
         ctx.fillRect(tileSize * i, 0, 1, ctx.canvas.height);
     }
     ctx.fillStyle = "yellow";
-    ctx.fillRect(map[0][0].x, map[0][0].y, tileSize, tileSize);
+    //ctx.fillRect(map[0][0].x, map[0][0].y, tileSize, tileSize);
 
     for (let i = 0; i < col; i++) {
         for (let j = 0; j < row; j++) {
@@ -74,7 +76,7 @@ canvas.addEventListener("mousemove", function(e) {
                 if (mouseX >= tile.x && mouseX <= tile.x + tileSize &&
                     mouseY >= tile.y && mouseY <= tile.y + tileSize) {
                     tile.img = selected;
-                    tile.value = num;
+                    tile.value = selectedValue;
                 }
             }
         }
@@ -92,7 +94,7 @@ canvas.addEventListener("mouseup", function(e) {
             if (mouseX >= tile.x && mouseX <= tile.x + tileSize &&
                 mouseY >= tile.y && mouseY <= tile.y + tileSize) {
                 tile.img = selected;
-                tile.value = num;
+                tile.value = selectedValue;
             }
         }
     }
@@ -109,10 +111,7 @@ document.getElementById("load").addEventListener("change", function(e) {
                     for (let j = 0; j < values.length; j++) {
                         map[i][j].value = parseInt(values[j]);
                         if (map[i][j].value >= 1 && map[i][j].value <= 2) { // Assuming num 1 and 2 are used for images
-                            let selectedload = URL.createObjectURL(document.getElementById(map[i][j].value.toString()).files[0]);
-                            let img = new Image();
-                            img.src = selectedload;
-                            map[i][j].img = img;
+                            map[i][j].img = img[map[i][j].value-1];
                         }
                     }
                 }
@@ -123,19 +122,27 @@ document.getElementById("load").addEventListener("change", function(e) {
 }, false);
 
 var selected;
-var num = 0;
+var selectedValue = 0;
 window.addEventListener("keydown", function(e) {
     if (e.key === "1") {
-        num = 1;
-        let img = new Image();
-        img.src = URL.createObjectURL(document.getElementById("1").files[0]);
-        selected = img;
+        selected = img[e.key-1];
+        selectedValue = e.key;
     } else if (e.key === "2") {
-        num = 2;
-        let img = new Image();
-        img.src = URL.createObjectURL(document.getElementById("2").files[0]);
-        selected = img;
+        selected = img[e.key-1];
+        selectedValue = e.key;
     } else if (e.key === "3") {
+        selected = img[e.key-1];
+        selectedValue = e.key;
+    } else if (e.key === "4") {
+        selected = img[e.key-1];
+        selectedValue = e.key;
+    } else if (e.key === "5") {
+        selected = img[e.key-1];
+        selectedValue = e.key;
+    } else if (e.key === "6") {
+        selected = img[e.key-1];
+        selectedValue = e.key;
+    } else if (e.key === "?") {
         let mapData = map.map(row => row.map(tile => tile.value).join(' ')).join('\n');
         let blob = new Blob([mapData], { type: 'text/plain' });
         let a = document.createElement('a');
@@ -154,8 +161,60 @@ function loop(timestamp) {
     for (let i = 0; i < col; i++) {
         for (let j = 0; j < row; j++) {
             let tile = map[i][j];
-            tile.update();
+            if(tile.value != 0 && document.getElementById(tile.value.toString()).files[0] != null){
+                if( tile.img != img[tile.value-1]) {
+                    tile.img = img[tile.value-1]
+                }
+            }
         }
     }
     requestAnimationFrame(loop);
 }
+
+document.getElementById("1").addEventListener("change", function(e) {
+    img[0].src = URL.createObjectURL(document.getElementById("1").files[0]);
+})
+
+document.getElementById("2").addEventListener("change", function(e) {
+    img[1].src = URL.createObjectURL(document.getElementById("2").files[0]);
+})
+
+document.getElementById("3").addEventListener("change", function(e) {
+    img[2].src = URL.createObjectURL(document.getElementById("3").files[0]);
+})
+
+document.getElementById("4").addEventListener("change", function(e) {
+    img[3].src = URL.createObjectURL(document.getElementById("4").files[0]);
+})
+
+document.getElementById("5").addEventListener("change", function(e) {
+    img[4].src = URL.createObjectURL(document.getElementById("5").files[0]);
+})
+
+document.getElementById("6").addEventListener("change", function(e) {
+    img[5].src = URL.createObjectURL(document.getElementById("6").files[0]);
+})
+
+document.getElementById("row").addEventListener("change", function(e) {
+    row = parseInt(document.getElementById("row").value);
+    ctx.canvas.width = tileSize * row;
+    map = []
+    for (let i = 0; i < col; i++) {
+        map[i] = [];
+        for (let j = 0; j < row; j++) {
+            map[i][j] = new Tile(j * tileSize, i * tileSize);
+        }
+    }
+})
+
+document.getElementById("col").addEventListener("change", function(e) {
+    col = parseInt(document.getElementById("col").value);
+    ctx.canvas.height = tileSize * col;
+    map = [];
+    for (let i = 0; i < col; i++) {
+        map[i] = [];
+        for (let j = 0; j < row; j++) {
+            map[i][j] = new Tile(j * tileSize, i * tileSize);
+        }
+    }
+})

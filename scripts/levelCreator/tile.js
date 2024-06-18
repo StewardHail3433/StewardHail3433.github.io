@@ -3,6 +3,11 @@ export default class Tile {
         this.x = x;
         this.y = y;
         this.value = value;
-        this.img = new Image();;
+        /** @type {Image} */this.img = new Image();;
+    }
+
+    update() {
+
+        
     }
 }
