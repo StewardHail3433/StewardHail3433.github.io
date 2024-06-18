@@ -106,11 +106,15 @@ document.getElementById("load").addEventListener("change", function(e) {
             .then((res) => res.text())
             .then((text) => {
                 let lines = text.trim().split('\n');
+                row = lines.length;
+                col = lines[0].trim().split(" ").length;
                 for (let i = 0; i < lines.length; i++) {
+                    map[i] = [];
                     let values = lines[i].trim().split(" ");
                     for (let j = 0; j < values.length; j++) {
+                        map[i][j] = new Tile(j * tileSize, i * tileSize);
                         map[i][j].value = parseInt(values[j]);
-                        if (map[i][j].value >= 1 && map[i][j].value <= 2) { // Assuming num 1 and 2 are used for images
+                        if (map[i][j].value >= 1 && map[i][j].value <= 9) { // Assuming num 1 and 2 are used for images
                             map[i][j].img = img[map[i][j].value-1];
                         }
                     }
@@ -151,6 +155,7 @@ window.addEventListener("keydown", function(e) {
         a.click();
     } else if (e.key === "0") {
         selected = null;
+        selectedValue = e.key;
     }
 });
 
