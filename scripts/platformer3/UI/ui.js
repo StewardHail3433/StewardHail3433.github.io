@@ -94,7 +94,7 @@ export default class UI {
         if (this.toggles.showUI) {
             this.ctxUI.clearRect(0, 0, this.canvasUI.width, this.canvasUI.height);
             this.ctxUI.fillStyle = "rgba(255, 0, 255, 1)";
-            this.ctxUI.fillRect(0,0,40,40);
+            this.ctxUI.fillRect(0,0,16,16);
             if (this.toggles.showDevUI) {
                 this.renderDEV();
             }

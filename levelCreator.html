@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Breakout</title>
+        <link rel="stylesheet" href="styles/style.css">
+    </head>
+    <body>
+        <ul class="nav">
+            <li class="nav"><a href="index.html">Home</a></li>
+            <li class="nav"><a href="breakout.html">Breakout</a></li>
+            <li class="nav"><a href="badPlatformer.html">BAD PLATFORMER</a></li>
+            <li class="nav"><a href="platformer2.html">plat2</a></li>
+            <li class="nav"><a href="platformer3.html">plat3</a></li>
+            <li class="nav"><a class="active" href="levelCreator.html">level creator</a></li>
+        </ul>
+        <div style="padding:20px 0 0 5px;margin-top:30px;">
+            <h1>LEVEL CREATOR</h1>
+            <div id="canvasDiv" style="overflow: scroll;">
+                <canvas id="mainCanvas" tabindex='0' style="overflow: hidden;"></canvas>
+            </div>
+            <div>
+                <input type="file" name="1" id="1">
+                <input type="file" name="2" id="2">
+                <input type="file" name="3" id="3">
+                <input type="file" name="4" id="4">
+                <input type="file" name="5" id="5">
+                <input type="file" name="6" id="6">
+                <input type="file" name="7" id="7">
+                <input type="file" name="8" id="8">
+                <input type="file" name="9" id="9">
+                <input type="file" name="10" id="10">
+                <label>Load map</label>
+                <input type="file" name="load" id="load">
+            </div>
+        </div>
+    </body>
+    <script type="module" src="scripts/levelCreator/main.js"></script>
+</html>
