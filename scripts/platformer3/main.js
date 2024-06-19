@@ -1,5 +1,6 @@
 import Player from "./entity/player.js";
-import UI from "./UI/ui.js";
+import UI from "./ui/ui.js";
+import Map from "./map/map.js";
 
 const canvas = document.getElementById('gameCanvas');
 /** @type {CanvasRenderingContext2D} */ const ctx = canvas.getContext('2d');
@@ -9,6 +10,7 @@ ctx.canvas.height = screen.availHeight * .7;
 
 var player = new Player(ctx);
 var ui = new UI(ctx, player);
+var map = new Map(ctx);
 
 const FPS = 60;
 const fixedTimeStep = 1000 / FPS;
@@ -53,6 +55,7 @@ function update(deltaTime) {
 
 function render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    map.render();
     player.render();
     ui.render()
 }
