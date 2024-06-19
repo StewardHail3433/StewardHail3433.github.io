@@ -2,6 +2,8 @@ import UI from "./UI/ui.js";
 import Player from "./entity/player.js";
 //import UI from "./ui/ui.js";
 import Map from "./map/map.js";
+import Camera from "./camera/camera.js";
+import { CONSTANTS } from "./utils/gameConst.js";
 
 const canvas = document.getElementById('gameCanvas');
 /** @type {CanvasRenderingContext2D} */ const ctx = canvas.getContext('2d');
@@ -9,9 +11,11 @@ const canvas = document.getElementById('gameCanvas');
 ctx.canvas.width = screen.availWidth * .8;
 ctx.canvas.height = screen.availHeight * .7;
 
-var map = new Map(ctx);
+var camera = new Camera(ctx);
+var map = new Map(ctx, camera);
 var player = new Player(ctx, map.map);
-var ui = new UI(ctx, player);
+var ui = new UI(ctx, player, camera);
+camera.setTarget(player);
 
 const FPS = 60;
 const fixedTimeStep = 1000 / FPS;
@@ -51,14 +55,26 @@ function gameLoop(timestamp) {
 
 function update(deltaTime) {
     player.update(deltaTime);
+    map.update();
+    camera.update()
     ui.update();
 }
 
 function render() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.save();  
+
+    ctx.scale(CONSTANTS.scale, CONSTANTS.scale);
+    ctx.translate(-camera.pos.x, -camera.pos.y);
+
+    ctx.clearRect(0, 0, canvas.width / CONSTANTS.scale, canvas.height / CONSTANTS.scale);
+
     map.render();
+    
     player.render();
-    ui.render()
+    
+
+    ctx.restore();
+    ui.render();
 }
 
 document.getElementById("runButton").addEventListener("click", function () {
@@ -69,7 +85,6 @@ document.getElementById("runButton").addEventListener("click", function () {
 canvas.addEventListener('keydown', function(e) {
     e.preventDefault();
     player.keyDownInput(e.key);
-    console.log(e.key)
     ui.keyDownInput(e.key);
 });
 
@@ -80,7 +95,6 @@ canvas.addEventListener('keyup', function(e) {
 
 canvas.addEventListener('click', function(e) {
     e.preventDefault();
-    
     ui.onClickInput(e);
 }, false);
 

@@ -8,6 +8,7 @@ export default class Tile {
     #value;
     #ctx;
     #collision = false;
+    shouldRender = false;
     constructor(ctx) {
         this.#ctx = ctx;
     }

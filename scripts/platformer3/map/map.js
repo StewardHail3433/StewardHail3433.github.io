@@ -6,10 +6,11 @@ export default class Map {
     /** @type {CanvasRenderingContext2D} */ ctx;
 
     #xVel = 0.25;
-    constructor(/** @type {CanvasRenderingContext2D} */ ctx) {
+    constructor(/** @type {CanvasRenderingContext2D} */ ctx, camera) {
         this.ctx = ctx;
         this.tileSize = Math.floor(ctx.canvas.height / 16.44);
         this.yOffset = Math.floor(this.tileSize);
+        this.camera = camera;
         fetch("./resources/plat3/level/level.txt")
             .then((res) => res.text())
             .then((text) => {
@@ -40,26 +41,35 @@ export default class Map {
         for (let i = 0; i < this.map.length; i++) {
             for (let j = 0; j < this.map[i].length; j++) {
                  /** @type {Tile} */ let tile = this.map[i][j];
-                this.ctx.beginPath();
-                this.ctx.rect(this.map[i][j].pos.x, this.map[i][j].pos.y, this.map[i][j].width, this.map[i][j].height);
-                if(tile.value == 1) {
-                    this.ctx.fillStyle = "green";
-                } else if(tile.value == 2) {
-                    this.ctx.fillStyle = "brown";
-                } else{
-                    this.ctx.fillStyle = "black";
+                 if(tile.shouldRender) {
+                    this.ctx.beginPath();
+                    this.ctx.rect(this.map[i][j].pos.x, this.map[i][j].pos.y, this.map[i][j].width, this.map[i][j].height);
+                    if(tile.value == 1) {
+                        this.ctx.fillStyle = "green";
+                    } else if(tile.value == 2) {
+                        this.ctx.fillStyle = "brown";
+                    } else{
+                        this.ctx.fillStyle = "black";
+                    }
+                    this.ctx.fill();
+                    this.ctx.closePath();
                 }
-                this.ctx.fill();
-                this.ctx.closePath();
             }
         }
-        
     }
 
 
 
     update(deltaTime) {
-
+        for (let i = 0; i < this.map.length; i++) {
+            for (let j = 0; j < this.map[i].length; j++) {
+                let tile = this.map[i][j];
+                tile.shouldRender = false;
+                if(this.camera.shouldRender(tile)) {
+                    tile.shouldRender = true;
+                }
+            }
+        }
     }
 
     get  /** @type {Block[][]} */ map() {

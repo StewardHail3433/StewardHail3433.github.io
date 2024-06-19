@@ -3,8 +3,8 @@ import { collision } from "../utils/collisionChecker.js";
 export default class Player  {
     
     constructor(/** @type {CanvasRenderingContext2D} */ ctx, map) {
-        this.width = 20;
-        this.height = 40;
+        this.width = ctx.canvas.width/102.4;
+        this.height = ctx.canvas.height/25.175;
         this.pos = {
             x: ctx.canvas.width/2 - this.width/2,
             y: ctx.canvas.height/2 - this.height/2

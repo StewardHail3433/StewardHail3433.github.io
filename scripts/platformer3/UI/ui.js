@@ -1,6 +1,6 @@
 export default class UI {
 
-    constructor(/** @type {CanvasRenderingContext2D} */ ctxMain, player) {
+    constructor(/** @type {CanvasRenderingContext2D} */ ctxMain, player, camera) {
         this.canvasUI = document.createElement('canvas');
         this.canvasUI.width = ctxMain.canvas.width;
         this.canvasUI.height = ctxMain.canvas.height;
@@ -75,6 +75,7 @@ export default class UI {
         
         this.ctxMain = ctxMain;
         this.player = player;
+        this.camera = camera
     }
     update() {
         if (this.toggles.showDevUI) {
@@ -103,6 +104,7 @@ export default class UI {
     }
 
     renderDEV() {
+        this.camera.render();
         this.ctxUI.fillStyle = "rgba(0, 0, 0, 0.25)";
         this.ctxUI.fillRect(this.devRect.x, this.devRect.y, this.devRect.width, this.devRect.height);
     
