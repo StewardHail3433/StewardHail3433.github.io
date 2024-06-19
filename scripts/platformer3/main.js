@@ -1,5 +1,6 @@
+import UI from "./UI/ui.js";
 import Player from "./entity/player.js";
-import UI from "./ui/ui.js";
+//import UI from "./ui/ui.js";
 import Map from "./map/map.js";
 
 const canvas = document.getElementById('gameCanvas');
@@ -8,9 +9,9 @@ const canvas = document.getElementById('gameCanvas');
 ctx.canvas.width = screen.availWidth * .8;
 ctx.canvas.height = screen.availHeight * .7;
 
-var player = new Player(ctx);
-var ui = new UI(ctx, player);
 var map = new Map(ctx);
+var player = new Player(ctx, map.map);
+var ui = new UI(ctx, player);
 
 const FPS = 60;
 const fixedTimeStep = 1000 / FPS;
@@ -68,6 +69,7 @@ document.getElementById("runButton").addEventListener("click", function () {
 canvas.addEventListener('keydown', function(e) {
     e.preventDefault();
     player.keyDownInput(e.key);
+    console.log(e.key)
     ui.keyDownInput(e.key);
 });
 
@@ -78,6 +80,7 @@ canvas.addEventListener('keyup', function(e) {
 
 canvas.addEventListener('click', function(e) {
     e.preventDefault();
+    
     ui.onClickInput(e);
 }, false);
 

@@ -21,8 +21,8 @@ export default class Map {
                     for (let j = 0; j < lines[i].split(" ").length; j++) {
                         this.map[i][j] = new Tile(this.ctx);
                         this.map[i][j].value = parseInt(lines[i].split(" ")[j]);
-                        this.map[i][j].x = j * this.tileSize;
-                        this.map[i][j].y =  (startingY + i * this.tileSize);
+                        this.map[i][j].pos.x = j * this.tileSize;
+                        this.map[i][j].pos.y =  (startingY + i * this.tileSize);
                         this.map[i][j].width = this.tileSize;
                         this.map[i][j].height = this.tileSize;
                         if(this.map[i][j].value === 1) {
@@ -30,7 +30,6 @@ export default class Map {
                         } else{
                             this.map[i][j].collision = false;
                         }
-                        console.log(this.map[i][j])
                     }
                 }
             })
@@ -42,7 +41,7 @@ export default class Map {
             for (let j = 0; j < this.map[i].length; j++) {
                  /** @type {Tile} */ let tile = this.map[i][j];
                 this.ctx.beginPath();
-                this.ctx.rect(this.map[i][j].x, this.map[i][j].y, this.map[i][j].width, this.map[i][j].height);
+                this.ctx.rect(this.map[i][j].pos.x, this.map[i][j].pos.y, this.map[i][j].width, this.map[i][j].height);
                 if(tile.value == 1) {
                     this.ctx.fillStyle = "green";
                 } else if(tile.value == 2) {

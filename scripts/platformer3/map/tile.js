@@ -1,6 +1,8 @@
 export default class Tile {
-    #x;
-    #y;
+    pos = {
+        x:0,
+        y:0
+    }
     #width;
     #height;
     #value;
@@ -12,13 +14,6 @@ export default class Tile {
 
     
     // Getters
-    get x() {
-        return this.#x;
-    }
-
-    get y() {
-        return this.#y;
-    }
 
     get width() {
         return this.#width;
@@ -37,13 +32,7 @@ export default class Tile {
     }
 
     // Setters
-    set x(x) {
-        this.#x = x;
-    }
 
-    set y(x) {
-        this.#y = x;
-    }
 
     set width(x) {
         this.#width = x;

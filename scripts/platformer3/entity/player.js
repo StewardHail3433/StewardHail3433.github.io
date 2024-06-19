@@ -1,6 +1,8 @@
+import "../utils/collisionChecker.js"
+import { collision } from "../utils/collisionChecker.js";
 export default class Player  {
     
-    constructor(/** @type {CanvasRenderingContext2D} */ ctx) {
+    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map) {
         this.width = 20;
         this.height = 40;
         this.pos = {
@@ -28,13 +30,15 @@ export default class Player  {
         this.jumpMultiplier = 2;
         this.ctx = ctx;
         this.grounded = false;
+
+        this.map = map;
     }
 
     update(deltaTime) {
-        this.pos.x += this.vel.x;
+        this.move();
+        this.collisionOnX();
         this.applyGravity();
         this.collisionOnY();
-        this.move();
         //console.log(this.grounded);
     }
 
@@ -58,6 +62,9 @@ export default class Player  {
             this.vel.y = -this.speed*this.jumpMultiplier;
             this.grounded = false;
         }
+
+        this.pos.x += this.vel.x;
+
     }
 
     keyDownInput(/** @type {KeyboardEvent} */ key) {
@@ -85,6 +92,34 @@ export default class Player  {
     }
 
     collisionOnY() {
+        let doBreak = false;
+        for (let i = 0; i < this.map.length; i++) {
+            for (let j = 0; j < this.map[i].length; j++) {
+                let tile = this.map[i][j];
+                if(tile.collision) {
+                    if (collision(this, tile)) {
+                        if (this.vel.y > 0) {
+                            this.vel.y = 0;
+                            this.pos.y = tile.pos.y - this.height - 0.01;
+                            this.grounded = true;
+                            doBreak = true;
+                            break;
+                        }
+                        if (this.vel.y < 0) {
+                            this.vel.y = 0;
+                            this.pos.y = tile.pos.y + tile.height + 0.01;
+                            doBreak = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if(doBreak) {
+                //console.log("wda")
+                break;
+                
+            }
+        }
         if(this.pos.y + this.height >= this.ctx.canvas.height){
             this.vel.y = 0;
             this.pos.y = this.ctx.canvas.height - this.height;
@@ -92,8 +127,33 @@ export default class Player  {
         }
     }
 
-    collisionOnX(tile) {
+    collisionOnX() {
+        let doBreak = false;
+        for (let i = 0; i < this.map.length; i++) {
+            for (let j = 0; j < this.map[i].length; j++) {
+                let tile = this.map[i][j];
+                if(tile.collision) {
+                    if (collision(this, tile)) {
+                        if (this.vel.x > 0) {
+                            this.vel.x = 0;
+                            this.pos.x = tile.pos.x - this.width - 0.01;
+                            doBreak = true;
+                            break;
+                        }
+                        if (this.vel.x < 0) {
+                            this.vel.x = 0;
+                            this.pos.x = tile.pos.x + tile.width + 0.01;
+                            doBreak = true;
+                            break;
+                        }
+                    }
 
+                }
+            }
+            if(doBreak) {
+                break;
+            }
+        }
     }
 
     applyGravity() {
