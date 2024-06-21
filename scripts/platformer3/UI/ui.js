@@ -59,8 +59,9 @@ export default class UI {
                 name: "y",
                 getter: () => player.pos.y,
                 setter: (x) => player.pos.y = x,
-                editable: false,
-                focus: false
+                editable: true,
+                focus: false,
+                increment: 100,
             }
         };
 

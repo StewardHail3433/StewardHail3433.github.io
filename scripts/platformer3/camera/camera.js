@@ -12,6 +12,14 @@ export default class Camera {
         this.height = this.ctx.canvas.height/CONSTANTS.scale;
         
         this.target = null;
+
+        this.mapWidth;
+        this.mapWidth;
+    }
+
+    setMapSize(width, height) {
+        this.mapWidth = width;
+        this.mapHeight = height;
     }
 
     setTarget(x) {
@@ -28,6 +36,23 @@ export default class Camera {
                 x:(this.target.pos.x+this.target.width/2)-this.width/2,
                 y:(this.target.pos.y+this.target.height/2)-this.height*2/3
             }
+            
+        }
+        this.checkBoundaries()
+    }
+
+    checkBoundaries() {
+        if(this.pos.x + this.width >= this.mapWidth) {
+            this.pos.x = this.mapWidth - this.width - 0.01
+        }
+        if(this.pos.x <= 0) {
+            this.pos.x = 0.01
+        }
+        if(this.pos.y + this.height >= this.ctx.canvas.height) {
+            this.pos.y = this.ctx.canvas.height - this.height - 0.01
+        }
+        if(this.pos.y <= this.ctx.canvas.height - this.mapHeight) {
+            this.pos.y = this.ctx.canvas.height - this.mapHeight + 0.01
         }
     }
 

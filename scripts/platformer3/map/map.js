@@ -33,8 +33,10 @@ export default class Map {
                         }
                     }
                 }
+                this.camera.setMapSize(this.map[0].length* this.tileSize, this.map.length* this.tileSize);
             })
             .catch((e) => console.error(e));
+            
     }
 
     render() {
@@ -72,7 +74,7 @@ export default class Map {
         }
     }
 
-    get  /** @type {Block[][]} */ map() {
+    get  /** @type {Tile[][]} */ map() {
         return this.map
     }
 }

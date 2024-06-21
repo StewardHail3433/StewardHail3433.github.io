@@ -25,9 +25,9 @@ export default class Player  {
             d: false
 
         }
-        this.speed =5;
+        this.speed =0.05;
         this.gravity = 0.5;
-        this.jumpMultiplier = 2;
+        this.jumpMultiplier = 10;
         this.ctx = ctx;
         this.grounded = false;
 
@@ -35,9 +35,9 @@ export default class Player  {
     }
 
     update(deltaTime) {
-        this.move();
+        this.move(deltaTime);
         this.collisionOnX();
-        this.applyGravity();
+        this.applyGravity(deltaTime);
         this.collisionOnY();
         //console.log(this.grounded);
     }
@@ -47,23 +47,23 @@ export default class Player  {
         this.ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
     }
     
-    move(){
+    move(deltaTime){
         if (this.keys.a && this.keys.d) {
             this.vel.x = 0
         } else if (this.keys.a) {
-            this.vel.x = -this.speed;
+            this.vel.x = -this.speed * deltaTime;
         } else if (this.keys.d) {
-            this.vel.x = this.speed;
+            this.vel.x = this.speed * deltaTime;
         } else {
             this.vel.x = 0;
         }
 
         if (this.keys.w && this.grounded && this.vel.y === 0) {
-            this.vel.y = -this.speed*this.jumpMultiplier;
+            this.vel.y = -this.speed*this.jumpMultiplier* deltaTime;
             this.grounded = false;
         }
 
-        this.pos.x += this.vel.x;
+        this.pos.x += this.vel.x * deltaTime;
 
     }
 
@@ -156,8 +156,8 @@ export default class Player  {
         }
     }
 
-    applyGravity() {
-        this.vel.y += this.gravity
-        this.pos.y += this.vel.y;
+    applyGravity(deltaTime) {
+        this.vel.y += this.gravity * deltaTime;
+        this.pos.y += this.vel.y * deltaTime;
     }
 }

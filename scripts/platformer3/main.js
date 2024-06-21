@@ -1,55 +1,42 @@
 import UI from "./UI/ui.js";
 import Player from "./entity/player.js";
-//import UI from "./ui/ui.js";
 import Map from "./map/map.js";
 import Camera from "./camera/camera.js";
 import { CONSTANTS } from "./utils/gameConst.js";
 
 const canvas = document.getElementById('gameCanvas');
 /** @type {CanvasRenderingContext2D} */ const ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+
 
 ctx.canvas.width = screen.availWidth * .8;
 ctx.canvas.height = screen.availHeight * .7;
+
+ctx.canvas.style = "background-color: black;"
 
 var camera = new Camera(ctx);
 var map = new Map(ctx, camera);
 var player = new Player(ctx, map.map);
 var ui = new UI(ctx, player, camera);
+
 camera.setTarget(player);
 
+
+
 const FPS = 60;
-const fixedTimeStep = 1000 / FPS;
+const perfectFrameTime = 1000 / FPS;
+let lastTimestamp = 0;
 
-let lastFrameTime = 0;
-let accumulatedTime = 0;
 
-let frameCount = 0;
-let fps = 0;
-let lastFpsUpdate = 0;
-const fpsUpdateInterval = 1000; 
 
 function gameLoop(timestamp) {
-    const deltaTime = timestamp - lastFrameTime;
-    lastFrameTime = timestamp;
-    accumulatedTime += deltaTime;
-
-    while (accumulatedTime >= fixedTimeStep) {
-        
-        accumulatedTime -= fixedTimeStep;
-    }
+    const deltaTime = (timestamp - lastTimestamp) / perfectFrameTime;
+    lastTimestamp = timestamp;
 
     update(deltaTime);
     render();
 
     requestAnimationFrame(gameLoop);
-
-    frameCount++;
-    if (timestamp - lastFpsUpdate >= fpsUpdateInterval) {
-        fps = (frameCount * 1000) / (timestamp - lastFpsUpdate);
-        console.log(`FPS: ${fps.toFixed(2)}`);
-        lastFpsUpdate = timestamp;
-        frameCount = 0;
-    }
 
 }
 
@@ -64,7 +51,7 @@ function render() {
     ctx.save();  
 
     ctx.scale(CONSTANTS.scale, CONSTANTS.scale);
-    ctx.translate(-camera.pos.x, -camera.pos.y);
+    ctx.translate(Math.round(-camera.pos.x), Math.round(-camera.pos.y));
 
     ctx.clearRect(0, 0, canvas.width / CONSTANTS.scale, canvas.height / CONSTANTS.scale);
 
@@ -78,6 +65,8 @@ function render() {
 }
 
 document.getElementById("runButton").addEventListener("click", function () {
+    lastTimestamp = performance.now();
+    
     requestAnimationFrame(gameLoop);
     this.disabled = true;
 })
