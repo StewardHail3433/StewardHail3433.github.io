@@ -15,6 +15,10 @@ export default class Camera {
 
         this.mapWidth;
         this.mapWidth;
+        this.leftBoundary = false;
+        this.rightBoundary = false;
+        this.topBoundary = false;
+        this.bottomBoundary = false;
     }
 
     setMapSize(width, height) {
@@ -43,16 +47,28 @@ export default class Camera {
 
     checkBoundaries() {
         if(this.pos.x + this.width >= this.mapWidth) {
-            this.pos.x = this.mapWidth - this.width - 0.01
+            this.pos.x = this.mapWidth - this.width - 0.01;
+            this.rightBoundary = true;
+        } else {
+            this.rightBoundary = false;
         }
         if(this.pos.x <= 0) {
-            this.pos.x = 0.01
+            this.pos.x = 0.01;
+            this.leftBoundary = true;
+        } else {
+            this.leftBoundary = false;
         }
         if(this.pos.y + this.height >= this.ctx.canvas.height) {
-            this.pos.y = this.ctx.canvas.height - this.height - 0.01
+            this.pos.y = this.ctx.canvas.height - this.height - 0.01;
+            this.bottomBoundary = true;
+        } else {
+            this.bottomBoundary = false;
         }
         if(this.pos.y <= this.ctx.canvas.height - this.mapHeight) {
-            this.pos.y = this.ctx.canvas.height - this.mapHeight + 0.01
+            this.pos.y = this.ctx.canvas.height - this.mapHeight + 0.01;
+            this.topBoundary = true;
+        } else {
+            this.topBoundary = false;
         }
     }
 

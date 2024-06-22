@@ -19,8 +19,8 @@ var map = new Map(ctx, camera);
 var player = new Player(ctx, map.map);
 var ui = new UI(ctx, player, camera);
 
+// camera.setTarget(map.map[-1][0]);
 camera.setTarget(player);
-
 
 
 const FPS = 60;
@@ -48,19 +48,26 @@ function update(deltaTime) {
 }
 
 function render() {
+    
+    
+    //map.renderMini()
+
+    
     ctx.save();  
 
     ctx.scale(CONSTANTS.canvasScale, CONSTANTS.canvasScale);
     ctx.translate(Math.round(-camera.pos.x), Math.round(-camera.pos.y));
 
     ctx.clearRect(0, 0, canvas.width / CONSTANTS.canvasScale, canvas.height / CONSTANTS.canvasScale);
-
     map.render();
-    
     player.render();
+     //-camera.height/2)
+    map.renderMini();
+    // splayer.render();
+    ctx.restore();
+    
     
 
-    ctx.restore();
     ui.render();
 }
 
@@ -72,7 +79,14 @@ document.getElementById("runButton").addEventListener("click", function () {
 })
 
 canvas.addEventListener('keydown', function(e) {
-    e.preventDefault();
+    e.preventDefault()
+    if (e.key === "p") {
+        camera.setTarget(player);
+    };
+    if (e.key === "b") {
+        camera.setTarget(map.map[199][0]);
+    };
+    map.keyDownInput(e.key)
     player.keyDownInput(e.key);
     ui.keyDownInput(e.key);
 });

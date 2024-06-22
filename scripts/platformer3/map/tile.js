@@ -3,8 +3,8 @@ export default class Tile {
         x:0,
         y:0
     }
-    #width;
-    #height;
+    width = 0;
+    height = 0;
     #value;
     #ctx;
     #collision = false;
@@ -17,11 +17,11 @@ export default class Tile {
     // Getters
 
     get width() {
-        return this.#width;
+        return this.width;
     }
 
     get height() {
-        return this.#height;
+        return this.height;
     }
 
     get value() {
@@ -31,17 +31,13 @@ export default class Tile {
     get collision() {
         return this.#collision;
     }
+    get pos() {
+        return this.pos;
+    }
 
     // Setters
 
 
-    set width(x) {
-        this.#width = x;
-    }
-
-    set height(x) {
-        this.#height = x;
-    }
 
     set value(x) {
         this.#value = x;

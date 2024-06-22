@@ -7,8 +7,8 @@ export default class Player  {
         this.width = 10
         this.height = 20
         this.pos = {
-            x: ctx.canvas.width/2 - this.width/2,
-            y: ctx.canvas.height/2 - this.height/2
+            x: 0,//ctx.canvas.width/2 - this.width/2,
+            y: 0//ctx.canvas.height/2 - this.height/2
         }
 
         this.vel = {
