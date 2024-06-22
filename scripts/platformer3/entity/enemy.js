@@ -1,31 +1,19 @@
-import UI from "../UI/ui.js";
 import "../utils/collisionChecker.js"
 import { collision } from "../utils/collisionChecker.js";
 import { CONSTANTS } from "../utils/gameConst.js";
-export default class Player  {
+export default class Enemy  {
     
     constructor(/** @type {CanvasRenderingContext2D} */ ctx, map) {
         this.width = 10
         this.height = 20
         this.pos = {
-            x: 0,//ctx.canvas.width/2 - this.width/2,
-            y: 0//ctx.canvas.height/2 - this.height/2
+            x: Math.floor(Math.random() * 3000),//ctx.canvas.width/2 - this.width/2,
+            y: -500//ctx.canvas.height/2 - this.height/2
         }
 
         this.vel = {
             x: 0,
             y: 1,
-        }
-
-        this.keys = {
-            w: false,
-
-            a: false,
-
-            s: false,
-
-            d: false
-
         }
         this.speed = 1 * CONSTANTS.movementScale; //pixels per second
         this.gravity = 5 * CONSTANTS.movementScale ; //pixels per second squared
@@ -34,67 +22,39 @@ export default class Player  {
         this.grounded = false;
 
         this.map = map;
-
-        this.alive = true;
+        this.direction = "left";
     }
 
-    update(deltaTime, enemies) {
+    update(deltaTime) {
         // console.log(deltaTime)
-        if(this.alive) {this.move(deltaTime);}
+        this.move(deltaTime);
         this.collisionOnX();
         this.applyGravity(deltaTime);
         this.collisionOnY();
-        this.checkEnemiesDeath(enemies)
         //console.log(this.grounded);
     }
 
     render() {
-        this.ctx.fillStyle = 'blue';
+        this.ctx.fillStyle = 'red';
         this.ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
     }
     
-    move(deltaTime){
-        if (this.keys.a && this.keys.d) {
-            this.vel.x = 0
-        } else if (this.keys.a) {
+    move(deltaTime) {
+        if (this.direction == "left") {
             this.vel.x = -this.speed;
-        } else if (this.keys.d) {
+        } else if (this.direction == "right") {
             this.vel.x = this.speed;
         } else {
             this.vel.x = 0;
         }
 
-        if (this.keys.w && this.grounded && this.vel.y === 0) {
+        if (Math.floor(Math.random() * 1000) == 999 && this.grounded && this.vel.y === 0) {
             this.vel.y = -this.jumpSpeed;
             this.grounded = false;
         }
 
         this.pos.x += this.vel.x * deltaTime;
 
-    }
-
-    keyDownInput(/** @type {KeyboardEvent} */ key) {
-        if (key === "a") {
-            this.keys.a = true;
-        }
-        if (key === "d") {
-            this.keys.d = true;
-        }
-        if (key === "w" || key === "ArrowUp" || key === " " && this.grounded == true && this.vel.y == 0) {
-            this.keys.w = true;
-        }
-    }
-
-    keyUpInput(/** @type {KeyboardEvent} */ key) {
-        if (key === "a") {
-            this.keys.a = false;
-        }
-        if (key === "d") {
-            this.keys.d = false;
-        }
-        if (key === "w" || key === "ArrowUp" || key === " ") {
-            this.keys.w = false;
-        }
     }
 
     collisionOnY() {
@@ -144,12 +104,14 @@ export default class Player  {
                             this.vel.x = 0;
                             this.pos.x = tile.pos.x - this.width - 0.01;
                             doBreak = true;
+                            this.direction = "left";
                             break;
                         }
                         if (this.vel.x < 0) {
                             this.vel.x = 0;
                             this.pos.x = tile.pos.x + tile.width + 0.01;
                             doBreak = true;
+                            this.direction = "right";
                             break;
                         }
                     }
@@ -158,14 +120,6 @@ export default class Player  {
             }
             if(doBreak) {
                 break;
-            }
-        }
-    }
-
-    checkEnemiesDeath(enemies) {
-        for(let i = 0; i < enemies.length; i++) {
-            if(collision(this, enemies[i])) {
-                this.alive = false;
             }
         }
     }

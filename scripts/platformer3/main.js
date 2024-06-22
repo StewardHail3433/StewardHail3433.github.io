@@ -3,6 +3,7 @@ import Player from "./entity/player.js";
 import Map from "./map/map.js";
 import Camera from "./camera/camera.js";
 import { CONSTANTS } from "./utils/gameConst.js";
+import Enemy from "./entity/enemy.js";
 
 const canvas = document.getElementById('gameCanvas');
 /** @type {CanvasRenderingContext2D} */ const ctx = canvas.getContext('2d');
@@ -18,7 +19,12 @@ var camera = new Camera(ctx);
 var map = new Map(ctx, camera);
 var player = new Player(ctx, map.map);
 var ui = new UI(ctx, player, camera);
-
+var enemies = []
+var enemyCount = 10
+for(let i = 0; i < enemyCount; i++) {
+    enemies.push(new Enemy(ctx, map.map))
+}
+console.log(enemies)
 // camera.setTarget(map.map[-1][0]);
 camera.setTarget(player);
 
@@ -41,7 +47,9 @@ function gameLoop(timestamp) {
 }
 
 function update(deltaTime) {
-    player.update(deltaTime);
+    for(let i = 0; i < enemyCount; i++) {
+    enemies[i].update(deltaTime);}
+    player.update(deltaTime, enemies);
     map.update();
     camera.update()
     ui.update();
@@ -60,6 +68,8 @@ function render() {
 
     ctx.clearRect(0, 0, canvas.width / CONSTANTS.canvasScale, canvas.height / CONSTANTS.canvasScale);
     map.render();
+    for(let i = 0; i < enemyCount; i++) {
+    enemies[i].render();}
     player.render();
      //-camera.height/2)
     map.renderMini();

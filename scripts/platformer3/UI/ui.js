@@ -13,6 +13,7 @@ export default class UI {
 
             showDevUI: false, // dev
         }
+        
         this.devValues = {
             speed: {
                 name: "speed",
@@ -64,6 +65,14 @@ export default class UI {
                 editable: true,
                 focus: false,
                 increment: 100,
+            },
+            alive: {
+                name: "alive",
+                getter: () => player.alive,
+                setter: (x) => player.alive = x,
+                editable: false,
+                focus: false,
+                increment: 100,
             }
         };
 
@@ -80,6 +89,7 @@ export default class UI {
         this.player = player;
         this.camera = camera
     }
+
     update() {
         if (this.toggles.showDevUI) {
             this.updateDEV();
@@ -102,10 +112,25 @@ export default class UI {
             if (this.toggles.showDevUI) {
                 this.renderDEV();
             }
+            if(!this.player.alive) {
+                this.renderDeath();
+            }
             this.ctxMain.drawImage(this.canvasUI, 0, 0, this.ctxMain.canvas.width, this.ctxMain.canvas.height);
         }
     }
 
+    renderDeath() {
+        this.ctxUI.fillStyle = "rgba(255, 255, 255, 1)";
+
+        this.ctxUI.font = 20 + 'px sans-serif';
+
+        let y = this.ctxMain.canvas.height/2 - 10
+        var textString = "YOU DIED";
+        var textWidth = this.ctxUI.measureText(textString).width;
+
+        let x = (this.ctxMain.canvas.width/2) - (textWidth / 2);
+        this.ctxUI.fillText(textString, x, y);
+    }
     renderDEV() {
         this.camera.render();
         this.ctxUI.fillStyle = "rgba(0, 0, 0, 0.25)";
