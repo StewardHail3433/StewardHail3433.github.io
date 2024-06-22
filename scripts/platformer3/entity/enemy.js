@@ -3,7 +3,7 @@ import { collision } from "../utils/collisionChecker.js";
 import { CONSTANTS } from "../utils/gameConst.js";
 export default class Enemy  {
     
-    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map) {
+    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map, camera) {
         this.width = 10
         this.height = 20
         this.pos = {
@@ -23,6 +23,8 @@ export default class Enemy  {
 
         this.map = map;
         this.direction = "left";
+
+        this.camera = camera;
     }
 
     update(deltaTime) {

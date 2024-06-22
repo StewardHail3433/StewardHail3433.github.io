@@ -22,7 +22,7 @@ var ui = new UI(ctx, player, camera);
 var enemies = []
 var enemyCount = 10
 for(let i = 0; i < enemyCount; i++) {
-    enemies.push(new Enemy(ctx, map.map))
+    enemies.push(new Enemy(ctx, map.map,camera))
 }
 console.log(enemies)
 // camera.setTarget(map.map[-1][0]);

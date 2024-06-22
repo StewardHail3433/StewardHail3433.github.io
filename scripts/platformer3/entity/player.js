@@ -4,7 +4,7 @@ import { collision } from "../utils/collisionChecker.js";
 import { CONSTANTS } from "../utils/gameConst.js";
 export default class Player  {
     
-    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map) {
+    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map, camera) {
         this.width = 10
         this.height = 20
         this.pos = {
@@ -34,6 +34,7 @@ export default class Player  {
         this.grounded = false;
 
         this.map = map;
+        this.camera = camera;
 
         this.alive = true;
     }
