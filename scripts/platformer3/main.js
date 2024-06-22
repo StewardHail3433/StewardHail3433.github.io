@@ -30,7 +30,7 @@ let lastTimestamp = 0;
 
 
 function gameLoop(timestamp) {
-    const deltaTime = (timestamp - lastTimestamp) / perfectFrameTime;
+    const deltaTime = (timestamp - lastTimestamp) / 1000; // deltaTime in seconds
     lastTimestamp = timestamp;
 
     update(deltaTime);
@@ -50,10 +50,10 @@ function update(deltaTime) {
 function render() {
     ctx.save();  
 
-    ctx.scale(CONSTANTS.scale, CONSTANTS.scale);
+    ctx.scale(CONSTANTS.canvasScale, CONSTANTS.canvasScale);
     ctx.translate(Math.round(-camera.pos.x), Math.round(-camera.pos.y));
 
-    ctx.clearRect(0, 0, canvas.width / CONSTANTS.scale, canvas.height / CONSTANTS.scale);
+    ctx.clearRect(0, 0, canvas.width / CONSTANTS.canvasScale, canvas.height / CONSTANTS.canvasScale);
 
     map.render();
     
@@ -66,7 +66,7 @@ function render() {
 
 document.getElementById("runButton").addEventListener("click", function () {
     lastTimestamp = performance.now();
-    
+
     requestAnimationFrame(gameLoop);
     this.disabled = true;
 })

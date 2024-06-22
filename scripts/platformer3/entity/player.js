@@ -1,10 +1,11 @@
 import "../utils/collisionChecker.js"
 import { collision } from "../utils/collisionChecker.js";
+import { CONSTANTS } from "../utils/gameConst.js";
 export default class Player  {
     
     constructor(/** @type {CanvasRenderingContext2D} */ ctx, map) {
-        this.width = ctx.canvas.width/102.4;
-        this.height = ctx.canvas.height/25.175;
+        this.width = 10
+        this.height = 20
         this.pos = {
             x: ctx.canvas.width/2 - this.width/2,
             y: ctx.canvas.height/2 - this.height/2
@@ -25,9 +26,9 @@ export default class Player  {
             d: false
 
         }
-        this.speed =0.05;
-        this.gravity = 0.5;
-        this.jumpMultiplier = 10;
+        this.speed = 1 * CONSTANTS.movementScale; //pixels per second
+        this.gravity = 5 * CONSTANTS.movementScale ; //pixels per second squared
+        this.jumpSpeed = 3 * CONSTANTS.movementScale; //pixels per second
         this.ctx = ctx;
         this.grounded = false;
 
@@ -35,6 +36,7 @@ export default class Player  {
     }
 
     update(deltaTime) {
+        // console.log(deltaTime)
         this.move(deltaTime);
         this.collisionOnX();
         this.applyGravity(deltaTime);
@@ -51,15 +53,15 @@ export default class Player  {
         if (this.keys.a && this.keys.d) {
             this.vel.x = 0
         } else if (this.keys.a) {
-            this.vel.x = -this.speed * deltaTime;
+            this.vel.x = -this.speed;
         } else if (this.keys.d) {
-            this.vel.x = this.speed * deltaTime;
+            this.vel.x = this.speed;
         } else {
             this.vel.x = 0;
         }
 
         if (this.keys.w && this.grounded && this.vel.y === 0) {
-            this.vel.y = -this.speed*this.jumpMultiplier* deltaTime;
+            this.vel.y = -this.jumpSpeed;
             this.grounded = false;
         }
 

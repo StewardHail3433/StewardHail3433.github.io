@@ -8,8 +8,8 @@ export default class Camera {
             y:0
         }
         /** @type {CanvasRenderingContext2D} */ this.ctx = ctx;
-        this.width = this.ctx.canvas.width/CONSTANTS.scale;
-        this.height = this.ctx.canvas.height/CONSTANTS.scale;
+        this.width = this.ctx.canvas.width/CONSTANTS.canvasScale;
+        this.height = this.ctx.canvas.height/CONSTANTS.canvasScale;
         
         this.target = null;
 

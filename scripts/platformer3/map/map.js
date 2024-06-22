@@ -8,7 +8,8 @@ export default class Map {
     #xVel = 0.25;
     constructor(/** @type {CanvasRenderingContext2D} */ ctx, camera) {
         this.ctx = ctx;
-        this.tileSize = Math.floor(ctx.canvas.height / 16.44);
+        this.tileSize = 31;
+        console.log(this.tileSize)
         this.yOffset = Math.floor(this.tileSize);
         this.camera = camera;
         fetch("./resources/plat3/level/level.txt")

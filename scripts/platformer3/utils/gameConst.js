@@ -1,3 +1,4 @@
 export const CONSTANTS  = {
-    scale: 2
+    canvasScale: 2,
+    movementScale: 100
 }

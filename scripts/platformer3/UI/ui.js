@@ -1,3 +1,5 @@
+import { CONSTANTS } from "../utils/gameConst.js";
+
 export default class UI {
 
     constructor(/** @type {CanvasRenderingContext2D} */ ctxMain, player, camera) {
@@ -14,23 +16,23 @@ export default class UI {
         this.devValues = {
             speed: {
                 name: "speed",
-                getter: () => player.speed,
-                setter: (x) => player.speed = x,
+                getter: () => player.speed/CONSTANTS.movementScale,
+                setter: (x) => player.speed = x*CONSTANTS.movementScale,
                 editable:true,
                 focus: false
             },
             gravity: {
                 name: "gravity",
-                getter: () => player.gravity,
-                setter: (x) => player.gravity = x,
+                getter: () => player.gravity/CONSTANTS.movementScale,
+                setter: (x) => player.gravity = x*CONSTANTS.movementScale,
                 increment: 0.05,
                 editable:true,
                 focus: false
             },
-            jumpMultiplier: {
-                name: "jumpMultiplier",
-                getter: () => player.jumpMultiplier,
-                setter: (x) => player.jumpMultiplier = x,
+            jumpSpeed: {
+                name: "jumpSpeed",
+                getter: () => player.jumpSpeed/CONSTANTS.movementScale,
+                setter: (x) => player.jumpSpeed = x*CONSTANTS.movementScale,
                 editable:true,
                 focus: false
             },
