@@ -5,6 +5,8 @@ import Camera from "./camera/camera.js";
 import { CONSTANTS } from "./utils/gameConst.js";
 import SimpleEnemy from "./entity/enemy/simpleEnemy.js";
 import ShooterEnemy from "./entity/enemy/shooterEnemy.js";
+import CanonballProjectile from "./entity/projectile/canonballProjectile.js";
+import CanonEnemy from "./entity/enemy/CanonEnemy.js";
 
 const canvas = document.getElementById('gameCanvas');
 /** @type {CanvasRenderingContext2D} */ const ctx = canvas.getContext('2d');
@@ -18,15 +20,19 @@ ctx.canvas.style = "background-color: black;"
 
 var camera = new Camera(ctx);
 var map = new Map(ctx, camera);
+
 var player = new Player(ctx, map.map);
-var ui = new UI(ctx, player, camera);
+
 var enemies = []
-var enemyCount = 10
-for(let i = 0; i < enemyCount; i++) {
+for(let i = 0; i < 10; i++) {
     enemies.push(new SimpleEnemy(ctx, map.map,camera))
 }
 
+enemies.push(new CanonEnemy(ctx, map.map,camera,player,{x: 1237, y:470}))
 enemies.push(new ShooterEnemy(ctx, map.map,camera,player,{x: 1237, y:470}))
+
+var ui = new UI(ctx, player, camera, enemies);
+
 console.log(enemies)
 // camera.setTarget(map.map[-1][0]);
 camera.setTarget(player);
@@ -36,7 +42,6 @@ const FPS = 60;
 const perfectFrameTime = 1000 / FPS;
 let elapsedTime = 0; 
 let lastTimestamp = 0;
-
 
 
 function gameLoop(timestamp) {
@@ -52,7 +57,7 @@ function gameLoop(timestamp) {
 
 function update(deltaTime) {
     elapsedTime += deltaTime;
-    
+
     for(let i = 0; i < enemies.length; i++) {
     enemies[i].update(deltaTime, elapsedTime);}
     player.update(deltaTime, enemies);

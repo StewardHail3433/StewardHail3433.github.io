@@ -1,34 +1,55 @@
 import "../../utils/collisionChecker.js"
 import { collision } from "../../utils/collisionChecker.js";
 import { CONSTANTS } from "../../utils/gameConst.js";
+import CanonballProjectile from "../projectile/canonballProjectile.js";
 import Projectile from "../projectile/projectile.js";
 import Enemy from "./enemy.js";
+import ShooterEnemy from "./shooterEnemy.js";
 import SimpleEnemy from "./simpleEnemy.js";
-export default class ShooterEnemy extends SimpleEnemy  {
+export default class CanonEnemy extends ShooterEnemy  {
     
     constructor(/** @type {CanvasRenderingContext2D} */ ctx, map, camera, player, pos) {
-        super(ctx, map, camera, player)
+        super(ctx, map, camera, player, pos)
 
         this.pos = pos;
 
-        this.speed = 1 * CONSTANTS.movementScale; //pixels per second
-        this.gravity = 5 * CONSTANTS.movementScale ; //pixels per second squared
-        this.jumpSpeed = 3 * CONSTANTS.movementScale; //pixels per second
+        this.speed = 1.2 * CONSTANTS.movementScale; //pixels per second
+        this.gravity = 4 * CONSTANTS.movementScale ; //pixels per second squared
+        this.jumpSpeed = 4 * CONSTANTS.movementScale; //pixels per second
+        this.jumpChance = 2;
 
         this.projectileEnemy = true;
-        this.aimo = 5;
+        this.aimo = 7;
         this.projectile = []
         this.lastShotElapsedTime = 0;
     }
 
 
     render() {
-        this.ctx.fillStyle = 'purple';
+        this.ctx.fillStyle = 'lightblue';
         this.ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
 
         for(let i = 0; i < this.projectile.length; i++) {
             this.projectile[i].render();
         }
+    }
+
+    renderDev() {
+        console.log("hsbad");
+        const midX = (this.pos.x+this.width/2 + this.player.pos.x+this.player.width/2 ) / 2;
+        const midY = (this.pos.y + this.player.pos.y) / 2;
+
+        const controlX = midX;
+        const controlY = midY - 100; 
+        this.ctx.save();  
+        this.ctx.scale(CONSTANTS.canvasScale, CONSTANTS.canvasScale);
+        this.ctx.translate(Math.round(-this.camera.pos.x), Math.round(-this.camera.pos.y));
+        this.ctx.strokeStyle = 'rgba(15, 255, 80, 0.5)';
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.pos.x+this.width/2, this.pos.y); 
+        this.ctx.quadraticCurveTo(controlX, controlY, this.player.pos.x+this.player.width/2, this.player.pos.y);
+        this.ctx.stroke();
+        this.ctx.restore();
     }
 
     update(deltaTime, elapsedTime){
@@ -62,12 +83,17 @@ export default class ShooterEnemy extends SimpleEnemy  {
     }
 
     shoot(elapsedTime){
-        if(Math.floor(this.lastShotElapsedTime) + 2 <= Math.floor(elapsedTime) && this.aimo > 0) {
+        if(Math.floor(this.lastShotElapsedTime) + 0.5 <= Math.floor(elapsedTime) && this.aimo > 0) {
             let projectileDirection = "right";
             if(this.pos.x > this.player.pos.x) {
                 projectileDirection = "left";
             }
-            this.projectile.push(new Projectile(this.ctx, ((this.player.pos.y - this.pos.y) / (this.player.pos.x - this.pos.x)), this.pos, projectileDirection, this.projectile.length))
+            this.projectile.push(new CanonballProjectile(
+                this.ctx, 
+                {x:this.pos.x+this.width/2, y:this.pos.y}, 
+                {x:this.player.pos.x+this.player.width/2, y: this.player.pos.y}, 
+                this.projectile.length
+            ));
             this.lastShotElapsedTime = elapsedTime;
             this.aimo--
         }

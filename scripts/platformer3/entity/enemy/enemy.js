@@ -28,6 +28,8 @@ export default class Enemy  {
 
         this.projectileEnemy = false;
         this.player = player;
+
+        this.jumpChance = 1000;
     }
 
     update(deltaTime) {
@@ -44,6 +46,8 @@ export default class Enemy  {
         this.ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
     }
     
+    renderDev(){}
+
     move(deltaTime) {
         if (this.direction == "left") {
             this.vel.x = -this.speed;
@@ -53,7 +57,7 @@ export default class Enemy  {
             this.vel.x = 0;
         }
 
-        if (Math.floor(Math.random() * 1000) == 999 && this.grounded && this.vel.y === 0) {
+        if (Math.floor(Math.random() * this.jumpChance) == this.jumpChance-1 && this.grounded && this.vel.y === 0) {
             this.vel.y = -this.jumpSpeed;
             this.grounded = false;
         }

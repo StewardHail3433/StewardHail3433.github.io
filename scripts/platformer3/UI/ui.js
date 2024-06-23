@@ -2,7 +2,7 @@ import { CONSTANTS } from "../utils/gameConst.js";
 
 export default class UI {
 
-    constructor(/** @type {CanvasRenderingContext2D} */ ctxMain, player, camera) {
+    constructor(/** @type {CanvasRenderingContext2D} */ ctxMain, player, camera, enemies) {
         this.canvasUI = document.createElement('canvas');
         this.canvasUI.width = ctxMain.canvas.width;
         this.canvasUI.height = ctxMain.canvas.height;
@@ -87,7 +87,8 @@ export default class UI {
         
         this.ctxMain = ctxMain;
         this.player = player;
-        this.camera = camera
+        this.camera = camera;
+        this.enemies = enemies;
     }
 
     update() {
@@ -133,6 +134,10 @@ export default class UI {
     }
     renderDEV() {
         this.camera.render();
+        for(let i = 0; i < this.enemies.length; i++) {
+            this.enemies[i].renderDev();
+        }
+
         this.ctxUI.fillStyle = "rgba(0, 0, 0, 0.25)";
         this.ctxUI.fillRect(this.devRect.x, this.devRect.y, this.devRect.width, this.devRect.height);
     

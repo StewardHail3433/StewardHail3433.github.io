@@ -23,6 +23,16 @@ export default class Projectile {
         this.direction = direction;
         this.delete = false;
         this.index = index;
+
+        if (direction == "left") {
+            this.vel.x = -this.speed;
+        } else if (direction == "right") {
+            this.vel.x = this.speed;
+        }
+        const magnitude = Math.sqrt(this.vel.x ** 2 + (this.slope * this.vel.x) ** 2); // |v| = sqrt(x^2, y^2)
+        this.vel.x = (this.vel.x / magnitude) * this.speed;
+        this.vel.y = (this.slope * this.vel.x);
+
     }
 
     render() {
@@ -32,17 +42,12 @@ export default class Projectile {
     }
 
     update(deltaTime) {
-        if (this.direction == "left") {
-            this.vel.x = -this.speed;
-        } else if (this.direction == "right") {
-            this.vel.x = this.speed;
-        }
         // this.pos.x = 1237
         // this.pos.y = 474
 
-        this.pos.x += this.vel.x*deltaTime;
+        this.pos.x += this.vel.x *deltaTime;
 
-        this.pos.y += this.vel.x * this.slope * deltaTime;
+        this.pos.y += this.vel.y * deltaTime;
 
         if(Math.sqrt((this.pos.x - this.ogPos.x) ** 2 + (this.pos.y - this.ogPos.y) ** 2) > 200) {
             this.delete = true;
