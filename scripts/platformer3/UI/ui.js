@@ -13,7 +13,7 @@ export default class UI {
 
             showDevUI: false, // dev
         }
-        
+        this.enemies = enemies;
         this.devValues = {
             speed: {
                 name: "speed",
@@ -73,6 +73,22 @@ export default class UI {
                 editable: true,
                 focus: false,
                 boolean: true,
+            },
+            noDeathMode: {
+                name: "noDeathMode",
+                getter: () => player.noDeathMode,
+                setter: (x) => player.noDeathMode = x,
+                editable: true,
+                focus: false,
+                boolean: true,
+            },
+            noEnemyDeath: {
+                name: "noEnemyDeath",
+                getter: () => this.enemies.length > 0 && this.enemies[0].noEnemyDeath,
+                setter: (x) => {for(const enemy of this.enemies ){enemy.noEnemyDeath = x}},
+                editable: true,
+                focus: false,
+                boolean: true,
             }
         };
 
@@ -88,7 +104,6 @@ export default class UI {
         this.ctxMain = ctxMain;
         this.player = player;
         this.camera = camera;
-        this.enemies = enemies;
     }
 
     update() {

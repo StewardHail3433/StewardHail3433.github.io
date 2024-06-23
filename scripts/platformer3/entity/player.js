@@ -1,4 +1,4 @@
-import UI from "../UI/ui.js";
+
 import "../utils/collisionChecker.js"
 import { collision } from "../utils/collisionChecker.js";
 import { CONSTANTS } from "../utils/gameConst.js";
@@ -37,6 +37,7 @@ export default class Player  {
         this.camera = camera;
 
         this.alive = true;
+        this.noDeathMode = false;
     }
 
     update(deltaTime, enemies) {
@@ -45,7 +46,9 @@ export default class Player  {
         this.collisionOnX();
         this.applyGravity(deltaTime);
         this.collisionOnY();
-        this.checkEnemiesDeath(enemies)
+        if(!this.noDeathMode) {
+            this.checkEnemiesDeath(enemies);
+        }
         //console.log(this.grounded);
     }
 
@@ -165,7 +168,7 @@ export default class Player  {
 
     checkEnemiesDeath(enemies) {
         for(let i = 0; i < enemies.length; i++) {
-            if(collision(this, enemies[i])) {
+            if(collision(this, enemies[i]) && this.pos.y + this.height > enemies[i].pos.y + enemies[i].height / 2) {
                 this.alive = false;
             }
             if(enemies[i].projectileEnemy) {

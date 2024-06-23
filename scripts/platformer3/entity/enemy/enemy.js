@@ -3,7 +3,7 @@ import { collision } from "../../utils/collisionChecker.js";
 import { CONSTANTS } from "../../utils/gameConst.js";
 export default class Enemy  {
     
-    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map, camera, player) {
+    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map, camera, player, index) {
         this.width = 10
         this.height = 20
         this.pos = {
@@ -30,10 +30,23 @@ export default class Enemy  {
         this.player = player;
 
         this.jumpChance = 1000;
+
+        this.index = index;
+        this.shouldDelete = false;
+
+        this.noEnemyDeath = false;
     }
 
     update(deltaTime) {
         // console.log(deltaTime)
+        if(!this.noEnemyDeath) {
+            if (collision(this, this.player) && this.player.pos.y + this.player.height <= this.pos.y + this.height / 2) {
+            this.shouldDelete = true;
+            return; 
+            }
+        }
+    
+
         this.move(deltaTime);
         this.collisionOnX();
         this.applyGravity(deltaTime);
@@ -133,5 +146,18 @@ export default class Enemy  {
     applyGravity(deltaTime) {
         this.vel.y += this.gravity * deltaTime;
         this.pos.y += this.vel.y * deltaTime;
+    }
+
+    checkPlayerDeath() {
+            if(collision(this.player, this) && this.shouldDelete) {
+                this.player.alive = false;
+            }
+            if(this.projectileEnemy) {
+                for(let j = 0; j < this.projectile.length; j++) {
+                    if(collision(this, this.projectile[j])) {
+                        this.player.alive = false;
+                    };
+                }
+            }
     }
 }

@@ -5,7 +5,6 @@ import Camera from "./camera/camera.js";
 import { CONSTANTS } from "./utils/gameConst.js";
 import SimpleEnemy from "./entity/enemy/simpleEnemy.js";
 import ShooterEnemy from "./entity/enemy/shooterEnemy.js";
-import CanonballProjectile from "./entity/projectile/canonballProjectile.js";
 import CanonEnemy from "./entity/enemy/CanonEnemy.js";
 
 const canvas = document.getElementById('gameCanvas');
@@ -25,11 +24,11 @@ var player = new Player(ctx, map.map);
 
 var enemies = []
 for(let i = 0; i < 10; i++) {
-    enemies.push(new SimpleEnemy(ctx, map.map,camera))
+    enemies.push(new SimpleEnemy(ctx, map.map,camera, player, i))
 }
 
-enemies.push(new CanonEnemy(ctx, map.map,camera,player,{x: 1237, y:470}))
-enemies.push(new ShooterEnemy(ctx, map.map,camera,player,{x: 1237, y:470}))
+enemies.push(new CanonEnemy(ctx, map.map,camera,player,{x: 1237, y:470},enemies.length))
+enemies.push(new ShooterEnemy(ctx, map.map,camera,player,{x: 1237, y:470},enemies.length))
 
 var ui = new UI(ctx, player, camera, enemies);
 
@@ -57,10 +56,12 @@ function gameLoop(timestamp) {
 
 function update(deltaTime) {
     elapsedTime += deltaTime;
-
     for(let i = 0; i < enemies.length; i++) {
-    enemies[i].update(deltaTime, elapsedTime);}
-    player.update(deltaTime, enemies);
+        enemies[i].update(deltaTime, elapsedTime);
+        if(enemies[i].shouldDelete) {enemies.splice(i, 1);}
+    }
+    player.update(deltaTime, enemies);  
+
     map.update();
     camera.update()
     ui.update();

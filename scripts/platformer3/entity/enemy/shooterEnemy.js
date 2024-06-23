@@ -2,12 +2,11 @@ import "../../utils/collisionChecker.js"
 import { collision } from "../../utils/collisionChecker.js";
 import { CONSTANTS } from "../../utils/gameConst.js";
 import Projectile from "../projectile/projectile.js";
-import Enemy from "./enemy.js";
 import SimpleEnemy from "./simpleEnemy.js";
 export default class ShooterEnemy extends SimpleEnemy  {
     
-    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map, camera, player, pos) {
-        super(ctx, map, camera, player)
+    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map, camera, player, pos, index) {
+        super(ctx, map, camera, player, index)
 
         this.pos = pos;
 
