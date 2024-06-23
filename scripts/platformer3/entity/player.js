@@ -8,8 +8,8 @@ export default class Player  {
         this.width = 10
         this.height = 20
         this.pos = {
-            x: 0,//ctx.canvas.width/2 - this.width/2,
-            y: 0//ctx.canvas.height/2 - this.height/2
+            x: 1200,//ctx.canvas.width/2 - this.width/2,
+            y: 300//ctx.canvas.height/2 - this.height/2
         }
 
         this.vel = {
@@ -167,6 +167,13 @@ export default class Player  {
         for(let i = 0; i < enemies.length; i++) {
             if(collision(this, enemies[i])) {
                 this.alive = false;
+            }
+            if(enemies[i].projectileEnemy) {
+                for(let j = 0; j < enemies[i].projectile.length; j++) {
+                    if(collision(this, enemies[i].projectile[j])) {
+                        this.alive = false;
+                    };
+                }
             }
         }
     }

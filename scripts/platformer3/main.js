@@ -3,7 +3,8 @@ import Player from "./entity/player.js";
 import Map from "./map/map.js";
 import Camera from "./camera/camera.js";
 import { CONSTANTS } from "./utils/gameConst.js";
-import Enemy from "./entity/enemy.js";
+import SimpleEnemy from "./entity/enemy/simpleEnemy.js";
+import ShooterEnemy from "./entity/enemy/shooterEnemy.js";
 
 const canvas = document.getElementById('gameCanvas');
 /** @type {CanvasRenderingContext2D} */ const ctx = canvas.getContext('2d');
@@ -22,8 +23,10 @@ var ui = new UI(ctx, player, camera);
 var enemies = []
 var enemyCount = 10
 for(let i = 0; i < enemyCount; i++) {
-    enemies.push(new Enemy(ctx, map.map,camera))
+    enemies.push(new SimpleEnemy(ctx, map.map,camera))
 }
+
+enemies.push(new ShooterEnemy(ctx, map.map,camera,player,{x: 1237, y:470}))
 console.log(enemies)
 // camera.setTarget(map.map[-1][0]);
 camera.setTarget(player);
@@ -31,6 +34,7 @@ camera.setTarget(player);
 
 const FPS = 60;
 const perfectFrameTime = 1000 / FPS;
+let elapsedTime = 0; 
 let lastTimestamp = 0;
 
 
@@ -47,8 +51,10 @@ function gameLoop(timestamp) {
 }
 
 function update(deltaTime) {
-    for(let i = 0; i < enemyCount; i++) {
-    enemies[i].update(deltaTime);}
+    elapsedTime += deltaTime;
+    
+    for(let i = 0; i < enemies.length; i++) {
+    enemies[i].update(deltaTime, elapsedTime);}
     player.update(deltaTime, enemies);
     map.update();
     camera.update()
@@ -68,7 +74,7 @@ function render() {
 
     ctx.clearRect(0, 0, canvas.width / CONSTANTS.canvasScale, canvas.height / CONSTANTS.canvasScale);
     map.render();
-    for(let i = 0; i < enemyCount; i++) {
+    for(let i = 0; i < enemies.length; i++) {
     enemies[i].render();}
     player.render();
      //-camera.height/2)
@@ -79,7 +85,19 @@ function render() {
     
 
     ui.render();
+    renderTimer();
 }
+
+function renderTimer() {
+    const seconds = Math.floor(elapsedTime);
+
+    ctx.save();
+    ctx.fillStyle = 'white';
+    ctx.font = '20px Arial';
+    ctx.fillText("Time: " + seconds.toString().padStart(2, '0'), 10, 30);
+    ctx.restore();
+}
+
 
 document.getElementById("runButton").addEventListener("click", function () {
     lastTimestamp = performance.now();
@@ -104,6 +122,10 @@ canvas.addEventListener('keydown', function(e) {
 canvas.addEventListener('keyup', function(e) {
     e.preventDefault();
     player.keyUpInput(e.key);
+    for(let i = 0; i < enemies.length; i++) {
+        if(enemies[i].projectileEnemy) {
+            enemies[i].keyUpInput(e.key);}
+        }
 });
 
 canvas.addEventListener('click', function(e) {

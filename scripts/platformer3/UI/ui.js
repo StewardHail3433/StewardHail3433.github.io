@@ -70,9 +70,9 @@ export default class UI {
                 name: "alive",
                 getter: () => player.alive,
                 setter: (x) => player.alive = x,
-                editable: false,
+                editable: true,
                 focus: false,
-                increment: 100,
+                boolean: true,
             }
         };
 
@@ -200,12 +200,21 @@ export default class UI {
                         this.devValues[pkey].setter(this.devValues[pkey].getter() - this.devValues[pkey].increment);
                     } 
                 } else {
-                    if (key === "ArrowRight") {
-                        this.devValues[pkey].setter(this.devValues[pkey].getter() + 1);
-                    } 
-                    if (key === "ArrowLeft") {
-                        this.devValues[pkey].setter(this.devValues[pkey].getter() - 1);
-                    } 
+                    if(this.devValues[pkey].boolean) {
+                        if (key === "ArrowRight") {
+                            this.devValues[pkey].setter(!this.devValues[pkey].getter())
+                        }
+                        if (key === "ArrowLeft") {
+                            this.devValues[pkey].setter(!this.devValues[pkey].getter())
+                        } 
+                    } else {
+                        if (key === "ArrowRight") {
+                            this.devValues[pkey].setter(this.devValues[pkey].getter() + 1);
+                        } 
+                        if (key === "ArrowLeft") {
+                            this.devValues[pkey].setter(this.devValues[pkey].getter() - 1);
+                        } 
+                    }
                 }
             }
         }

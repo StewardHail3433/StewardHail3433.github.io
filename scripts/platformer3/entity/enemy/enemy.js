@@ -1,13 +1,13 @@
-import "../utils/collisionChecker.js"
-import { collision } from "../utils/collisionChecker.js";
-import { CONSTANTS } from "../utils/gameConst.js";
+import "../../utils/collisionChecker.js"
+import { collision } from "../../utils/collisionChecker.js";
+import { CONSTANTS } from "../../utils/gameConst.js";
 export default class Enemy  {
     
-    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map, camera) {
+    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map, camera, player) {
         this.width = 10
         this.height = 20
         this.pos = {
-            x: Math.floor(Math.random() * 3000),//ctx.canvas.width/2 - this.width/2,
+            x: 0,//ctx.canvas.width/2 - this.width/2,
             y: -500//ctx.canvas.height/2 - this.height/2
         }
 
@@ -25,6 +25,9 @@ export default class Enemy  {
         this.direction = "left";
 
         this.camera = camera;
+
+        this.projectileEnemy = false;
+        this.player = player;
     }
 
     update(deltaTime) {
@@ -83,7 +86,6 @@ export default class Enemy  {
                 }
             }
             if(doBreak) {
-                //console.log("wda")
                 break;
                 
             }
@@ -106,14 +108,12 @@ export default class Enemy  {
                             this.vel.x = 0;
                             this.pos.x = tile.pos.x - this.width - 0.01;
                             doBreak = true;
-                            this.direction = "left";
                             break;
                         }
                         if (this.vel.x < 0) {
                             this.vel.x = 0;
                             this.pos.x = tile.pos.x + tile.width + 0.01;
                             doBreak = true;
-                            this.direction = "right";
                             break;
                         }
                     }
