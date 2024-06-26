@@ -19,6 +19,8 @@ export default class CanonEnemy extends ShooterEnemy  {
         this.aimo = 7;
         this.projectile = []
         this.lastShotElapsedTime = 0;
+        this.snd = new Audio("./resources/plat3/sfx/projectile/canon.wav");
+        this.snd.volume = 0.02;
     }
 
 
@@ -85,6 +87,7 @@ export default class CanonEnemy extends ShooterEnemy  {
             if(this.pos.x > this.player.pos.x) {
                 projectileDirection = "left";
             }
+            this.snd.play();
             this.projectile.push(new CanonballProjectile(
                 this.ctx, 
                 {x:this.pos.x+this.width/2, y:this.pos.y}, 
@@ -94,7 +97,7 @@ export default class CanonEnemy extends ShooterEnemy  {
             this.lastShotElapsedTime = elapsedTime;
             this.aimo--
         }
-        if(this.aimo == 0 && Math.floor(this.lastShotElapsedTime) + 4 <= Math.floor(elapsedTime)) {
+        if(this.aimo == 0 && Math.floor(this.lastShotElapsedTime) + 3 <= Math.floor(elapsedTime)) {
             this.aimo = 5;
         }
     }

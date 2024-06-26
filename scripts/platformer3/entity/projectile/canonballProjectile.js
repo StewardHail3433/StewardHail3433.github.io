@@ -30,15 +30,15 @@ export default class CanonballProjectile extends Projectile {
 
     update(deltaTime) {
         this.t += deltaTime * this.speed;
-        // if (this.t > 1) {
-        //     this.t = 1;
-        // } 
+        if (this.t > 1.2) {
+            this.delete = true;
+        } 
 
         this.pos.x = (1 - this.t) * (1 - this.t) * this.ogPos.x + 2 * (1 - this.t) * this.t * this.controlX + this.t * this.t * this.targetPos.x;
         this.pos.y = (1 - this.t) * (1 - this.t) * this.ogPos.y + 2 * (1 - this.t) * this.t * this.controlY + this.t * this.t * this.targetPos.y;
 
 
-        if(Math.sqrt((this.pos.x - this.ogPos.x) ** 2 + (this.pos.y - this.ogPos.y) ** 2) > 300 || this.pos.y >  ((1 - 1) * (1 - 1) * this.ogPos.y + 2 * (1 - 1) * 1 * this.controlY + 1 * 1 * this.targetPos.y) + 60) {
+        if(Math.sqrt((this.pos.x - this.ogPos.x) ** 2 + (this.pos.y - this.ogPos.y) ** 2) > 300) {
             this.delete = true;
         }
     }

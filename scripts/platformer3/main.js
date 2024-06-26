@@ -15,6 +15,8 @@ ctx.imageSmoothingEnabled = false;
 ctx.canvas.width = screen.availWidth * .8;
 ctx.canvas.height = screen.availHeight * .7;
 
+var musicSnd = new Audio("./resources/plat3/music/bongSong.wav"); // buffers automatically when created
+
 ctx.canvas.style = "background-color: black;"
 
 var camera = new Camera(ctx);
@@ -46,16 +48,17 @@ let lastTimestamp = 0;
 function gameLoop(timestamp) {
     const deltaTime = (timestamp - lastTimestamp) / 1000; // deltaTime in seconds
     lastTimestamp = timestamp;
-
-    update(deltaTime);
-    render();
+    
+        update(deltaTime);
+        render();
+    
 
     requestAnimationFrame(gameLoop);
 
 }
 
 function update(deltaTime) {
-    elapsedTime += deltaTime;
+    if (player.alive ) {elapsedTime += deltaTime;
     for(let i = 0; i < enemies.length; i++) {
         enemies[i].update(deltaTime, elapsedTime);
         if(enemies[i].shouldDelete) {enemies.splice(i, 1);}
@@ -63,8 +66,14 @@ function update(deltaTime) {
     player.update(deltaTime, enemies);  
 
     map.update();
-    camera.update()
+    camera.update()}
     ui.update();
+
+    if (!player.alive ) { 
+        musicSnd.pause()
+    } else {
+        musicSnd.play();
+    }
 }
 
 function render() {
@@ -107,6 +116,8 @@ function renderTimer() {
 
 document.getElementById("runButton").addEventListener("click", function () {
     lastTimestamp = performance.now();
+    musicSnd.loop = true;
+    musicSnd.play();
 
     requestAnimationFrame(gameLoop);
     this.disabled = true;

@@ -40,9 +40,12 @@ export default class Enemy  {
     update(deltaTime) {
         // console.log(deltaTime)
         if(!this.noEnemyDeath) {
-            if (collision(this, this.player) && this.player.pos.y + this.player.height <= this.pos.y + this.height / 2) {
-            this.shouldDelete = true;
-            return; 
+            if (collision(this, this.player) && this.player.pos.y + this.player.height >= this.pos.y && this.player.pos.y + this.player.height <= this.pos.y + this.height * 0.125) {
+                var snd = new Audio("./resources/plat3/sfx/enemyDeath.wav");
+                snd.play()
+                this.player.vel.y = -2 * CONSTANTS.movementScale;
+                this.shouldDelete = true;
+                return; 
             }
         }
     

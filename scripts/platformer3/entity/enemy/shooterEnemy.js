@@ -18,6 +18,8 @@ export default class ShooterEnemy extends SimpleEnemy  {
         this.aimo = 5;
         this.projectile = []
         this.lastShotElapsedTime = 0;
+        this.snd = new Audio("./resources/plat3/sfx/projectile/projectile.wav");
+        this.snd.volume = 0.07;
     }
 
 
@@ -66,6 +68,7 @@ export default class ShooterEnemy extends SimpleEnemy  {
             if(this.pos.x > this.player.pos.x) {
                 projectileDirection = "left";
             }
+            this.snd.play();
             this.projectile.push(new Projectile(this.ctx, ((this.player.pos.y - this.pos.y) / (this.player.pos.x - this.pos.x)), this.pos, projectileDirection, this.projectile.length))
             this.lastShotElapsedTime = elapsedTime;
             this.aimo--
