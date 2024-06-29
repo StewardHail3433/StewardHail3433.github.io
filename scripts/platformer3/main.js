@@ -1,23 +1,25 @@
-import UI from "./UI/ui.js";
+import UI from "./ui/ui.js";
 import Player from "./entity/player.js";
 import Map from "./map/map.js";
 import Camera from "./camera/camera.js";
 import { CONSTANTS } from "./utils/gameConst.js";
 import SimpleEnemy from "./entity/enemy/simpleEnemy.js";
 import ShooterEnemy from "./entity/enemy/shooterEnemy.js";
-import CanonEnemy from "./entity/enemy/CanonEnemy.js";
+import CanonEnemy from "./entity/enemy/canonEnemy.js";
+import Sound from "./sound/sound.js";
 
 const canvas = document.getElementById('gameCanvas');
 /** @type {CanvasRenderingContext2D} */ const ctx = canvas.getContext('2d');
 ctx.imageSmoothingEnabled = false;
 
-
 ctx.canvas.width = screen.availWidth * .8;
 ctx.canvas.height = screen.availHeight * .7;
 
-var musicSnd = new Audio("./resources/plat3/music/bongSong.wav"); // buffers automatically when created
+var sound = new Sound();
 
 ctx.canvas.style = "background-color: black;"
+
+var state = "play";
 
 var camera = new Camera(ctx);
 var map = new Map(ctx, camera);
@@ -26,15 +28,13 @@ var player = new Player(ctx, map.map);
 
 var enemies = []
 for(let i = 0; i < 10; i++) {
-    enemies.push(new SimpleEnemy(ctx, map.map,camera, player, i))
+    enemies.push(new SimpleEnemy(ctx, map.map,camera, player, sound, i))
 }
 
-enemies.push(new CanonEnemy(ctx, map.map,camera,player,{x: 1237, y:470},enemies.length))
-enemies.push(new ShooterEnemy(ctx, map.map,camera,player,{x: 1237, y:470},enemies.length))
+enemies.push(new CanonEnemy(ctx, map.map,camera,player,{x: 1237, y:470}, sound, enemies.length))
+enemies.push(new ShooterEnemy(ctx, map.map,camera,player,{x: 1237, y:470}, sound, enemies.length))
 
-var ui = new UI(ctx, player, camera, enemies);
-
-console.log(enemies)
+var ui = new UI(ctx, player, camera, enemies, state, sound);
 // camera.setTarget(map.map[-1][0]);
 camera.setTarget(player);
 
@@ -58,21 +58,27 @@ function gameLoop(timestamp) {
 }
 
 function update(deltaTime) {
-    if (player.alive ) {elapsedTime += deltaTime;
-    for(let i = 0; i < enemies.length; i++) {
-        enemies[i].update(deltaTime, elapsedTime);
-        if(enemies[i].shouldDelete) {enemies.splice(i, 1);}
+    if(state == "play") {
+        if (player.alive ) {
+            elapsedTime += deltaTime;
+            for(let i = 0; i < enemies.length; i++) {
+                enemies[i].update(deltaTime, elapsedTime);
+                if(enemies[i].shouldDelete) {enemies.splice(i, 1);}
+            }
+            player.update(deltaTime, enemies);  
+
+            map.update();
+            camera.update();
+        }
     }
-    player.update(deltaTime, enemies);  
+    ui.update(state);
 
-    map.update();
-    camera.update()}
-    ui.update();
-
-    if (!player.alive ) { 
-        musicSnd.pause()
+    if (!player.alive || state == "pause") { 
+        sound.stop("music")
     } else {
-        musicSnd.play();
+        if(0 != sound.getCurrentMusic()) {
+            sound.play("music", 0);
+        }
     }
 }
 
@@ -116,8 +122,7 @@ function renderTimer() {
 
 document.getElementById("runButton").addEventListener("click", function () {
     lastTimestamp = performance.now();
-    musicSnd.loop = true;
-    musicSnd.play();
+    sound.play("music", 0);
 
     requestAnimationFrame(gameLoop);
     this.disabled = true;
@@ -131,6 +136,14 @@ canvas.addEventListener('keydown', function(e) {
     if (e.key === "b") {
         camera.setTarget(map.map[199][0]);
     };
+    if (e.key === "Escape") {
+        if( state === "play") {
+            state = "pause";
+        } else {
+            state = "play";
+            ui.pauseState = "none";
+        }
+    }
     map.keyDownInput(e.key)
     player.keyDownInput(e.key);
     ui.keyDownInput(e.key);
@@ -148,5 +161,8 @@ canvas.addEventListener('keyup', function(e) {
 canvas.addEventListener('click', function(e) {
     e.preventDefault();
     ui.onClickInput(e);
+    if(ui.pauseState == "change to play") {
+        state = "play";
+    }
 }, false);
 

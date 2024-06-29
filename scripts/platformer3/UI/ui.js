@@ -2,7 +2,7 @@ import { CONSTANTS } from "../utils/gameConst.js";
 
 export default class UI {
 
-    constructor(/** @type {CanvasRenderingContext2D} */ ctxMain, player, camera, enemies) {
+    constructor(/** @type {CanvasRenderingContext2D} */ ctxMain, player, camera, enemies, state, sound) {
         this.canvasUI = document.createElement('canvas');
         this.canvasUI.width = ctxMain.canvas.width;
         this.canvasUI.height = ctxMain.canvas.height;
@@ -100,13 +100,56 @@ export default class UI {
             ySpacing: ctxMain.canvas.width * (1/8)/12.8*2,
             fontSize: ctxMain.canvas.width * (1/8)/12.8
         }
+        this.pauseRect = {
+                width: this.ctxUI.canvas.width*(8/10),
+                height: this.ctxUI.canvas.height*(8/10),
+                x: this.ctxUI.canvas.width*(1/10),
+                y: this.ctxUI.canvas.height*(1/10),
+                ySpacing: ctxMain.canvas.width * (8/10)/20.48,
+                fontSize: ctxMain.canvas.height * (8/10)/21.04,
+                buttons: {
+                    width: this.ctxUI.canvas.width*(8/10)*(3/10),
+                    height: this.ctxUI.canvas.height*(8/10)*(1/20),
+                }
+        }
+        this.sound = sound;
+        this.pauseMenuButtons = {
+            return:{
+                name:"Return Back"
+            },
+            sound:{
+                name:"Sounds",
+                slider: {
+                    music: {
+                        name: "Music",
+                        getter: () => this.sound.getVolume("music"),
+                        setter: (x) => {
+                            this.sound.setVolume("music", x)
+                        }
+                    },
+                    sfx: {
+                        name: "SFX",
+                        getter: () => this.sound.getVolume("sfx"),
+                        setter: (x) => {
+                            this.sound.setVolume("sfx", x)
+                        }
+                    },
+                }
+            }
+        }
         
         this.ctxMain = ctxMain;
         this.player = player;
         this.camera = camera;
+        this.state = state;
+        this.pauseState = "none";
     }
 
-    update() {
+    update(state) {
+        this.state = state;
+        if(state === "pause" && this.pauseState === "none") {
+            this.pauseState = "main";
+        }
         if (this.toggles.showDevUI) {
             this.updateDEV();
         }
@@ -125,6 +168,9 @@ export default class UI {
             this.ctxUI.clearRect(0, 0, this.canvasUI.width, this.canvasUI.height);
             this.ctxUI.fillStyle = "rgba(255, 0, 255, 1)";
             this.ctxUI.fillRect(0,0,16,16);
+            if(this.state === "pause") {
+                this.renderPause();
+            }
             if (this.toggles.showDevUI) {
                 this.renderDEV();
             }
@@ -133,6 +179,66 @@ export default class UI {
             }
             this.ctxMain.drawImage(this.canvasUI, 0, 0, this.ctxMain.canvas.width, this.ctxMain.canvas.height);
         }
+    }
+    renderPause() {
+        this.ctxUI.fillStyle = "rgba(0, 0, 158, 0.5)";
+        this.ctxUI.font = this.pauseRect.fontSize + 'px sans-serif';
+        this.ctxUI.fillRect(this.pauseRect.x, this.pauseRect.y, this.pauseRect.width, this.pauseRect.height);
+
+        let y = this.pauseRect.y;
+        this.ctxUI.fillStyle = "rgba(0, 255, 0, 1)";
+        if(this.pauseState === "main") {
+            for(var key in this.pauseMenuButtons) {
+                if (this.pauseMenuButtons.hasOwnProperty(key)) {
+                    y += this.pauseRect.ySpacing;
+                    
+                    this.ctxUI.font = this.pauseRect.fontSize + 'px sans-serif';
+    
+                    var textString = this.pauseMenuButtons[key].name;
+                    var textWidth = this.ctxUI.measureText(textString).width;
+    
+                    let x = this.ctxUI.canvas.width*(1/10) + (this.ctxUI.canvas.width*(8/10)/2) - (textWidth / 2);
+                    let boxX = this.ctxUI.canvas.width/2 - this.pauseRect.buttons.width/2;
+                    this.ctxUI.fillStyle = "rgba(189, 195, 199, 0.5)";
+                    this.ctxUI.fillRect(boxX, y-this.pauseRect.fontSize, this.pauseRect.buttons.width, this.pauseRect.buttons.height);
+                    this.ctxUI.fillStyle = "rgba(200, 235, 239, 0.5)";
+                    this.ctxUI.fillText(textString, x, y);
+                }
+            }
+        }
+        if(this.pauseState === this.pauseMenuButtons.sound.name) {
+            for(var key in this.pauseMenuButtons.sound) {
+                if (this.pauseMenuButtons.sound.hasOwnProperty(key)) {
+                    if(this.pauseMenuButtons.sound.name != this.pauseMenuButtons.sound[key]) {
+                        if(this.pauseMenuButtons.sound.slider != undefined) {
+                            for(var key in this.pauseMenuButtons.sound.slider) {
+                                y += this.pauseRect.ySpacing;
+                                this.ctxUI.font = this.pauseRect.fontSize + 'px sans-serif';
+        
+                                var textString = this.pauseMenuButtons.sound.slider[key].name + ": " + this.pauseMenuButtons.sound.slider[key].getter();
+                                var textWidth = this.ctxUI.measureText(textString).width;
+                
+                                let x = this.ctxUI.canvas.width*(1/10) + (this.ctxUI.canvas.width*(8/10)/2) - (textWidth / 2);
+                                let boxX = this.ctxUI.canvas.width/2 - this.pauseRect.buttons.width/2;
+
+                                this.ctxUI.fillStyle = "rgba(189, 195, 199, 0.5)";
+                                this.ctxUI.fillRect(boxX, y-this.pauseRect.fontSize, this.pauseRect.buttons.width, this.pauseRect.buttons.height);
+
+                                this.ctxUI.fillStyle = "rgba(255, 255, 255, 0.5)";
+                                let OldRange = (2 - 0)  
+                                let NewRange = ((boxX +this.pauseRect.buttons.width) - boxX)  
+                                let sliderX = (((this.pauseMenuButtons.sound.slider[key].getter() - 0) * NewRange) / OldRange) + boxX
+                                this.ctxUI.fillRect(sliderX, y-this.pauseRect.fontSize, this.pauseRect.buttons.width/20, this.pauseRect.buttons.height*1);
+
+                                this.ctxUI.fillStyle = "rgba(0, 0, 0, 0.5)";
+                                this.ctxUI.fillText(textString, x, y);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     renderDeath() {
@@ -147,6 +253,7 @@ export default class UI {
         let x = (this.ctxMain.canvas.width/2) - (textWidth / 2);
         this.ctxUI.fillText(textString, x, y);
     }
+
     renderDEV() {
         this.camera.render();
         for(let i = 0; i < this.enemies.length; i++) {
@@ -241,6 +348,7 @@ export default class UI {
     }
 
     onClickInput(e) {
+        this.onClickInputMenu(e)
         if (this.toggles.showDevUI) {
             this.onClickInputDEV(e);
         }
@@ -252,26 +360,76 @@ export default class UI {
             x: e.clientX - r.left,
             y: e.clientY - r.top
         };
-        console.log(p.x + ", " + p.y);
 
-        let y = 0;
-        for(var key in this.devValues) {
-            if (this.devValues.hasOwnProperty(key)) {
-                y += this.devRect.ySpacing;
+        if(this.state == "play") {
+            let y = 0;
+            for(var key in this.devValues) {
+                if (this.devValues.hasOwnProperty(key)) {
+                    y += this.devRect.ySpacing;
 
-                this.ctxUI.font = this.devRect.fontSize + 'px sans-serif';
+                    this.ctxUI.font = this.devRect.fontSize + 'px sans-serif';
 
-                var textString = this.devValues[key].name + ": " + this.devValues[key].value;
-                var textWidth = this.ctxUI.measureText(textString).width;
+                    var textString = this.devValues[key].name + ": " + this.devValues[key].value;
+                    var textWidth = this.ctxUI.measureText(textString).width;
 
-                let x = this.devRect.x + (this.devRect.width/2) - (textWidth / 2);
-                if (p.x >= x && p.x <= x + textWidth &&
-                    p.y >= y-this.devRect.fontSize && p.y <= y&& 
-                    this.devValues[key].editable) {
-                        this.devValues[key].focus = true;
-                        console.log("focus")
-                } else {
-                    this.devValues[key].focus = false;
+                    let x = this.devRect.x + (this.devRect.width/2) - (textWidth / 2);
+                    if (p.x >= x && p.x <= x + textWidth &&
+                        p.y >= y-this.devRect.fontSize && p.y <= y&& 
+                        this.devValues[key].editable) {
+                            this.devValues[key].focus = true;
+                    } else {
+                        this.devValues[key].focus = false;
+                    }
+                }
+            }
+        }
+    }    
+
+    onMouseUp(e) {
+        this.dragging = false;
+    }
+
+
+    onClickInputMenu(e) {
+        var r = this.ctxMain.canvas.getBoundingClientRect();
+        var p = {
+            x: e.clientX - r.left,
+            y: e.clientY - r.top
+        };
+
+        if(this.state == "pause") {
+            let y = this.pauseRect.y;
+            if(this.pauseState == "main") {
+                for(var key in this.pauseMenuButtons) {
+                    if (this.pauseMenuButtons.hasOwnProperty(key)) {
+                        y += this.pauseRect.ySpacing;
+
+                        let boxX = this.ctxUI.canvas.width/2 - this.pauseRect.buttons.width/2;
+                        if (p.x >= boxX && p.x <= boxX + this.pauseRect.buttons.width &&
+                            p.y >= y-this.pauseRect.fontSize && p.y <= y) {
+                                this.pauseState = this.pauseMenuButtons[key].name;
+                                if(this.pauseState == this.pauseMenuButtons.return.name) {
+                                    this.pauseState = "change to play";
+                                }
+                        }
+                    }
+                }
+            }
+            if(this.pauseState == this.pauseMenuButtons.sound.name) {
+                for(var key in this.pauseMenuButtons.sound.slider) {
+                    if (this.pauseMenuButtons.sound.slider.hasOwnProperty(key)) {
+                        y += this.pauseRect.ySpacing;
+
+                        let boxX = this.ctxUI.canvas.width/2 - this.pauseRect.buttons.width/2;
+                        
+                        if (p.x >= boxX && p.x <= boxX + this.pauseRect.buttons.width &&
+                            p.y >= y-this.pauseRect.buttons.height && p.y <= y) {
+                                
+                                let NewRange = (2 - 0)  
+                                let OldRange = ((boxX +this.pauseRect.buttons.width) - boxX)  
+                                this.pauseMenuButtons.sound.slider[key].setter(Math.round(((((p.x - boxX) * NewRange) / OldRange) + 0  + Number.EPSILON) * 100) / 100)
+                        }
+                    }
                 }
             }
         }

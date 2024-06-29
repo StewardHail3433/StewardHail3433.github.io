@@ -38,7 +38,6 @@ export default class Projectile {
     render() {
         this.ctx.fillStyle = 'yellow';
         this.ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
-        console.log((Math.sqrt((this.pos.x - this.ogPos.x) ** 2 + (this.pos.y - this.ogPos.y) ** 2)));
     }
 
     update(deltaTime) {

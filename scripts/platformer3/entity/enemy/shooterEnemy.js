@@ -5,8 +5,8 @@ import Projectile from "../projectile/projectile.js";
 import SimpleEnemy from "./simpleEnemy.js";
 export default class ShooterEnemy extends SimpleEnemy  {
     
-    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map, camera, player, pos, index) {
-        super(ctx, map, camera, player, index)
+    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map, camera, player, pos, sound, index) {
+        super(ctx, map, camera, player, sound, index)
 
         this.pos = pos;
 
@@ -18,8 +18,7 @@ export default class ShooterEnemy extends SimpleEnemy  {
         this.aimo = 5;
         this.projectile = []
         this.lastShotElapsedTime = 0;
-        this.snd = new Audio("./resources/plat3/sfx/projectile/projectile.wav");
-        this.snd.volume = 0.07;
+        
     }
 
 
@@ -68,7 +67,7 @@ export default class ShooterEnemy extends SimpleEnemy  {
             if(this.pos.x > this.player.pos.x) {
                 projectileDirection = "left";
             }
-            this.snd.play();
+            this.sound.play("sfx", 1);
             this.projectile.push(new Projectile(this.ctx, ((this.player.pos.y - this.pos.y) / (this.player.pos.x - this.pos.x)), this.pos, projectileDirection, this.projectile.length))
             this.lastShotElapsedTime = elapsedTime;
             this.aimo--

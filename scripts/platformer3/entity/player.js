@@ -41,7 +41,6 @@ export default class Player  {
     }
 
     update(deltaTime, enemies) {
-        // console.log(deltaTime)
         if(this.alive) {this.move(deltaTime);}
         this.collisionOnX();
         this.applyGravity(deltaTime);
@@ -49,7 +48,6 @@ export default class Player  {
         if(!this.noDeathMode) {
             this.checkEnemiesDeath(enemies);
         }
-        //console.log(this.grounded);
     }
 
     render() {
@@ -125,7 +123,6 @@ export default class Player  {
                 }
             }
             if(doBreak) {
-                //console.log("wda")
                 break;
                 
             }

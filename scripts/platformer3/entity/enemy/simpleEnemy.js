@@ -4,8 +4,8 @@ import { CONSTANTS } from "../../utils/gameConst.js";
 import Enemy from "./enemy.js";
 export default class SimpleEnemy extends Enemy  {
     
-    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map, camera, player, index) {
-        super(ctx, map, camera, player, index)
+    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map, camera, player, sound, index) {
+        super(ctx, map, camera, player, sound, index)
 
         this.pos = {
             x: Math.floor(Math.random() * 3000),//ctx.canvas.width/2 - this.width/2,

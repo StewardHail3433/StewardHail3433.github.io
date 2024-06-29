@@ -5,8 +5,8 @@ import CanonballProjectile from "../projectile/canonballProjectile.js";
 import ShooterEnemy from "./shooterEnemy.js";
 export default class CanonEnemy extends ShooterEnemy  {
     
-    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map, camera, player, pos, index) {
-        super(ctx, map, camera, player, pos, index)
+    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map, camera, player, pos, sound, index) {
+        super(ctx, map, camera, player, pos, sound, index)
 
         this.pos = pos;
 
@@ -19,8 +19,6 @@ export default class CanonEnemy extends ShooterEnemy  {
         this.aimo = 7;
         this.projectile = []
         this.lastShotElapsedTime = 0;
-        this.snd = new Audio("./resources/plat3/sfx/projectile/canon.wav");
-        this.snd.volume = 0.02;
     }
 
 
@@ -34,7 +32,6 @@ export default class CanonEnemy extends ShooterEnemy  {
     }
 
     renderDev() {
-        console.log("hsbad");
         const midX = (this.pos.x+this.width/2 + this.player.pos.x+this.player.width/2 ) / 2;
         const midY = (this.pos.y + this.player.pos.y) / 2;
 
@@ -83,11 +80,7 @@ export default class CanonEnemy extends ShooterEnemy  {
 
     shoot(elapsedTime){
         if(Math.floor(this.lastShotElapsedTime) + 0.5 <= Math.floor(elapsedTime) && this.aimo > 0) {
-            let projectileDirection = "right";
-            if(this.pos.x > this.player.pos.x) {
-                projectileDirection = "left";
-            }
-            this.snd.play();
+            this.sound.play("sfx", 2);
             this.projectile.push(new CanonballProjectile(
                 this.ctx, 
                 {x:this.pos.x+this.width/2, y:this.pos.y}, 

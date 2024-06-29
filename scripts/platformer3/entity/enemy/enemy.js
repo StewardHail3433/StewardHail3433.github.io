@@ -3,7 +3,7 @@ import { collision } from "../../utils/collisionChecker.js";
 import { CONSTANTS } from "../../utils/gameConst.js";
 export default class Enemy  {
     
-    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map, camera, player, index) {
+    constructor(/** @type {CanvasRenderingContext2D} */ ctx, map, camera, player, sound, index) {
         this.width = 10
         this.height = 20
         this.pos = {
@@ -35,20 +35,20 @@ export default class Enemy  {
         this.shouldDelete = false;
 
         this.noEnemyDeath = false;
+        this.volMultiplier = 0;
+        this.sound = sound;
     }
 
     update(deltaTime) {
         // console.log(deltaTime)
         if(!this.noEnemyDeath) {
             if (collision(this, this.player) && this.player.pos.y + this.player.height >= this.pos.y && this.player.pos.y + this.player.height <= this.pos.y + this.height * 0.125) {
-                var snd = new Audio("./resources/plat3/sfx/enemyDeath.wav");
-                snd.play()
+                this.sound.play("sfx", 0);
                 this.player.vel.y = -2 * CONSTANTS.movementScale;
                 this.shouldDelete = true;
                 return; 
             }
         }
-    
 
         this.move(deltaTime);
         this.collisionOnX();
