@@ -1,11 +1,11 @@
-import UI from "./ui/ui.js";
+import UI from "./UI/ui.js";
 import Player from "./entity/player.js";
 import Map from "./map/map.js";
 import Camera from "./camera/camera.js";
 import { CONSTANTS } from "./utils/gameConst.js";
 import SimpleEnemy from "./entity/enemy/simpleEnemy.js";
 import ShooterEnemy from "./entity/enemy/shooterEnemy.js";
-import CanonEnemy from "./entity/enemy/canonEnemy.js";
+import CanonEnemy from "./entity/enemy/CanonEnemy.js";
 import Sound from "./sound/sound.js";
 
 const canvas = document.getElementById('gameCanvas');
