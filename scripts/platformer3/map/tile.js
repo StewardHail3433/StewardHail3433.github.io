@@ -10,6 +10,8 @@ export default class Tile {
     #collision = false;
     shouldRender = false;
     img;
+    isLiquid = false;
+    isClimbable = false; 
     constructor(ctx) {
         this.#ctx = ctx;
         

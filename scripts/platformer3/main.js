@@ -99,7 +99,6 @@ function render() {
     enemies[i].render();}
     player.render();
      //-camera.height/2)
-    map.renderMini();
     // splayer.render();
     ctx.restore();
     
@@ -123,6 +122,10 @@ function renderTimer() {
 document.getElementById("runButton").addEventListener("click", function () {
     lastTimestamp = performance.now();
     sound.play("music", 0);
+    player.pos = {
+        x: 0,//ctx.canvas.width/2 - this.width/2,
+        y: 0//ctx.canvas.height/2 - this.height/2
+    }
 
     requestAnimationFrame(gameLoop);
     this.disabled = true;
@@ -143,6 +146,25 @@ canvas.addEventListener('keydown', function(e) {
             state = "play";
             ui.pauseState = "none";
         }
+    }
+    if (e.key === "r") {
+        
+        lastTimestamp = performance.now();
+        sound.play("music", 0);
+        player.pos = {
+            x: 0,//ctx.canvas.width/2 - this.width/2,
+            y: 0//ctx.canvas.height/2 - this.height/2
+        }
+        map.setlevel("level1");
+        requestAnimationFrame(gameLoop);
+        this.disabled = true;
+    }
+    if(e.key === "0") {
+        map.setlevel("level");
+    }
+    if(e.key === "1") {
+        map.map = 
+        map.setlevel("level1");
     }
     map.keyDownInput(e.key)
     player.keyDownInput(e.key);

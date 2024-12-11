@@ -1,3 +1,4 @@
+import { collision } from "../../utils/collisionChecker.js";
 import { CONSTANTS } from "../../utils/gameConst.js";
 import Projectile from "./projectile.js";
 

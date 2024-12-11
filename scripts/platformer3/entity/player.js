@@ -8,8 +8,8 @@ export default class Player  {
         this.width = 10
         this.height = 20
         this.pos = {
-            x: 1200,//ctx.canvas.width/2 - this.width/2,
-            y: 300//ctx.canvas.height/2 - this.height/2
+            x: -1000,//ctx.canvas.width/2 - this.width/2,
+            y: 0//ctx.canvas.height/2 - this.height/2
         }
 
         this.vel = {
@@ -29,7 +29,9 @@ export default class Player  {
         }
         this.speed = 1 * CONSTANTS.movementScale; //pixels per second
         this.gravity = 5 * CONSTANTS.movementScale ; //pixels per second squared
+        this.liquidGravity = 3.5 * CONSTANTS.movementScale ; //pixels per second squared
         this.jumpSpeed = 3 * CONSTANTS.movementScale; //pixels per second
+
         this.ctx = ctx;
         this.grounded = false;
 
@@ -38,6 +40,9 @@ export default class Player  {
 
         this.alive = true;
         this.noDeathMode = false;
+
+        this.inLiquid = false;
+        this.inClimbable = false;
     }
 
     update(deltaTime, enemies) {
@@ -65,12 +70,31 @@ export default class Player  {
         } else {
             this.vel.x = 0;
         }
+        if(!this.inLiquid) {
+            if (this.keys.w && (this.grounded || this.inClimbable) && this.vel.y === 0) {
+                this.vel.y = -this.jumpSpeed;
+                this.grounded = false;
+            }
 
-        if (this.keys.w && this.grounded && this.vel.y === 0) {
-            this.vel.y = -this.jumpSpeed;
-            this.grounded = false;
+            if (this.keys.s && this.inClimbable) {
+                this.vel.y = this.jumpSpeed;
+                console.log("ASd")
+            }
+
+            if(!this.keys.w && !this.keys.s && this.inClimbable) {
+                this.vel.y = 0;
+            }
+        } else {
+            if (this.keys.w && this.keys.s) {
+                this.vel.y = 0
+            } else if (this.keys.w) {
+                this.vel.y = -this.speed;
+            } else if (this.keys.s) {
+                this.vel.y = this.speed;
+            } else {
+                //this.vel.y = 0;
+            }
         }
-
         this.pos.x += this.vel.x * deltaTime;
 
     }
@@ -85,6 +109,9 @@ export default class Player  {
         if (key === "w" || key === "ArrowUp" || key === " " && this.grounded == true && this.vel.y == 0) {
             this.keys.w = true;
         }
+        if (key === "s") {
+            this.keys.s = true;
+        }
     }
 
     keyUpInput(/** @type {KeyboardEvent} */ key) {
@@ -96,6 +123,9 @@ export default class Player  {
         }
         if (key === "w" || key === "ArrowUp" || key === " ") {
             this.keys.w = false;
+        }
+        if (key === "s") {
+            this.keys.s = false;
         }
     }
 
@@ -171,6 +201,7 @@ export default class Player  {
             if(enemies[i].projectileEnemy) {
                 for(let j = 0; j < enemies[i].projectile.length; j++) {
                     if(collision(this, enemies[i].projectile[j])) {
+                        enemies[i].projectile[j].delete = true;
                         this.alive = false;
                     };
                 }
@@ -179,7 +210,50 @@ export default class Player  {
     }
 
     applyGravity(deltaTime) {
-        this.vel.y += this.gravity * deltaTime;
+        let shouldApplyGravity = true;
+        for (let i = 0; i < this.map.length; i++) {
+            for (let j = 0; j < this.map[i].length; j++) {
+                let tile = this.map[i][j];
+                if(collision(this, tile) && tile.isClimbable) {
+                    shouldApplyGravity = false;
+                    this.inClimbable = true;
+                    break;
+                } else {
+                    this.inClimbable = false;
+                    
+                }
+            }
+            if(shouldApplyGravity == false) {
+                break;
+            }
+        }
+        if(shouldApplyGravity) {
+            this.vel.y += this.gravity * deltaTime;
+        
+            let appliedLiquidGravity = false;
+            for (let i = 0; i < this.map.length; i++) {
+                for (let j = 0; j < this.map[i].length; j++) {
+                    let tile = this.map[i][j];
+                    if(collision(this, tile) && tile.isLiquid) {
+                        this.vel.y -= this.gravity * deltaTime;
+                        this.vel.y += this.liquidGravity * deltaTime;
+
+                        if(this.vel.y > 2 * CONSTANTS.movementScale) {
+                            this.vel.y = 2 * CONSTANTS.movementScale
+                        }
+                        appliedLiquidGravity = true;
+                        this.inLiquid = true;
+                        break;
+                    } else {
+                        this.inLiquid = false;
+                    }
+                }
+                if(appliedLiquidGravity) {
+                    break;
+                }
+            }
+        }
+
         this.pos.y += this.vel.y * deltaTime;
     }
 }

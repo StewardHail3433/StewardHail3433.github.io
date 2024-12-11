@@ -30,6 +30,14 @@ export default class UI {
                 editable:true,
                 focus: false
             },
+            liquidGravity: {
+                name: "liquidGravity",
+                getter: () => player.liquidGravity/CONSTANTS.movementScale,
+                setter: (x) => player.liquidGravity = x*CONSTANTS.movementScale,
+                increment: 0.2,
+                editable:true,
+                focus: false
+            },
             jumpSpeed: {
                 name: "jumpSpeed",
                 getter: () => player.jumpSpeed/CONSTANTS.movementScale,
