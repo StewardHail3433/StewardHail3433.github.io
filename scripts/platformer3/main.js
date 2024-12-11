@@ -163,7 +163,6 @@ canvas.addEventListener('keydown', function(e) {
         map.setlevel("level");
     }
     if(e.key === "1") {
-        map.map = 
         map.setlevel("level1");
     }
     map.keyDownInput(e.key)
