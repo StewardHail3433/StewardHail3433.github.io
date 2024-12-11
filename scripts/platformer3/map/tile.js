@@ -9,8 +9,10 @@ export default class Tile {
     #ctx;
     #collision = false;
     shouldRender = false;
+    img;
     constructor(ctx) {
         this.#ctx = ctx;
+        
     }
 
     
