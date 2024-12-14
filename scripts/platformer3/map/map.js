@@ -1,5 +1,6 @@
 import { CONSTANTS } from "../utils/gameConst.js";
 import Tile from "./tile.js";
+import TileImageLoader from "./tileImageLoader.js";
 
 export default class Map {
     /** @type {Tile[][]} */ map = [];
@@ -15,6 +16,31 @@ export default class Map {
         this.camera = camera;
         this.player = player
         this.showMini = false;
+        this.tileImageLoader = new TileImageLoader(this.tileSize);
+        const imageSources = {
+            grass1Side: "./resources/plat3/tiles/grass/grass1Side.png",
+            grassCorner: "./resources/plat3/tiles/grass/grassCorner.png",
+            grass3Sides: "./resources/plat3/tiles/grass/grass3Sides.png",
+            grass4Sides: "./resources/plat3/tiles/grass/grass4Sides.png",
+            grassSurrounded: "./resources/plat3/tiles/grass/grass1Side.png",
+            dirt: "./resources/plat3/tiles/dirt.png",
+            ladder: "./resources/plat3/tiles/ladder.png",
+            water: "./resources/plat3/tiles/water.png"
+        };
+
+        // Preload images
+        this.tileImageLoader.preloadImages(imageSources)
+            .then(() => {
+                console.log("All images preloaded");
+                this.loadMap(); // Load map after images are ready
+            })
+            .catch((error) => console.error(error));
+
+        
+            
+    }
+
+    loadMap() {
         fetch("./resources/plat3/level/level1.txt")
             .then((res) => res.text())
             .then((text) => {
@@ -22,7 +48,7 @@ export default class Map {
             /** @type {String[]} */ let lines = text.trim().split('\n');
                 for (let i = 0; i < lines.length; i++) {
                     this.map[i] = [];
-                    let startingY = (lines.length * -this.tileSize) + ctx.canvas.height;
+                    let startingY = (lines.length * -this.tileSize) + this.ctx.canvas.height;
                     for (let j = 0; j < lines[i].split(" ").length; j++) {
                         this.map[i][j] = new Tile(this.ctx);
                         this.map[i][j].value = parseInt(lines[i].split(" ")[j]);
@@ -32,20 +58,7 @@ export default class Map {
                         this.map[i][j].height = this.tileSize;
                         this.map[i][j].img = new Image(this.tileSize, this.tileSize);
                         
-                        if(this.map[i][j].value === 1) {
-                            this.map[i][j].img.src = "./resources/plat3/tiles/grass.png";
-                            this.map[i][j].collision = true;
-                        } else if(this.map[i][j].value === 2) {
-                            this.map[i][j].img.src = "./resources/plat3/tiles/dirt.png";
-                        } else if(this.map[i][j].value === 4) {
-                            this.map[i][j].img.src = "./resources/plat3/tiles/water.png";
-                            this.map[i][j].isLiquid = true;
-                        } else if(this.map[i][j].value === 3) {
-                            this.map[i][j].img.src = "./resources/plat3/tiles/ladder.png";
-                            this.map[i][j].isClimbable = true;
-                        } else{
-                            this.map[i][j].collision = false;
-                        }
+                        this.setTileData(this.map[i][j], i , j, lines);
 
                         
                     }
@@ -55,7 +68,76 @@ export default class Map {
                 console.log(this.map)
             })
             .catch((e) => console.error(e));
-            
+    }
+
+    rotateImage(image, angle) {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = this.tileSize;
+        canvas.height = this.tileSize;
+
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate((angle * Math.PI) / 180);
+        ctx.drawImage(image, -this.tileSize / 2, -this.tileSize / 2, this.tileSize, this.tileSize);
+
+        const rotatedImage = new Image(this.tileSize, this.tileSize);
+        rotatedImage.src = canvas.toDataURL();
+        return rotatedImage;
+    }
+
+    setTileData(tile, i , j, lines) {
+        if(tile.value === 1) {
+            tile.img.src = "./resources/plat3/tiles/grass/grass1Side.png";
+
+            const top = i > 0 ? this.map[i - 1][j].value : 0;
+            const bottom = i < lines.length - 1 ? parseInt(lines[i + 1].split(" ")[j]) : 0;
+            const left = j > 0 ? this.map[i][j - 1].value : 0;
+            const right = j < lines[i].split(" ").length - 1 ? parseInt(lines[i].split(" ")[j + 1]) : 0;
+
+            if (top === 0 && left === 0 && right === 0 && bottom === 0) {
+                tile.img.src = "./resources/plat3/tiles/grass/grass4Sides.png";
+            } else if (bottom === 0 && left === 0 && right === 0) {
+                tile.img = this.tileImageLoader.getImage("grass3Sides");
+            } else if (bottom === 0 && left === 0 && top === 0) {
+                tile.img = this.rotateImage(this.tileImageLoader.getImage("grass3Sides"), 90);
+            } else if (top === 0 && left === 0 && right === 0) {
+                tile.img = this.rotateImage(this.tileImageLoader.getImage("grass3Sides"), 180);
+            } else if (bottom === 0 && top === 0 && right === 0) {
+                tile.img = this.rotateImage(this.tileImageLoader.getImage("grass3Sides"), 270);
+            } else if (top === 0 && right === 0) {
+                tile.img = this.tileImageLoader.getImage("grassCorner");
+            } else if (bottom === 0 && right === 0) {
+                tile.img = this.rotateImage(this.tileImageLoader.getImage("grassCorner"), 90);
+            } else if (bottom === 0 && left === 0) {
+                tile.img = this.rotateImage(this.tileImageLoader.getImage("grassCorner"), 180);
+            } else if (top === 0 && left === 0) {
+                tile.img = this.rotateImage(this.tileImageLoader.getImage("grassCorner"), 270);
+            } else if (top === 0) {
+                tile.img.src = "./resources/plat3/tiles/grass/grass1Side.png";
+            } else if (left === 0) {
+                tile.img = this.rotateImage(this.tileImageLoader.getImage("grass1Side"), 270);      
+            } else if (right === 0) {
+                tile.img = this.rotateImage(this.tileImageLoader.getImage("grass1Side"), 90);          
+            } else if (bottom === 0) {
+                tile.img = this.rotateImage(this.tileImageLoader.getImage("grass1Side"), 180);          
+            }
+
+            tile.collision = true;
+        } else if(tile.value === 2) {
+            tile.img.src = "./resources/plat3/tiles/dirt.png";
+        } else if(tile.value === 3) {
+            tile.img.src = "./resources/plat3/tiles/ladder.png";
+            tile.isClimbable = true;
+        } else if(tile.value === 4) {
+            tile.img.src = "./resources/plat3/tiles/water.png";
+            tile.isLiquid = true;
+        } else if(tile.value === 5) {
+            tile.img.src = "./resources/plat3/tiles/lava.png";
+            tile.isLiquid = true;
+        } else{
+            tile.collision = false;
+        }
     }
 
     setlevel(levelstring) {
@@ -76,20 +158,7 @@ export default class Map {
                         this.map[i][j].height = this.tileSize;
                         this.map[i][j].img = new Image(this.tileSize, this.tileSize);
                         
-                        if(this.map[i][j].value === 1) {
-                            this.map[i][j].img.src = "./resources/plat3/tiles/grass.png";
-                            this.map[i][j].collision = true;
-                        } else if(this.map[i][j].value === 2) {
-                            this.map[i][j].img.src = "./resources/plat3/tiles/dirt.png";
-                        } else if(this.map[i][j].value === 4) {
-                            this.map[i][j].img.src = "./resources/plat3/tiles/water.png";
-                            this.map[i][j].isLiquid = true;
-                        } else if(this.map[i][j].value === 3) {
-                            this.map[i][j].img.src = "./resources/plat3/tiles/ladder.png";
-                            this.map[i][j].isClimbable = true;
-                        } else{
-                            this.map[i][j].collision = false;
-                        }
+                        this.setTileData(this.map[i][j], i, j, lines);
 
                         
                     }
