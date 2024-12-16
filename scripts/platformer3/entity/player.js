@@ -43,6 +43,9 @@ export default class Player  {
 
         this.inLiquid = false;
         this.inClimbable = false;
+
+        this.img = new Image(this.width, this.height);
+        this.img.src = "./resources/plat3/entities/player/player.png";
     }
 
     update(deltaTime, enemies) {
@@ -58,6 +61,7 @@ export default class Player  {
     render() {
         this.ctx.fillStyle = 'blue';
         this.ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
+        this.ctx.drawImage(this.img, this.pos.x, this.pos.y);
     }
     
     move(deltaTime){
