@@ -6,7 +6,7 @@ export default class Player  {
     
     constructor(/** @type {CanvasRenderingContext2D} */ ctx, map, camera) {
         this.width = 10
-        this.height = 20
+        this.height = 29
         this.pos = {
             x: -1000,//ctx.canvas.width/2 - this.width/2,
             y: 0//ctx.canvas.height/2 - this.height/2
@@ -43,6 +43,9 @@ export default class Player  {
 
         this.inLiquid = false;
         this.inClimbable = false;
+
+        this.img = new Image(this.width, this.height);
+        this.img.src = "./resources/plat3/entities/player/player.png";
     }
 
     update(deltaTime, enemies) {
@@ -57,7 +60,8 @@ export default class Player  {
 
     render() {
         this.ctx.fillStyle = 'blue';
-        this.ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
+        //this.ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
+        this.ctx.drawImage(this.img, this.pos.x, this.pos.y);
     }
     
     move(deltaTime){
