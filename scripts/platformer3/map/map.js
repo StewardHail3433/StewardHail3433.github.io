@@ -88,7 +88,7 @@ export default class Map {
 
     setTileData(tile, i , j, lines) {
         if(tile.value === 1) {
-            tile.img.src = "./resources/plat3/tiles/grass/grass1Side.png";
+            tile.img = this.tileImageLoader.getImage("dirt");
 
             const top = i > 0 ? this.map[i - 1][j].value : 0;
             const bottom = i < lines.length - 1 ? parseInt(lines[i + 1].split(" ")[j]) : 0;
@@ -96,7 +96,7 @@ export default class Map {
             const right = j < lines[i].split(" ").length - 1 ? parseInt(lines[i].split(" ")[j + 1]) : 0;
 
             if (top === 0 && left === 0 && right === 0 && bottom === 0) {
-                tile.img.src = "./resources/plat3/tiles/grass/grass4Sides.png";
+                tile.img = this.tileImageLoader.getImage("grass4Sides");
             } else if (bottom === 0 && left === 0 && right === 0) {
                 tile.img = this.tileImageLoader.getImage("grass3Sides");
             } else if (bottom === 0 && left === 0 && top === 0) {
@@ -114,7 +114,7 @@ export default class Map {
             } else if (top === 0 && left === 0) {
                 tile.img = this.rotateImage(this.tileImageLoader.getImage("grassCorner"), 270);
             } else if (top === 0) {
-                tile.img.src = "./resources/plat3/tiles/grass/grass1Side.png";
+                tile.img = this.tileImageLoader.getImage("grass1Side");
             } else if (left === 0) {
                 tile.img = this.rotateImage(this.tileImageLoader.getImage("grass1Side"), 270);      
             } else if (right === 0) {
@@ -125,15 +125,15 @@ export default class Map {
 
             tile.collision = true;
         } else if(tile.value === 2) {
-            tile.img.src = "./resources/plat3/tiles/dirt.png";
+            tile.img = this.tileImageLoader.getImage("dirt");
         } else if(tile.value === 3) {
-            tile.img.src = "./resources/plat3/tiles/ladder.png";
+            tile.img = this.tileImageLoader.getImage("ladder");
             tile.isClimbable = true;
         } else if(tile.value === 4) {
-            tile.img.src = "./resources/plat3/tiles/water.png";
+            tile.img = this.tileImageLoader.getImage("water");
             tile.isLiquid = true;
         } else if(tile.value === 5) {
-            tile.img.src = "./resources/plat3/tiles/lava.png";
+            tile.img = this.tileImageLoader.getImage("lava");
             tile.isLiquid = true;
         } else{
             tile.collision = false;
