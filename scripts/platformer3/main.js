@@ -17,7 +17,7 @@ ctx.canvas.height = screen.availHeight * .7;
 
 var sound = new Sound();
 
-ctx.canvas.style = "background-color: black;"
+ctx.canvas.style = "background-color: rgb(225, 171, 84);"
 
 var state = "play";
 

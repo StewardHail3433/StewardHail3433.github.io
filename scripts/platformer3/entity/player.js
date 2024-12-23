@@ -44,8 +44,13 @@ export default class Player  {
         this.inLiquid = false;
         this.inClimbable = false;
 
-        this.img = new Image(this.width, this.height);
-        this.img.src = "./resources/plat3/entities/player/player.png";
+        this.img = new Image();
+        this.img.src = "./resources/plat3/entities/player/playerIdle0.png";
+
+        this.currentAnimation = "None";
+        this.currentFrameIndex = 0;
+        this.animationTimer = 0;
+        this.frameDuration = 250;
     }
 
     update(deltaTime, enemies) {
@@ -56,12 +61,33 @@ export default class Player  {
         if(!this.noDeathMode) {
             this.checkEnemiesDeath(enemies);
         }
+        this.animationTimer += deltaTime * 1000;
+        if(this.vel.x == 0 && this.currentAnimation != "idle") {
+            this.currentAnimation = "idle";
+        } else if (this.vel.x !== 0 && this.currentAnimation != "walk") {
+            this.currentFrameIndex = 0;
+            this.currentAnimation = "walk";
+        }
+
     }
 
     render() {
         this.ctx.fillStyle = 'blue';
         //this.ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
-        this.ctx.drawImage(this.img, this.pos.x, this.pos.y);
+        //this.ctx.drawImage(this.img, this.pos.x, this.pos.y)
+        
+        
+        if (this.animationTimer >= this.frameDuration) {
+            this.animationTimer = 0;
+            this.currentFrameIndex = (this.currentFrameIndex + 1) % (this.img.width / this.width)
+        }
+        if(this.currentAnimation == "idle") {
+            this.img.src = "./resources/plat3/entities/player/playerIdle0.png";
+        } else if (this.currentAnimation == "walk") {
+            this.img.src = "./resources/plat3/entities/player/playerWalk.png";
+        }
+        this.ctx.drawImage(this.img,  this.currentFrameIndex * this.width, 0, this.width, this.height, this.pos.x, this.pos.y, this.width, this.height);
+
     }
     
     move(deltaTime){
