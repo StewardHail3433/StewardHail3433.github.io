@@ -177,7 +177,11 @@ export default class Map {
                  if(tile.shouldRender) {
                     this.ctx.beginPath();
                     //this.ctx.rect(this.map[i][j].pos.x, this.map[i][j].pos.y, this.map[i][j].width, this.map[i][j].height);
-                    this.ctx.drawImage(tile.img, tile.pos.x, tile.pos.y, this.tileSize, this.tileSize);
+                    try {
+                        this.ctx.drawImage(tile.img, tile.pos.x, tile.pos.y, this.tileSize, this.tileSize);
+                    } catch (e) {
+                        console.error(tile.img.src + "\n" + e)
+                    }
                     if(tile.value == 1) {
                         this.ctx.fillStyle = "green";
                     } else if(tile.value == 2) {

@@ -108,7 +108,6 @@ export default class Player  {
 
             if (this.keys.s && this.inClimbable) {
                 this.vel.y = this.jumpSpeed;
-                console.log("ASd")
             }
 
             if(!this.keys.w && !this.keys.s && this.inClimbable) {
