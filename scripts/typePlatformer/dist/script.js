@@ -81,4 +81,17 @@ function render() {
     }
     requestAnimationFrame(render);
 }
+document.getElementById("playerColor").addEventListener("input", (e) => {
+    var hex = document.getElementById("playerColor").value.replace("#", "");
+    if (hex.length === 3) {
+        hex = hex.split("").map(c => c + c).join(""); // Expand shorthand hex
+    }
+    const red = parseInt(hex.substring(0, 2), 16);
+    const green = parseInt(hex.substring(2, 4), 16);
+    const blue = parseInt(hex.substring(4, 6), 16);
+    player.getHitboxComponent().setColor({ red: red, green: green, blue: blue });
+    if (isMultiplayer) {
+        socket.emit("updatePlayer", player.serialize());
+    }
+});
 render();
