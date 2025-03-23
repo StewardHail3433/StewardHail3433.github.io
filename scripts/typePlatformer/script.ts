@@ -1,12 +1,14 @@
 import { HealthComponent } from "./components/HealthComponent.js";
 import { HitboxComponent } from "./components/HitboxComponent.js";
 import { Entity } from "./entity/Enity.js";
+import { Player } from "./entity/player/Player.js";
 
 const canvas: HTMLCanvasElement = document.getElementById("gameCanvas") as HTMLCanvasElement;
 const ctx: CanvasRenderingContext2D = canvas.getContext("2d") as CanvasRenderingContext2D;
 const joinButton = document.getElementById("joinMultiplayer") as HTMLButtonElement;
+const warningDiv = (document.getElementById("test") as HTMLElement);
 
-var player: Entity = new Entity(new HealthComponent(100, 100), new HitboxComponent({x: 100,
+var player: Player = new Player("TIm", new HealthComponent(100, 100), new HitboxComponent({x: 100,
     y: 100,
     width: 32,
     height: 32,
@@ -17,38 +19,6 @@ let players: Record<string, Entity> = {};
 declare const io: any;
 let isMultiplayer = false; // Start in single-player mode
 let socket: any = null;
-
-document.addEventListener("keydown", (event) => {
-    if(event.key === 't') {
-        player.getHitboxComponent().getHitbox().x = 200;
-        player.getHitboxComponent().setColor({red: 0, green: 255, blue: 0});
-    }
-
-    let moved = false;
-    const speed = 10;
-    
-    if (event.key === "ArrowLeft") {
-        player.getHitboxComponent().getHitbox().x -= speed;
-        moved = true;
-    }
-    if (event.key === "ArrowRight") {
-        player.getHitboxComponent().getHitbox().x += speed;
-        moved = true;
-    }
-    if (event.key === "ArrowUp") {
-        player.getHitboxComponent().getHitbox().y -= speed;
-        moved = true;
-    }
-    if (event.key === "ArrowDown") {
-        player.getHitboxComponent().getHitbox().y += speed;
-        moved = true;
-    }
-
-    // Send new position to server if in multiplayer mode
-    if (moved && isMultiplayer && socket) {
-        socket.emit("updatePlayer", player.serialize());
-    }
-})
 
 // Join Multiplayer Button Click
 joinButton.addEventListener("click", () => {
@@ -71,6 +41,22 @@ joinButton.addEventListener("click", () => {
                 players[id] = Entity.deserialize(data[id]);
             }
         }
+    });
+
+    socket.on("AFKWarning", (data: any) => {
+        warningDiv.textContent = data.message;
+        warningDiv.style.color = "red"; 
+
+        setTimeout(() => {
+            warningDiv.style.color = "";
+        }, 500);
+
+    });
+
+    socket.on("forceDisconnect", (data: any) => {
+        socket.disconnect();
+        alert(data.message);
+        warningDiv.textContent = "";
     });
 
     socket.on("disconnect", () => {
@@ -99,6 +85,24 @@ function render() {
     requestAnimationFrame(render);
 
 }
+function update(dt:number) {
+    player.update(dt);
+
+    if (player.isMoving() && isMultiplayer && socket) {
+        socket.emit("updatePlayer", player.serialize());
+    }
+}
+
+let lastTime = 0;
+
+function gameLoop(currentTime: number) {
+    const dt = (currentTime - lastTime) / 1000; // Convert milliseconds to seconds
+    lastTime = currentTime;
+
+    update(dt);
+    render()
+    requestAnimationFrame(gameLoop);
+}
 (document.getElementById("playerColor") as HTMLInputElement).addEventListener("input", (e) => {
     var hex = (document.getElementById("playerColor") as HTMLInputElement).value.replace("#","");
     if (hex.length === 3) {
@@ -111,6 +115,8 @@ function render() {
     player.getHitboxComponent().setColor({red: red, green: green, blue: blue});
     if(isMultiplayer) {
         socket.emit("updatePlayer", player.serialize());
+        warningDiv.textContent = "";
     }
 })
-render();
+requestAnimationFrame(gameLoop);
+

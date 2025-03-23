@@ -1,40 +1,33 @@
 import { HealthComponent } from "../components/HealthComponent.js";
 import { HitboxComponent } from "../components/HitboxComponent.js";
 export class Entity {
-    constructor(healthComponent, hitbox) {
+    constructor(healthComponent, hitboxComponent) {
+        this.velocity = { x: 0, y: 0 };
+        this.speed = 120;
         this.healthComponent = healthComponent;
-        this.hitbox = hitbox;
+        this.hitboxComponent = hitboxComponent;
     }
-    update() {
+    update(dt) {
+        this.hitboxComponent.setHitbox(Object.assign(Object.assign({}, this.hitboxComponent.getHitbox()), { x: this.hitboxComponent.getHitbox().x + this.velocity.x * dt, y: this.hitboxComponent.getHitbox().y + this.velocity.y * dt }));
     }
     render(ctx) {
-        var _a, _b, _c;
         ctx.beginPath();
-        if (this.hitbox.getColor()) {
-            ctx.fillStyle = ("rgb(" + ((_a = this.hitbox.getColor()) === null || _a === void 0 ? void 0 : _a.red.toString()) + "," + ((_b = this.hitbox.getColor()) === null || _b === void 0 ? void 0 : _b.green.toString()) + "," + ((_c = this.hitbox.getColor()) === null || _c === void 0 ? void 0 : _c.blue.toString()) + ")");
-        }
-        else {
-            ctx.fillStyle = "red";
-        }
-        ctx.fillRect(this.hitbox.getHitbox().x, this.hitbox.getHitbox().y, this.hitbox.getHitbox().width, this.hitbox.getHitbox().height);
+        ctx.fillStyle = ("rgb(" + this.hitboxComponent.getColor().red.toString() + "," + this.hitboxComponent.getColor().green.toString() + "," + this.hitboxComponent.getColor().blue.toString() + ")");
+        ctx.fillRect(this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
         ctx.closePath();
     }
     getHitboxComponent() {
-        return this.hitbox;
+        return this.hitboxComponent;
     }
     // Convert to plain object for sending via WebSocket
     serialize() {
         return {
-            health: this.healthComponent.getHealth(),
-            x: this.hitbox.getHitbox().x,
-            y: this.hitbox.getHitbox().y,
-            width: this.hitbox.getHitbox().width,
-            height: this.hitbox.getHitbox().height,
-            color: this.hitbox.getColor(),
+            healthComponent: this.healthComponent.serialize(),
+            hitboxComponent: this.hitboxComponent.serialize()
         };
     }
     // Create an Entity from received JSON data
     static deserialize(data) {
-        return new Entity(new HealthComponent(data.health, 100), new HitboxComponent({ x: data.x, y: data.y, width: data.width, height: data.height }, data.color));
+        return new Entity(HealthComponent.deserialize(data.healthComponent), HitboxComponent.deserialize(data.hitboxComponent));
     }
 }
