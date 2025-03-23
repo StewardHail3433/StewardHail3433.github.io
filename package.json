@@ -1,0 +1,30 @@
+{
+  "name": "stewardhail3433.github.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "lite-server",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StewardHail3433/StewardHail3433.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/StewardHail3433/StewardHail3433.github.io/issues"
+  },
+  "homepage": "https://github.com/StewardHail3433/StewardHail3433.github.io#readme",
+  "devDependencies": {
+    "lite-server": "^2.6.1",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "minimist": "^1.2.8",
+    "wrap-ansi": "^9.0.0"
+  }
+}
