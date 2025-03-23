@@ -2,97 +2,98 @@ import { HealthComponent } from "./components/HealthComponent.js";
 import { HitboxComponent } from "./components/HitboxComponent.js";
 import { Entity } from "./entity/Enity.js";
 import { Player } from "./entity/player/Player.js";
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-const joinButton = document.getElementById("joinMultiplayer");
-const warningDiv = document.getElementById("test");
-var player = new Player("TIm", new HealthComponent(100, 100), new HitboxComponent({ x: 100,
-    y: 100,
-    width: 32,
-    height: 32,
-}));
-let players = {};
-let isMultiplayer = false; // Start in single-player mode
-let socket = null;
-// Join Multiplayer Button Click
-joinButton.addEventListener("click", () => {
-    if (isMultiplayer)
-        return;
-    console.log("Attempting to join multiplayer...");
-    socket = io("https://webserver-production-ec5c.up.railway.app");
-    socket.on("connect", () => {
-        console.log("Connected to multiplayer server!");
-        isMultiplayer = true;
-        joinButton.textContent = "Connected!";
-        socket.emit("newPlayer", player.serialize());
-    });
-    socket.on("updatePlayers", (data) => {
-        players = {};
-        for (const id in data) {
-            if (id !== socket.id) {
-                players[id] = Entity.deserialize(data[id]);
+class Game {
+    constructor() {
+        this.players = {};
+        this.isMultiplayer = false;
+        this.socket = null;
+        this.lastTime = 0;
+        this.canvas = document.getElementById("gameCanvas");
+        this.ctx = this.canvas.getContext("2d");
+        this.joinButton = document.getElementById("joinMultiplayer");
+        this.warningDiv = document.getElementById("test");
+        this.player = new Player("TIm", new HealthComponent(100, 100), new HitboxComponent({
+            x: 100, y: 100, width: 32, height: 32,
+        }));
+        this.setupEventListeners();
+        requestAnimationFrame(this.gameLoop.bind(this));
+    }
+    setupEventListeners() {
+        this.multiplayerEvents();
+        document.getElementById("playerColor").addEventListener("input", (e) => {
+            var hexValue = document.getElementById("playerColor").value.replace("#", "");
+            this.player.getHitboxComponent().setColor({ hex: hexValue });
+            if (this.isMultiplayer) {
+                this.socket.emit("updatePlayer", this.player.serialize());
+                this.warningDiv.textContent = "";
+            }
+        });
+    }
+    multiplayerEvents() {
+        this.joinButton.addEventListener("click", () => {
+            if (this.isMultiplayer)
+                return;
+            console.log("Attempting to join multiplayer...");
+            this.socket = io("https://webserver-production-ec5c.up.railway.app");
+            this.socket.on("connect", () => {
+                console.log("Connected to multiplayer server!");
+                this.isMultiplayer = true;
+                this.joinButton.textContent = "Connected!";
+                this.socket.emit("newPlayer", this.player.serialize());
+            });
+            this.socket.on("updatePlayers", (data) => {
+                this.players = {};
+                for (const id in data) {
+                    if (id !== this.socket.id) {
+                        this.players[id] = Entity.deserialize(data[id]);
+                    }
+                }
+            });
+            this.socket.on("AFKWarning", (data) => {
+                this.warningDiv.textContent = data.message;
+                this.warningDiv.style.color = "red";
+                setTimeout(() => {
+                    this.warningDiv.style.color = "";
+                }, 500);
+            });
+            this.socket.on("forceDisconnect", (data) => {
+                this.socket.disconnect();
+                alert(data.message);
+                this.warningDiv.textContent = "";
+            });
+            this.socket.on("disconnect", () => {
+                console.log("Disconnected from server. Returning to single-player mode.");
+                this.isMultiplayer = false;
+                this.joinButton.textContent = "Join Multiplayer";
+            });
+            this.socket.on("connect_error", () => {
+                console.log("Multiplayer server not available.");
+                this.isMultiplayer = false;
+                this.joinButton.textContent = "Join Multiplayer";
+            });
+        });
+    }
+    gameLoop(currentTime) {
+        const dt = (currentTime - this.lastTime) / 1000; // Convert milliseconds to seconds
+        this.lastTime = currentTime;
+        this.update(dt);
+        this.render();
+        requestAnimationFrame(this.gameLoop.bind(this));
+    }
+    update(dt) {
+        this.player.update(dt);
+        if (this.player.isMoving() && this.isMultiplayer && this.socket) {
+            this.socket.emit("updatePlayer", this.player.serialize());
+        }
+    }
+    render() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.player.render(this.ctx);
+        if (this.isMultiplayer) {
+            for (const id in this.players) {
+                this.players[id].render(this.ctx);
             }
         }
-    });
-    socket.on("AFKWarning", (data) => {
-        warningDiv.textContent = data.message;
-        warningDiv.style.color = "red";
-        setTimeout(() => {
-            warningDiv.style.color = "";
-        }, 500);
-    });
-    socket.on("forceDisconnect", (data) => {
-        socket.disconnect();
-        alert(data.message);
-        warningDiv.textContent = "";
-    });
-    socket.on("disconnect", () => {
-        console.log("Disconnected from server. Returning to single-player mode.");
-        isMultiplayer = false;
-        joinButton.textContent = "Join Multiplayer";
-    });
-    socket.on("connect_error", () => {
-        console.log("Multiplayer server not available.");
-        isMultiplayer = false;
-        joinButton.textContent = "Join Multiplayer";
-    });
-});
-function render() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    player.render(ctx);
-    if (isMultiplayer) {
-        for (const id in players) {
-            players[id].render(ctx);
-        }
-    }
-    requestAnimationFrame(render);
-}
-function update(dt) {
-    player.update(dt);
-    if (player.isMoving() && isMultiplayer && socket) {
-        socket.emit("updatePlayer", player.serialize());
     }
 }
-let lastTime = 0;
-function gameLoop(currentTime) {
-    const dt = (currentTime - lastTime) / 1000; // Convert milliseconds to seconds
-    lastTime = currentTime;
-    update(dt);
-    render();
-    requestAnimationFrame(gameLoop);
-}
-document.getElementById("playerColor").addEventListener("input", (e) => {
-    var hex = document.getElementById("playerColor").value.replace("#", "");
-    if (hex.length === 3) {
-        hex = hex.split("").map(c => c + c).join(""); // Expand shorthand hex
-    }
-    const red = parseInt(hex.substring(0, 2), 16);
-    const green = parseInt(hex.substring(2, 4), 16);
-    const blue = parseInt(hex.substring(4, 6), 16);
-    player.getHitboxComponent().setColor({ red: red, green: green, blue: blue });
-    if (isMultiplayer) {
-        socket.emit("updatePlayer", player.serialize());
-        warningDiv.textContent = "";
-    }
-});
-requestAnimationFrame(gameLoop);
+new Game;
