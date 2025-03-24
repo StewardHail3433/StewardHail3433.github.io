@@ -45,7 +45,7 @@ jobs:
           
       - name: Copy dis/ to root folder
         run: |
-          cp -r dist ./dis &&  # Copy all files from dist to root
+          cp -r dist ./dis  # Copy all files from dist to root
 
       - name: Copy dist/ to root folder
         run: |
