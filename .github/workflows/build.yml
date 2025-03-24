@@ -45,7 +45,7 @@ jobs:
           
       - name: Copy dist/ to root folder
         run: |
-          cp -r dist .  # Copy all files from dist to root
+          cp -r dist/*a .  # Copy all files from dist to root
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
