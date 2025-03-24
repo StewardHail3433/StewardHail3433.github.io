@@ -30,20 +30,30 @@ jobs:
           path: dist/
 
   deploy:
-    needs: build
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Download artifact
-        uses: actions/download-artifact@v4
         with:
-          name: dist-files
-          path: dist/
+          fetch-depth: 0  # Ensures full history for gh-pages branch
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build  # Ensure it outputs to dist/
+
+      - name: Prepare deployment folder
+        run: |
+          mkdir gh-pages-deploy
+          cp -r dist/* gh-pages-deploy/
+          cp -r * gh-pages-deploy/
+          rm -rf gh-pages-deploy/{.git,.github,dist,node_modules}  # Cleanup unnecessary files
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: gh-pages
-          folder: dist
+          branch: gh-pages  # Deploy to gh-pages branch
+          folder: gh-pages-deploy  # Deploy everything in this folder
+
