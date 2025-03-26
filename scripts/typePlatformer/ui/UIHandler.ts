@@ -8,9 +8,9 @@ export class UIHandler {
     private debugInfo: UIComponent;
     private debugTeleportToCenterButton: UIComponent;
     private keys: { [key: string]: boolean } = {};
-    private keysToggled: { [key: string]: boolean } = {"F3": false};;
-
-    constructor(canvas: HTMLCanvasElement) {
+    private keysToggled: { [key: string]: boolean } = {"F3": false};
+    private playermovement?: UIComponent[];
+    constructor(canvas: HTMLCanvasElement, player: Player) {
         this.debug = new UIComponent({
             x: 0, y: 0, width: canvas.width / 5, height: canvas.height
         }, {red: 255, green: 0, blue: 0, alpha: 0.5}, true);
@@ -24,19 +24,27 @@ export class UIHandler {
         this.debugInfo.hide();
         this.debugTeleportToCenterButton.hide();
 
+        this.playermovement = player.getMovementButton();
+        player.setToKeyboard();
+
         document.addEventListener("keydown", (event) => this.handleKeyDown(event));
         document.addEventListener("keyup", (event) => this.handleKeyUp(event));
     }
 
-    public render(ctx: CanvasRenderingContext2D) {
+    public render(ctx: CanvasRenderingContext2D, player: Player) {
         this.debug.render(ctx);
         this.debugInfo.render(ctx, this.debug)
         this.debugTeleportToCenterButton.render(ctx, this.debug);
+        if(player?.getTouchMode()) {
+            for(var button: UIComponentButton of this.playermovement) {
+                button.update();
+            }
+        }
     }
 
     public update(player?: Player) {
         (this.debugInfo as UIComponentLabel).update("Player coord: (" + (player?.getHitboxComponent().getHitbox().x)?.toFixed(0) + ", " + (player?.getHitboxComponent().getHitbox().y)?.toFixed(0) + ")");
-        (this.debugTeleportToCenterButton as UIComponentButton).setAction(() => {
+        (this.debugTeleportToCenterButton as UIComponentButton).setOnTrue(() => {
             player?.getHitboxComponent().setHitbox({
                 ...player.getHitboxComponent().getHitbox(),
                 x: 480/2,
@@ -52,6 +60,17 @@ export class UIHandler {
             this.debug.hide();
             this.debugInfo.hide();
             this.debugTeleportToCenterButton.hide();
+        }
+        if(this.keysToggled["t"]) {
+            player?.setToTouch();
+        } else {
+            player?.setToKeyboard();
+        }
+
+        if(player?.getTouchMode()) {
+            for(var button: UIComponentButton of this.playermovement) {
+                button.update();
+            }
         }
     }
 

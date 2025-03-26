@@ -32,7 +32,7 @@ class Game {
         this.player = new Player("TIm", new HealthComponent(100, 100), new HitboxComponent({
             x: 100, y: 100, width: 32, height: 32,
         }));
-        this.uiHandler = new UIHandler(this.canvas);
+        this.uiHandler = new UIHandler(this.canvas, this.player);
 
         this.setupEventListeners();
         requestAnimationFrame(this.gameLoop.bind(this));
@@ -132,7 +132,7 @@ class Game {
                 this.players[id].render(this.ctx);
             }
         }
-        this.uiHandler.render(this.ctx);
+        this.uiHandler.render(this.ctx, this.player);
     }
 }
 
