@@ -1,5 +1,5 @@
 export class HitboxComponent {
-    constructor(hitbox, color = { red: 255, green: 0, blue: 255 }) {
+    constructor(hitbox, color = { red: 255, green: 0, blue: 255, alpha: 1.0 }) {
         this.hitbox = hitbox;
         this.color = color;
     }
@@ -24,7 +24,8 @@ export class HitboxComponent {
             const red = parseInt(hex.substring(0, 2), 16);
             const green = parseInt(hex.substring(2, 4), 16);
             const blue = parseInt(hex.substring(4, 6), 16);
-            this.color = { red: red, green: green, blue: blue };
+            const alpha = parseInt(hex.substring(6, 8), 16);
+            this.color = { red: red, green: green, blue: blue, alpha: alpha };
         }
     }
     serialize() {

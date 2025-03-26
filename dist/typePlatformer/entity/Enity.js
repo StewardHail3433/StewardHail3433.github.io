@@ -11,10 +11,8 @@ export class Entity {
         this.hitboxComponent.setHitbox(Object.assign(Object.assign({}, this.hitboxComponent.getHitbox()), { x: this.hitboxComponent.getHitbox().x + this.velocity.x * dt, y: this.hitboxComponent.getHitbox().y + this.velocity.y * dt }));
     }
     render(ctx) {
-        ctx.beginPath();
         ctx.fillStyle = ("rgb(" + this.hitboxComponent.getColor().red.toString() + "," + this.hitboxComponent.getColor().green.toString() + "," + this.hitboxComponent.getColor().blue.toString() + ")");
         ctx.fillRect(this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
-        ctx.closePath();
     }
     getHitboxComponent() {
         return this.hitboxComponent;
