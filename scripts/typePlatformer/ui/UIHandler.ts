@@ -24,7 +24,7 @@ export class UIHandler {
         this.debugInfo.hide();
         this.debugTeleportToCenterButton.hide();
 
-        this.playermovement = player.getMovementButton();
+        this.playermovement = player.getMovementButton(canvas);
         player.setToKeyboard();
 
         document.addEventListener("keydown", (event) => this.handleKeyDown(event));
@@ -36,7 +36,7 @@ export class UIHandler {
         this.debugInfo.render(ctx, this.debug)
         this.debugTeleportToCenterButton.render(ctx, this.debug);
         if(player?.getTouchMode()) {
-            for(var button: UIComponentButton of this.playermovement) {
+            for(var button of this.playermovement) {
                 button.update();
             }
         }
@@ -68,7 +68,7 @@ export class UIHandler {
         }
 
         if(player?.getTouchMode()) {
-            for(var button: UIComponentButton of this.playermovement) {
+            for(var button of this.playermovement) {
                 button.update();
             }
         }
