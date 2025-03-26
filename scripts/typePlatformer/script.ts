@@ -2,6 +2,7 @@ import { HealthComponent } from "./components/HealthComponent.js";
 import { HitboxComponent } from "./components/HitboxComponent.js";
 import { Entity } from "./entity/Enity.js";
 import { Player } from "./entity/player/Player.js";
+import { UIHandler } from "./ui/UIHandler.js";
 
 declare const io: any;
 class Game {
@@ -9,7 +10,10 @@ class Game {
     private ctx: CanvasRenderingContext2D;
     private joinButton: HTMLButtonElement;
     private warningDiv: HTMLElement;
+
     private player: Player;
+    private uiHandler: UIHandler;
+
     private players: Record<string, Entity> = {};
     private isMultiplayer: boolean = false;
     private socket: any = null;
@@ -18,12 +22,17 @@ class Game {
     constructor() {
         this.canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
         this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
+
+        this.canvas.width = 480;
+        this.canvas.height = 320;
+        
         this.joinButton = document.getElementById("joinMultiplayer") as HTMLButtonElement;
         this.warningDiv = document.getElementById("test") as HTMLElement;
         
         this.player = new Player("TIm", new HealthComponent(100, 100), new HitboxComponent({
             x: 100, y: 100, width: 32, height: 32,
         }));
+        this.uiHandler = new UIHandler(this.canvas);
 
         this.setupEventListeners();
         requestAnimationFrame(this.gameLoop.bind(this));
@@ -111,6 +120,7 @@ class Game {
         if (this.player.isMoving() && this.isMultiplayer && this.socket) {
             this.socket.emit("updatePlayer", this.player.serialize());
         }
+        this.uiHandler.update(this.player);
     }
 
     private render() {
@@ -122,6 +132,7 @@ class Game {
                 this.players[id].render(this.ctx);
             }
         }
+        this.uiHandler.render(this.ctx);
     }
 }
 
