@@ -10,6 +10,7 @@ export class UIHandler {
     private keys: { [key: string]: boolean } = {};
     private keysToggled: { [key: string]: boolean } = {"F3": false};
     private playermovement?: UIComponent[];
+    private player: Player;
     constructor(canvas: HTMLCanvasElement, player: Player) {
         this.debug = new UIComponent({
             x: 0, y: 0, width: canvas.width / 5, height: canvas.height
@@ -23,9 +24,10 @@ export class UIHandler {
         this.debug.hide();
         this.debugInfo.hide();
         this.debugTeleportToCenterButton.hide();
+        this.player = player
 
-        this.playermovement = player.getMovementButton(canvas);
-        player.setToKeyboard();
+        this.playermovement = this.player.getMovementButton(canvas);
+        console.log(this.player.getTouchMode())
 
         document.addEventListener("keydown", (event) => this.handleKeyDown(event));
         document.addEventListener("keyup", (event) => this.handleKeyUp(event));
@@ -35,18 +37,18 @@ export class UIHandler {
         this.debug.render(ctx);
         this.debugInfo.render(ctx, this.debug)
         this.debugTeleportToCenterButton.render(ctx, this.debug);
-        if(player?.getTouchMode()) {
+        if(this.player.getTouchMode() && this.playermovement) {
             for(var button of this.playermovement) {
-                button.update();
+                (button as UIComponentButton).render(ctx);
             }
         }
     }
 
     public update(player?: Player) {
-        (this.debugInfo as UIComponentLabel).update("Player coord: (" + (player?.getHitboxComponent().getHitbox().x)?.toFixed(0) + ", " + (player?.getHitboxComponent().getHitbox().y)?.toFixed(0) + ")");
+        (this.debugInfo as UIComponentLabel).update("Player coord: (" + (this.player.getHitboxComponent().getHitbox().x)?.toFixed(0) + ", " + (player?.getHitboxComponent().getHitbox().y)?.toFixed(0) + ")");
         (this.debugTeleportToCenterButton as UIComponentButton).setOnTrue(() => {
-            player?.getHitboxComponent().setHitbox({
-                ...player.getHitboxComponent().getHitbox(),
+            this.player.getHitboxComponent().setHitbox({
+                ...this.player.getHitboxComponent().getHitbox(),
                 x: 480/2,
                 y: 320/2
             })
@@ -61,15 +63,15 @@ export class UIHandler {
             this.debugInfo.hide();
             this.debugTeleportToCenterButton.hide();
         }
-        if(this.keysToggled["t"]) {
-            player?.setToTouch();
+        if(this.keysToggled["l"]) {
+            this.player.setToKeyboard();
         } else {
-            player?.setToKeyboard();
+            this.player.setToTouch();
         }
 
-        if(player?.getTouchMode()) {
+        if(this.player.getTouchMode() && this.playermovement) {
             for(var button of this.playermovement) {
-                button.update();
+                (button as UIComponentButton).update();
             }
         }
     }

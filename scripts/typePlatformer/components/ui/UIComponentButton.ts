@@ -1,3 +1,4 @@
+import { UIComponent } from "./UIComponent.js";
 import { UIComponentLabel } from "./UIComponentLabel.js";
 
 export class UIComponentButton extends UIComponentLabel {
@@ -83,6 +84,7 @@ export class UIComponentButton extends UIComponentLabel {
             this.color = this.defaultColor;
             this.click = false;
             this.shouldOnTrue = false;
+            this.shouldOnFalse = true;
         }
     }
 
@@ -121,31 +123,34 @@ export class UIComponentButton extends UIComponentLabel {
             this.color = this.defaultColor;
             this.click = false;
             this.shouldOnTrue = false;
+            this.shouldOnFalse = true;
         }
     } 
 
     public update(text: string = this.text) {
         super.update(text);
-        if(this.click) {
-            if(this.shouldOnTrue) {
-                if(this.onTrue) {
-                    this.onTrue();
-                    this.shouldOnTrue = false;
+        if(!this.hidden) {
+            if(this.click) {
+                if(this.shouldOnTrue) {
+                    if(this.onTrue) {
+                        this.onTrue();
+                        this.shouldOnTrue = false;
+                    }
                 }
-            }
-            if(this.whileTrue) {
-                this.whileTrue();
-            }
-        } else {
-            if(this.shouldOnFalse) {
-                if(this.onFalse) {
-                    this.onFalse();
-                    this.shouldOnFalse = false;
+                if(this.whileTrue) {
+                    this.whileTrue();
                 }
+            } else {
+                if(this.shouldOnFalse) {
+                    if(this.onFalse) {
+                        this.onFalse();
+                        this.shouldOnFalse = false;
+                    }
+                }
+                if(this.whileFalse) {
+                    this.whileFalse();
+                } 
             }
-            if(this.whileFalse) {
-                this.whileFalse();
-            } 
         }
     }
 
@@ -163,6 +168,10 @@ export class UIComponentButton extends UIComponentLabel {
 
     public setWhileFalse(action: () => void) {
         this.whileFalse = action;
+    }
+
+    public render(ctx: CanvasRenderingContext2D, element?: UIComponent): void {
+        super.render(ctx, element);
     }
     
 }

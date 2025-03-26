@@ -9,6 +9,24 @@ export class Player extends Entity {
     private keys: { [key: string]: boolean } = {}
     private controls: any;
     private touchMode =false;
+
+    private movementButtons = [new UIComponentButton((document.getElementById("gameCanvas") as HTMLCanvasElement), {x:10, y:270, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "<-", undefined, 15, {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
+        this.keys[this.controls.left] = false;
+    }, () => {
+        this.keys[this.controls.left] = true;
+    }), new UIComponentButton((document.getElementById("gameCanvas") as HTMLCanvasElement), {x:55, y:270, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "v", undefined, 15, {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
+        this.keys[this.controls.down] = false;
+    }, () => {
+        this.keys[this.controls.down] = true;
+    }), new UIComponentButton((document.getElementById("gameCanvas") as HTMLCanvasElement), {x:100, y:270, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "->", undefined, 15, {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
+        this.keys[this.controls.right] = false;
+    },() => {
+        this.keys[this.controls.right] = true;
+    }), new UIComponentButton((document.getElementById("gameCanvas") as HTMLCanvasElement), {x:55, y:225, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "^", undefined, 15, {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
+        this.keys[this.controls.up] = false;
+    }, () => {
+        this.keys[this.controls.up] = true;
+    })]
     
     constructor(name: string, healthComponent: HealthComponent, hitboxComponent: HitboxComponent) {
         super(healthComponent, hitboxComponent);
@@ -17,6 +35,7 @@ export class Player extends Entity {
 
         document.addEventListener("keydown", (event) => this.keys[event.key] = true);
         document.addEventListener("keyup", (event) => this.keys[event.key] = false);
+        this.setToTouch();
     }
 
     public setControls(controls: {
@@ -58,6 +77,16 @@ export class Player extends Entity {
             });
         }
 
+        if(this.touchMode) {
+            for(var button of  this.movementButtons) {
+                button.show();
+            }
+        } else {
+            for(var button of  this.movementButtons) {
+                button.hide();
+            }
+        }
+
         super.update(dt);
     }
 
@@ -77,23 +106,7 @@ export class Player extends Entity {
     }
 
     public getMovementButton(canvas: HTMLCanvasElement): UIComponent[] {
-        return [new UIComponentButton(canvas, {x:10, y:430, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "<-", undefined, 15, {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
-            this.keys[this.controls.left] = false;
-        }, () => {
-            this.keys[this.controls.left] = true;
-        }), new UIComponentButton(canvas, {x:45, y:430, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "v", undefined, 15, {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
-            this.keys[this.controls.down] = false;
-        }, () => {
-            this.keys[this.controls.down] = true;
-        }), new UIComponentButton(canvas, {x:90, y:430, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "->", undefined, 15, {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
-            this.keys[this.controls.right] = false;
-        },() => {
-            this.keys[this.controls.right] = true;
-        }), new UIComponentButton(canvas, {x:45, y:385, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "^", undefined, 15, {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
-            this.keys[this.controls.up] = false;
-        }, () => {
-            this.keys[this.controls.up] = true;
-        })]
+        return this.movementButtons;
     }
 
     public setToKeyboard() {
@@ -102,8 +115,8 @@ export class Player extends Entity {
         document.addEventListener("keyup", (event) => this.keys[event.key] = false);
     }
     public setToTouch() {
-        document.removeEventListener("keydown");
-        document.removeEventListener("keyup");
+        document.removeEventListener("keydown", () =>{});
+        document.removeEventListener("keyup", () =>{});
         this.touchMode = true;
     }
 
