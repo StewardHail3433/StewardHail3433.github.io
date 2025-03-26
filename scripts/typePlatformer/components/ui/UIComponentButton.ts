@@ -88,7 +88,7 @@ export class UIComponentButton extends UIComponentLabel {
 
     private handleTouchStart(event: TouchEvent) {
         event.preventDefault()
-        touch = event.touches[0];
+        let touch = event.touches[0];
         const rect = this.canvas.getBoundingClientRect(); 
         let x = touch.clientX - rect.left;
         let y = touch.clientY - rect.top;
@@ -104,7 +104,7 @@ export class UIComponentButton extends UIComponentLabel {
 
     private handleTouchMove(event: TouchEvent) {
         event.preventDefault()
-        touch = event.touches[0];
+        let touch = event.touches[0];
         const rect = this.canvas.getBoundingClientRect(); 
         let x = touch.clientX - rect.left;
         let y = touch.clientY - rect.top;
