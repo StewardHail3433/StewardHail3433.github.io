@@ -89,41 +89,56 @@ export class UIComponentButton extends UIComponentLabel {
     }
 
     private handleTouchStart(event: TouchEvent) {
-        event.preventDefault()
-        let touch = event.touches[0];
-        const rect = this.canvas.getBoundingClientRect(); 
-        let x = touch.clientX - rect.left;
-        let y = touch.clientY - rect.top;
-        if(x>this.hitbox.x && x < this.hitbox.x +this.hitbox.width
-            && y>this.hitbox.y && y < this.hitbox.y +this.hitbox.height) {
-                if(!this.click) {
-                    this.shouldOnTrue = true;
+        event.preventDefault();
+        var changedTouches = event.changedTouches;
+        for (var i = 0; i < changedTouches.length; i++) {
+            let touch = changedTouches[i];
+            const rect = this.canvas.getBoundingClientRect(); 
+            let x = touch.clientX - rect.left;
+            let y = touch.clientY - rect.top;
+            if(x>this.hitbox.x && x < this.hitbox.x +this.hitbox.width
+                && y>this.hitbox.y && y < this.hitbox.y +this.hitbox.height) {
+                    if(!this.click) {
+                        this.shouldOnTrue = true;
+                    }
+                    this.click = true;
+                    this.color = this.clickColor
                 }
-                this.click = true;
-                this.color = this.clickColor
             }
     }
 
     private handleTouchMove(event: TouchEvent) {
-        event.preventDefault()
-        let touch = event.touches[0];
+        event.preventDefault();
         const rect = this.canvas.getBoundingClientRect(); 
-        let x = touch.clientX - rect.left;
-        let y = touch.clientY - rect.top;
-        if(x>this.hitbox.x && x < this.hitbox.x +this.hitbox.width
-            && y>this.hitbox.y && y < this.hitbox.y +this.hitbox.height) {
-                this.color = this.hoverColor;
-            } else {
-                this.color = this.defaultColor;
+        var changedTouches = event.changedTouches;
+        for (var i = 0; i < changedTouches.length; i++) {
+            let touch = changedTouches[i];
+            let x = touch.clientX - rect.left;
+            let y = touch.clientY - rect.top;
+            if(x>this.hitbox.x && x < this.hitbox.x +this.hitbox.width
+                && y>this.hitbox.y && y < this.hitbox.y +this.hitbox.height) {
+                    this.color = this.hoverColor;
+                } else {
+                    this.color = this.defaultColor;
+                }
             }
     }
 
     private handleTouchEnd(event: TouchEvent) {
-        if(this.click) {
-            this.color = this.defaultColor;
-            this.click = false;
-            this.shouldOnTrue = false;
-            this.shouldOnFalse = true;
+        event.preventDefault();
+        const rect = this.canvas.getBoundingClientRect(); 
+        var changedTouches = event.changedTouches;
+        for (var i = 0; i < changedTouches.length; i++) {
+            let touch = changedTouches[i];
+            let y = touch.clientY - rect.top;
+            let x = touch.clientX - rect.left;
+            if(this.click && x>this.hitbox.x && x < this.hitbox.x +this.hitbox.width
+                && y>this.hitbox.y && y < this.hitbox.y +this.hitbox.heigh) {
+                this.color = this.defaultColor;
+                this.click = false;
+                this.shouldOnTrue = false;
+                this.shouldOnFalse = true;
+            }
         }
     } 
 
