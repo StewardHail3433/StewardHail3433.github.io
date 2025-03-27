@@ -7,7 +7,7 @@
 
 body {
     margin: 5;
-    background:darkorchid;
+    background: darkmagenta;
 }
 
 canvas {
@@ -22,5 +22,7 @@ p {
 
 * {
     user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
   }
   
