@@ -133,7 +133,7 @@ export class UIComponentButton extends UIComponentLabel {
             let y = touch.clientY - rect.top;
             let x = touch.clientX - rect.left;
             if(this.click && x>this.hitbox.x && x < this.hitbox.x +this.hitbox.width
-                && y>this.hitbox.y && y < this.hitbox.y +this.hitbox.heigh) {
+                && y>this.hitbox.y && y < this.hitbox.y +this.hitbox.height) {
                 this.color = this.defaultColor;
                 this.click = false;
                 this.shouldOnTrue = false;
