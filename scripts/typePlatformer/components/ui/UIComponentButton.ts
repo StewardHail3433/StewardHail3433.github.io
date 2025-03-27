@@ -102,7 +102,8 @@ export class UIComponentButton extends UIComponentLabel {
                         this.shouldOnTrue = true;
                     }
                     this.click = true;
-                    this.color = this.clickColor
+                    this.color = this.clickColor;
+                    break;
                 }
             }
     }
@@ -121,6 +122,7 @@ export class UIComponentButton extends UIComponentLabel {
                 } else {
                     this.color = this.defaultColor;
                 }
+                break;
             }
     }
 
@@ -138,6 +140,7 @@ export class UIComponentButton extends UIComponentLabel {
                 this.click = false;
                 this.shouldOnTrue = false;
                 this.shouldOnFalse = true;
+                break;
             }
         }
     } 
