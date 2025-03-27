@@ -15,6 +15,7 @@ export class UIComponentButton extends UIComponentLabel {
     private canvas : HTMLCanvasElement;
     private shouldOnTrue: boolean;
     private shouldOnFalse: boolean;
+    private activeTouches: Set<number> = new Set();
     constructor(
         canvas: HTMLCanvasElement,
         hitbox: {x: number; y: number; width: number; height: number},
@@ -98,12 +99,11 @@ export class UIComponentButton extends UIComponentLabel {
             let y = touch.clientY - rect.top;
             if(x>this.hitbox.x && x < this.hitbox.x +this.hitbox.width
                 && y>this.hitbox.y && y < this.hitbox.y +this.hitbox.height) {
-                    if(!this.click) {
+                    if(!this.activeTouches.size()) {
                         this.shouldOnTrue = true;
                     }
-                    this.click = true;
+                    this.activeTouches.add(touch.identifier);
                     this.color = this.clickColor;
-                    break;
                 }
             }
     }
@@ -122,7 +122,6 @@ export class UIComponentButton extends UIComponentLabel {
                 } else {
                     this.color = this.defaultColor;
                 }
-                break;
             }
     }
 
@@ -132,21 +131,22 @@ export class UIComponentButton extends UIComponentLabel {
         var changedTouches = event.changedTouches;
         for (var i = 0; i < changedTouches.length; i++) {
             let touch = changedTouches[i];
-            let y = touch.clientY - rect.top;
-            let x = touch.clientX - rect.left;
-            if(this.click && x>this.hitbox.x && x < this.hitbox.x +this.hitbox.width
-                && y>this.hitbox.y && y < this.hitbox.y +this.hitbox.height) {
-                this.color = this.defaultColor;
-                this.click = false;
-                this.shouldOnTrue = false;
-                this.shouldOnFalse = true;
-                break;
+            if(this.activeTouches.has(touch.identifier)) {
+                this.activeTouches.delete(touch.identifier);
+                if(!this.activeTouches.size()) {
+                    this.color = this.defaultColor;
+                    this.shouldOnTrue = false;
+                    this.shouldOnFalse = true;
+                }
             }
         }
     } 
 
     public update(text: string = this.text) {
         super.update(text);
+
+        this.click = this.activeTouches.size() > 0 || this.click;
+        
         if(!this.hidden) {
             if(this.click) {
                 if(this.shouldOnTrue) {
