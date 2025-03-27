@@ -99,7 +99,7 @@ export class UIComponentButton extends UIComponentLabel {
             let y = touch.clientY - rect.top;
             if(x>this.hitbox.x && x < this.hitbox.x +this.hitbox.width
                 && y>this.hitbox.y && y < this.hitbox.y +this.hitbox.height) {
-                    if(this.activeTouches.size <= 0) {
+                    if(!this.activeTouches.size) {
                         this.shouldOnTrue = true;
                     }
                     this.activeTouches.add(touch.identifier);
@@ -133,7 +133,7 @@ export class UIComponentButton extends UIComponentLabel {
             let touch = changedTouches[i];
             if(this.activeTouches.has(touch.identifier)) {
                 this.activeTouches.delete(touch.identifier);
-                if(this.activeTouches.size <= 0) {
+                if(!this.activeTouches.size) {
                     this.color = this.defaultColor;
                     this.shouldOnTrue = false;
                     this.shouldOnFalse = true;
