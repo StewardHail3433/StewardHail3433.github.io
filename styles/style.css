@@ -20,4 +20,7 @@ p {
     color: gold;
 }
 
+* {
+    user-select: none;
+  }
   
