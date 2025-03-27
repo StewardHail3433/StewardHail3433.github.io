@@ -49,7 +49,7 @@ export class UIComponentButton extends UIComponentLabel {
         }
     }
     handleMouseUp(event) {
-        if (this.click) {
+        if (this.click && this.activeTouches.size === 0) {
             this.color = this.defaultColor;
             this.click = false;
             this.shouldOnTrue = false;
@@ -69,6 +69,7 @@ export class UIComponentButton extends UIComponentLabel {
                 if (!this.activeTouches.size) {
                     this.shouldOnTrue = true;
                 }
+                this.click = true;
                 this.activeTouches.add(touch.identifier);
                 this.color = this.clickColor;
             }
@@ -99,12 +100,13 @@ export class UIComponentButton extends UIComponentLabel {
             let touch = changedTouches[i];
             if (this.activeTouches.has(touch.identifier)) {
                 this.activeTouches.delete(touch.identifier);
-                if (!this.activeTouches.size) {
-                    this.color = this.defaultColor;
-                    this.shouldOnTrue = false;
-                    this.shouldOnFalse = true;
-                }
             }
+        }
+        if (this.activeTouches.size === 0) {
+            this.color = this.defaultColor;
+            this.click = false;
+            this.shouldOnTrue = false;
+            this.shouldOnFalse = true;
         }
     }
     update(text = this.text) {
