@@ -5,7 +5,7 @@ export class WorldHandler {
     private worldMap: Tile[][] = [];
     
     constructor() {
-        this.generateWorld();
+        this.generateWorld(1);
     }
 
     public render(ctx: CanvasRenderingContext2D) {
