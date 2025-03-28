@@ -2,7 +2,7 @@ import { Constants } from "../utils/Constants.js";
 import { Tile } from "./Tile.js";
 
 export class WorldHandler {
-    private worldMap: Tile[][] = {};
+    private worldMap: Tile[5][5] = {};
     
     constructor() {
         this.generateWorld();
@@ -26,7 +26,7 @@ export class WorldHandler {
 
     private generateWorld(seed: number) {
         for(let i = 0; i < Constants.CANVAS_HEIGHT; i++) {
-            row = [];
+            let row = [];
             for(let j = 0; j < Constants.CANVAS_WIDTH; j++) {
                 row.push(new Tile(Math.floor(Math.random() * 4)));
             }
