@@ -45,6 +45,14 @@ export class Entity {
         return this.direction;
     }
 
+    public getSpeed(): number {
+        return this.speed;
+    }
+
+    public setSpeed(speed: number) {
+        this.speed = speed;
+    }
+
     // Convert to plain object for sending via WebSocket
     public serialize() {
         return {

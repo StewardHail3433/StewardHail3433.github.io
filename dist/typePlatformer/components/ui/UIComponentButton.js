@@ -158,6 +158,9 @@ export class UIComponentButton extends UIComponentLabel {
         this.whileFalse = action;
     }
     render(ctx, element) {
+        if (this.hidden) {
+            return;
+        }
         super.render(ctx, element);
     }
 }

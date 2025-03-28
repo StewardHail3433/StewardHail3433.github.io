@@ -28,6 +28,12 @@ export class Entity {
     getDirection() {
         return this.direction;
     }
+    getSpeed() {
+        return this.speed;
+    }
+    setSpeed(speed) {
+        this.speed = speed;
+    }
     // Convert to plain object for sending via WebSocket
     serialize() {
         return {

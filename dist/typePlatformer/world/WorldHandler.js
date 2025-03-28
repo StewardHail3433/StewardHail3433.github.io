@@ -8,9 +8,9 @@ export class WorldHandler {
     render(ctx) {
         let tilex = 0;
         let tiley = 0;
-        for (let i = 0; i < Constants.CANVAS_HEIGHT; i++) {
+        for (let i = 0; i < Constants.WORLD_HEIGHT; i++) {
             tiley = Constants.TILE_SIZE * i;
-            for (let j = 0; j < Constants.CANVAS_WIDTH; j++) {
+            for (let j = 0; j < Constants.WORLD_WIDTH; j++) {
                 tilex = Constants.TILE_SIZE * j;
                 ctx.fillStyle = "red";
                 if (this.worldMap[i][j].getIndex() === 1)
@@ -24,9 +24,9 @@ export class WorldHandler {
         }
     }
     generateWorld(seed) {
-        for (let i = 0; i < Constants.CANVAS_HEIGHT; i++) {
+        for (let i = 0; i < Constants.WORLD_HEIGHT; i++) {
             let row = [];
-            for (let j = 0; j < Constants.CANVAS_WIDTH; j++) {
+            for (let j = 0; j < Constants.WORLD_WIDTH; j++) {
                 row.push(new Tile(Math.floor(Math.random() * 4)));
             }
             this.worldMap.push(row);

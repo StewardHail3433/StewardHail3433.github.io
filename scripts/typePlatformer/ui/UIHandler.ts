@@ -10,6 +10,8 @@ export class UIHandler {
     private debugTeleportToCenterButton: UIComponent;
     private debugZoomIn: UIComponent;
     private debugZoomOut: UIComponent;
+    private debugSpeedUp: UIComponentButton;
+    private debugSpeedDown: UIComponentButton;
     private keys: { [key: string]: boolean } = {};
     private keysToggled: { [key: string]: boolean } = {"F3": false};
     private playermovement?: UIComponent[];
@@ -37,13 +39,26 @@ export class UIHandler {
         }, {red: 0, green: 255, blue: 0}, true, "Zoom Out", {red: 0, green: 0, blue: 255}, 9, {red: 123, green: 123, blue: 0},undefined, {red: 255, green: 0, blue: 255}, () => {
             this.camera.setView({...this.camera.getView(), zoom: Math.max(this.camera.getView().zoom - 0.25, 0.25)})
         });
+
+        this.debugSpeedUp = new UIComponentButton(canvas, {
+            x: 5, y: 150, width: (this.debug.getHitbox().width - 10)/2 -10, height: 20
+        }, {red: 0, green: 255, blue: 0}, true, "Increase Speed", {red: 0, green: 0, blue: 255}, 9, {red: 123, green: 123, blue: 0},undefined, {red: 255, green: 0, blue: 255}, () => {
+            this.player.setSpeed(this.player.getSpeed() + 15);
+        });
+
+        this.debugSpeedDown = new UIComponentButton(canvas, {
+            x: 5 + (this.debug.getHitbox().width - 10)/2 + 10, y: 150, width: (this.debug.getHitbox().width - 10)/2 -10, height: 20
+        }, {red: 0, green: 255, blue: 0}, true, "Decrease Speed", {red: 0, green: 0, blue: 255}, 9, {red: 123, green: 123, blue: 0},undefined, {red: 255, green: 0, blue: 255}, () => {
+            this.player.setSpeed(this.player.getSpeed() - 15);
+        });
+
+
         this.debug.hide();
         this.debugInfo.hide();
         this.debugTeleportToCenterButton.hide();
         this.player = player;
 
         this.playermovement = this.player.getMovementButton(canvas);
-        console.log(this.player.getTouchMode())
 
         document.addEventListener("keydown", (event) => this.handleKeyDown(event));
         document.addEventListener("keyup", (event) => this.handleKeyUp(event));
@@ -60,10 +75,13 @@ export class UIHandler {
         }
         this.debugZoomIn.render(ctx, this.debug);
         this.debugZoomOut.render(ctx, this.debug);
+        this.debugSpeedUp.render(ctx, this.debug);
+        this.debugSpeedDown.render(ctx, this.debug);
+        
     }
 
     public update() {
-        (this.debugInfo as UIComponentLabel).update("Player coord: (" + (this.player.getHitboxComponent().getHitbox().x)?.toFixed(0) + ", " + (this.player?.getHitboxComponent().getHitbox().y)?.toFixed(0) + ")\nPlayer Direction: " + this.player.getDirection() + "\nCamera zoom" + this.camera.getView().zoom);
+        (this.debugInfo as UIComponentLabel).update("Player coord: (" + (this.player.getHitboxComponent().getHitbox().x)?.toFixed(0) + ", " + (this.player?.getHitboxComponent().getHitbox().y)?.toFixed(0) + ")\nPlayer Direction: " + this.player.getDirection() + "\nCamera zoom" + this.camera.getView().zoom + "\nPlayer speed: " + this.player.getSpeed());
         (this.debugTeleportToCenterButton as UIComponentButton).setOnTrue(() => {
             this.player.getHitboxComponent().setHitbox({
                 ...this.player.getHitboxComponent().getHitbox(),
@@ -74,18 +92,24 @@ export class UIHandler {
         (this.debugTeleportToCenterButton as UIComponentButton).update();
         (this.debugZoomIn as UIComponentButton).update();
         (this.debugZoomOut as UIComponentButton).update();
+        this.debugSpeedUp.update();
+        this.debugSpeedDown.update();
         if(this.keysToggled["F3"]) {
             this.debug.show();
             this.debugInfo.show();
             this.debugTeleportToCenterButton.show();
             this.debugZoomIn.show();
             this.debugZoomOut.show();
+            this.debugSpeedUp.show();
+            this.debugSpeedDown.show();
         } else {
             this.debug.hide();
             this.debugInfo.hide();
             this.debugTeleportToCenterButton.hide();
             this.debugZoomIn.hide();
             this.debugZoomOut.hide();
+            this.debugSpeedUp.hide();
+            this.debugSpeedDown.hide();
         }
         if(this.keysToggled["l"]) {
             this.player.setToKeyboard();

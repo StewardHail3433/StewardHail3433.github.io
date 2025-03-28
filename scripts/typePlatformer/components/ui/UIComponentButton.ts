@@ -198,7 +198,10 @@ export class UIComponentButton extends UIComponentLabel {
         this.whileFalse = action;
     }
 
-    public render(ctx: CanvasRenderingContext2D, element?: UIComponent): void {
+    public render(ctx: CanvasRenderingContext2D, element?: UIComponent) {
+        if(this.hidden) {
+            return;
+        }
         super.render(ctx, element);
     }
     
