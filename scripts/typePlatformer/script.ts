@@ -1,3 +1,4 @@
+import { Camera } from "./camera/Camera.js";
 import { HealthComponent } from "./components/HealthComponent.js";
 import { HitboxComponent } from "./components/HitboxComponent.js";
 import { Entity } from "./entity/Enity.js";
@@ -13,6 +14,7 @@ class Game {
 
     private player: Player;
     private uiHandler: UIHandler;
+    private camera: Camera;
 
     private players: Record<string, Entity> = {};
     private isMultiplayer: boolean = false;
@@ -33,6 +35,8 @@ class Game {
             x: 100, y: 100, width: 32, height: 32,
         }));
         this.uiHandler = new UIHandler(this.canvas, this.player);
+        this.camera = new Camera({ x: 100, y: 100, width: this.canvas.width, height: this.canvas.height,});
+        this.camera.trackEntity(this.player);
 
         this.setupEventListeners();
         requestAnimationFrame(this.gameLoop.bind(this));
@@ -116,6 +120,7 @@ class Game {
 
     private update(dt:number) {
         this.player.update(dt);
+        this.camera.update();
 
         if (this.player.isMoving() && this.isMultiplayer && this.socket) {
             this.socket.emit("updatePlayer", this.player.serialize());
@@ -124,7 +129,13 @@ class Game {
     }
 
     private render() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); 
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.save();  
+
+        this.ctx.scale(1, 1);
+        this.ctx.translate(Math.round(-this.camera.getView().x), Math.round(-this.camera.getView().y));
+
+        this.ctx.clearRect(0, 0, this.canvas.width / 1, this.canvas.height / 1);
         this.player.render(this.ctx);
 
         if (this.isMultiplayer) {
@@ -132,6 +143,8 @@ class Game {
                 this.players[id].render(this.ctx);
             }
         }
+        this.ctx.restore();
+
         this.uiHandler.render(this.ctx, this.player);
     }
 }
