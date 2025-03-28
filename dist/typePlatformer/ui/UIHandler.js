@@ -2,18 +2,29 @@ import { UIComponent } from "../components/ui/UIComponent.js";
 import { UIComponentButton } from "../components/ui/UIComponentButton.js";
 import { UIComponentLabel } from "../components/ui/UIComponentLabel.js";
 export class UIHandler {
-    constructor(canvas, player) {
+    constructor(canvas, player, camera) {
         this.keys = {};
         this.keysToggled = { "F3": false };
         this.debug = new UIComponent({
             x: 0, y: 0, width: canvas.width / 5, height: canvas.height
         }, { red: 255, green: 0, blue: 0, alpha: 0.5 }, true);
         this.debugInfo = new UIComponentLabel({
-            x: 5, y: 5, width: this.debug.getHitbox().width - 10, height: 20
+            x: 5, y: 5, width: this.debug.getHitbox().width - 10, height: 80
         }, { red: 0, green: 255, blue: 0 }, true, "Boo", { red: 0, green: 0, blue: 255 }, 9);
         this.debugTeleportToCenterButton = new UIComponentButton(canvas, {
-            x: 5, y: 30, width: this.debug.getHitbox().width - 10, height: 20
+            x: 5, y: 90, width: this.debug.getHitbox().width - 10, height: 20
         }, { red: 0, green: 255, blue: 0 }, true, "Teleport Center", { red: 0, green: 0, blue: 255 }, 9, { red: 123, green: 123, blue: 0 }, undefined, { red: 255, green: 0, blue: 255 }, () => { });
+        this.camera = camera;
+        this.debugZoomIn = new UIComponentButton(canvas, {
+            x: 5, y: 120, width: (this.debug.getHitbox().width - 10) / 2 - 10, height: 20
+        }, { red: 0, green: 255, blue: 0 }, true, "Zoom In", { red: 0, green: 0, blue: 255 }, 9, { red: 123, green: 123, blue: 0 }, undefined, { red: 255, green: 0, blue: 255 }, () => {
+            this.camera.setView(Object.assign(Object.assign({}, this.camera.getView()), { zoom: this.camera.getView().zoom + 0.25 }));
+        });
+        this.debugZoomOut = new UIComponentButton(canvas, {
+            x: 5 + (this.debug.getHitbox().width - 10) / 2 + 10, y: 120, width: (this.debug.getHitbox().width - 10) / 2 - 10, height: 20
+        }, { red: 0, green: 255, blue: 0 }, true, "Zoom Out", { red: 0, green: 0, blue: 255 }, 9, { red: 123, green: 123, blue: 0 }, undefined, { red: 255, green: 0, blue: 255 }, () => {
+            this.camera.setView(Object.assign(Object.assign({}, this.camera.getView()), { zoom: Math.max(this.camera.getView().zoom - 0.25, 0.25) }));
+        });
         this.debug.hide();
         this.debugInfo.hide();
         this.debugTeleportToCenterButton.hide();
@@ -23,7 +34,7 @@ export class UIHandler {
         document.addEventListener("keydown", (event) => this.handleKeyDown(event));
         document.addEventListener("keyup", (event) => this.handleKeyUp(event));
     }
-    render(ctx, player) {
+    render(ctx) {
         this.debug.render(ctx);
         this.debugInfo.render(ctx, this.debug);
         this.debugTeleportToCenterButton.render(ctx, this.debug);
@@ -32,23 +43,31 @@ export class UIHandler {
                 button.render(ctx);
             }
         }
+        this.debugZoomIn.render(ctx, this.debug);
+        this.debugZoomOut.render(ctx, this.debug);
     }
-    update(player) {
-        var _a, _b;
-        this.debugInfo.update("Player coord: (" + ((_a = (this.player.getHitboxComponent().getHitbox().x)) === null || _a === void 0 ? void 0 : _a.toFixed(0)) + ", " + ((_b = (player === null || player === void 0 ? void 0 : player.getHitboxComponent().getHitbox().y)) === null || _b === void 0 ? void 0 : _b.toFixed(0)) + ")");
+    update() {
+        var _a, _b, _c;
+        this.debugInfo.update("Player coord: (" + ((_a = (this.player.getHitboxComponent().getHitbox().x)) === null || _a === void 0 ? void 0 : _a.toFixed(0)) + ", " + ((_c = ((_b = this.player) === null || _b === void 0 ? void 0 : _b.getHitboxComponent().getHitbox().y)) === null || _c === void 0 ? void 0 : _c.toFixed(0)) + ")\nPlayer Direction: " + this.player.getDirection() + "\nCamera zoom" + this.camera.getView().zoom);
         this.debugTeleportToCenterButton.setOnTrue(() => {
             this.player.getHitboxComponent().setHitbox(Object.assign(Object.assign({}, this.player.getHitboxComponent().getHitbox()), { x: 480 / 2, y: 320 / 2 }));
         });
         this.debugTeleportToCenterButton.update();
+        this.debugZoomIn.update();
+        this.debugZoomOut.update();
         if (this.keysToggled["F3"]) {
             this.debug.show();
             this.debugInfo.show();
             this.debugTeleportToCenterButton.show();
+            this.debugZoomIn.show();
+            this.debugZoomOut.show();
         }
         else {
             this.debug.hide();
             this.debugInfo.hide();
             this.debugTeleportToCenterButton.hide();
+            this.debugZoomIn.hide();
+            this.debugZoomOut.hide();
         }
         if (this.keysToggled["l"]) {
             this.player.setToKeyboard();

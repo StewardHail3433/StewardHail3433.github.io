@@ -1,3 +1,4 @@
+import { normalize } from "path";
 import { HealthComponent } from "../components/HealthComponent.js";
 import { HitboxComponent } from "../components/HitboxComponent.js";
 
@@ -6,6 +7,7 @@ export class Entity {
     protected hitboxComponent: HitboxComponent;
     protected velocity = { x: 0, y: 0 };
     protected speed: number = 120;
+    protected direction: string = "up";
 
 
     constructor(healthComponent: HealthComponent, hitboxComponent: HitboxComponent) {
@@ -14,11 +16,20 @@ export class Entity {
     }
 
     public update(dt: number) {
-        this.hitboxComponent.setHitbox({
-            ...this.hitboxComponent.getHitbox(),
-            x: this.hitboxComponent.getHitbox().x + this.velocity.x * dt,
-            y: this.hitboxComponent.getHitbox().y + this.velocity.y * dt
-        });
+        let hitbox = this.hitboxComponent.getHitbox();
+        let dist = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y); 
+
+        if (dist > 0) {
+            // normalize for dia
+            this.velocity.x = Math.abs(this.velocity.x) * (this.velocity.x / dist);
+            this.velocity.y = Math.abs(this.velocity.y) * (this.velocity.y / dist);
+
+            this.hitboxComponent.setHitbox({
+                ...hitbox,
+                x: hitbox.x + this.velocity.x * dt,
+                y: hitbox.y + this.velocity.y * dt
+            });
+        }
     }
 
     public render(ctx: CanvasRenderingContext2D) {
@@ -28,6 +39,10 @@ export class Entity {
 
     public getHitboxComponent(): HitboxComponent {
         return this.hitboxComponent;
+    }
+
+    public getDirection(): string {
+        return this.direction;
     }
 
     // Convert to plain object for sending via WebSocket

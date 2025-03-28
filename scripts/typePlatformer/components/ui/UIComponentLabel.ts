@@ -36,32 +36,34 @@ export class UIComponentLabel extends UIComponent {
             ctx.fillStyle = "rgb(" + this.textColor.red + "," + this.textColor.green + "," + this.textColor.blue + ")";
         }
         ctx.font = this.fontSize + "px serif";
-        let words = this.text.split(" ");
-        let line = "";
-        let lineHeight = this.fontSize * 1.2; 
-        y -= 3;
-        // Start from top of hitbox
+let lines = this.text.split("\n"); // Split by actual newlines first
+let lineHeight = this.fontSize * 1.2; 
+y -= 3;
 
-        for (let i = 0; i < words.length; i++) { 
-            let testLine;
-            if (line === '') { // first word
-                testLine = words[i];
-            } else { // add words
-                testLine = line + ' ' + words[i];
-            }
+for (let i = 0; i < lines.length; i++) {
+    let words = lines[i].split(" "); // Split line into words for wrapping
+    let line = "";
 
-            let testWidth = ctx.measureText(testLine).width;
+    for (let word of words) {
+        let testLine = line.length === 0 ? word : line + " " + word;
+        let testWidth = ctx.measureText(testLine).width;
 
-            if (testWidth > this.hitbox.width && line !== '') {
-                ctx.fillText(line, x+this.hitbox.width/2, y+this.hitbox.height/2);
-                line = words[i];
-                y += lineHeight;
-            } else {
-                line = testLine;
-            }
+        if (testWidth > this.hitbox.width && line.length > 0) {
+            // Draw current line and move down
+            ctx.fillText(line, x + this.hitbox.width / 2, y + this.hitbox.height / 2);
+            line = word;
+            y += lineHeight;
+        } else {
+            line = testLine;
         }
+    }
 
-        ctx.fillText(line, x+this.hitbox.width/2, y+this.hitbox.height/2); 
+    // Draw last part of line
+    ctx.fillText(line, x + this.hitbox.width / 2, y + this.hitbox.height / 2);
+    y += lineHeight; // Move down for next full line (after \n)
+}
+
+
     }
 
     public update(text: string = this.text) {

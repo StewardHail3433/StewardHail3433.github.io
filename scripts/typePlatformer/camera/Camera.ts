@@ -1,23 +1,22 @@
 import { Entity } from "../entity/Enity";
 
 export class Camera {
-    private view: {x: number; y: number; width: number; height: number};
+    private view: {x: number; y: number; width: number; height: number; zoom: number};
     private currentTrackEntity?: Entity
-    constructor(view: {x: number; y: number; width: number; height: number}) {
-        this.view =view;
+    constructor(view: {x: number; y: number; width: number; height: number; zoom: number}) {
+        this.view = view;
     }
 
     update() {
         if(this.currentTrackEntity) {
             let entityHitbox: {x: number; y: number; width: number; height: number;} = this.currentTrackEntity.getHitboxComponent().getHitbox()
-            this.view.x = (entityHitbox.x + entityHitbox.width/2) - this.view.width/2;
-            this.view.y = (entityHitbox.y + entityHitbox.height/2) - this.view.height/2;
-            console.log(this.view.x, this.view.y)
+            this.view.x = (entityHitbox.x + entityHitbox.width/2) - this.view.width/2 / this.view.zoom;
+            this.view.y = (entityHitbox.y + entityHitbox.height/2) - this.view.height/2 / this.view.zoom;
         }
     }
 
-    public getView(): {x: number; y: number; width: number; height: number} {
-        return this.view;
+    public getView(): {x: number; y: number; width: number; height: number; zoom: number} {
+        return {...this.view};
     }
 
     public trackEntity(x: Entity) {
@@ -26,5 +25,9 @@ export class Camera {
 
     public stopTracking() {
         this.currentTrackEntity = undefined;
+    }
+
+    public setView(view: {x: number; y: number; width: number; height: number; zoom: number}) {
+        this.view = view;
     }
 }

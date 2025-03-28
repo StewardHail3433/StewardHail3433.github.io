@@ -59,15 +59,19 @@ export class Player extends Entity {
     public update(dt: number): void {
         this.velocity = {x:0, y:0};
         if (this.keys[this.controls.up]) {
+            this.direction = "up";
             this.velocity.y = -this.speed;
         } 
         if (this.keys[this.controls.down]) {
+            this.direction = "down";
             this.velocity.y = this.speed;
         }
         if (this.keys[this.controls.left]) {
+            this.direction = "left";
             this.velocity.x = -this.speed;
         }
         if (this.keys[this.controls.right]) {
+            this.direction = "right";
             this.velocity.x = this.speed;
         }
         if(this.keys[this.controls.debug]) {
@@ -91,7 +95,7 @@ export class Player extends Entity {
     }
 
     public getControls() {
-        return this.controls;
+        return {...this.controls};
     }
     
     public setName(name: string) {
