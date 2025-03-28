@@ -20,7 +20,7 @@ p {
     color: gold;
 }
 
-* {
+*:not(button) {
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
