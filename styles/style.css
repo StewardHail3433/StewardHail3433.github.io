@@ -32,4 +32,10 @@ button {
     -moz-user-select: auto;
 }
 
+input {
+    user-select: auto;
+    -webkit-user-select: auto;
+    -moz-user-select: auto;
+}
+
   
