@@ -90,38 +90,42 @@ export class UIComponentButton extends UIComponentLabel {
     }
 
     private handleTouchStart(event: TouchEvent) {
-        event.preventDefault();
         var changedTouches = event.changedTouches;
         for (var i = 0; i < changedTouches.length; i++) {
             let touch = changedTouches[i];
             const rect = this.canvas.getBoundingClientRect(); 
             let x = touch.clientX - rect.left;
             let y = touch.clientY - rect.top;
-            if(x>this.hitbox.x && x < this.hitbox.x +this.hitbox.width
-                && y>this.hitbox.y && y < this.hitbox.y +this.hitbox.height) {
-                    if(!this.activeTouches.size) {
-                        this.shouldOnTrue = true;
+            if(x >= 0 && y >=0 && y <= 320 && x <=480) {
+                event.preventDefault();
+                if(x>this.hitbox.x && x < this.hitbox.x +this.hitbox.width
+                    && y>this.hitbox.y && y < this.hitbox.y +this.hitbox.height) {
+                        if(!this.activeTouches.size) {
+                            this.shouldOnTrue = true;
+                        }
+                        this.click =true;
+                        this.activeTouches.add(touch.identifier);
+                        this.color = this.clickColor;
                     }
-                    this.click =true;
-                    this.activeTouches.add(touch.identifier);
-                    this.color = this.clickColor;
                 }
             }
     }
 
     private handleTouchMove(event: TouchEvent) {
-        event.preventDefault();
         const rect = this.canvas.getBoundingClientRect(); 
         var changedTouches = event.changedTouches;
         for (var i = 0; i < changedTouches.length; i++) {
             let touch = changedTouches[i];
             let x = touch.clientX - rect.left;
             let y = touch.clientY - rect.top;
-            if(x>this.hitbox.x && x < this.hitbox.x +this.hitbox.width
-                && y>this.hitbox.y && y < this.hitbox.y +this.hitbox.height) {
-                    this.color = this.hoverColor;
-                } else {
-                    this.color = this.defaultColor;
+            if(x >= 0 && y >=0 && y <= 320 && x <=480) {
+                event.preventDefault();
+                if(x>this.hitbox.x && x < this.hitbox.x +this.hitbox.width
+                    && y>this.hitbox.y && y < this.hitbox.y +this.hitbox.height) {
+                        this.color = this.hoverColor;
+                    } else {
+                        this.color = this.defaultColor;
+                    }
                 }
             }
     }
@@ -132,6 +136,11 @@ export class UIComponentButton extends UIComponentLabel {
         var changedTouches = event.changedTouches;
         for (var i = 0; i < changedTouches.length; i++) {
             let touch = changedTouches[i];
+            let x = touch.clientX - rect.left;
+            let y = touch.clientY - rect.top;
+            if(x >= 0 && y >=0 && y <= 320 && x <=480) {
+                event.preventDefault();
+            }
             if(this.activeTouches.has(touch.identifier)) {
                 this.activeTouches.delete(touch.identifier);
             }
