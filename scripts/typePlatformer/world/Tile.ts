@@ -4,4 +4,8 @@ export class Tile {
     constructor(index: number) {
         this.index = index;
     }
+
+    public getIndex(): number {
+        return this.index;
+    }
 }

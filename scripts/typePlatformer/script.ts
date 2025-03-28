@@ -5,6 +5,7 @@ import { Entity } from "./entity/Enity.js";
 import { Player } from "./entity/player/Player.js";
 import { UIHandler } from "./ui/UIHandler.js";
 import { Constants } from "./utils/Constants.js";
+import { WorldHandler } from "./world/WorldHandler.js";
 
 declare const io: any;
 class Game {
@@ -16,6 +17,7 @@ class Game {
     private player: Player;
     private uiHandler: UIHandler;
     private camera: Camera;
+    private worldHandler: WorldHandler;
 
     private players: Record<string, Entity> = {};
     private isMultiplayer: boolean = false;
@@ -39,6 +41,7 @@ class Game {
         this.camera.trackEntity(this.player);
 
         this.uiHandler = new UIHandler(this.canvas, this.player, this.camera);
+        this.worldHandler = new WorldHandler();
         this.setupEventListeners();
         requestAnimationFrame(this.gameLoop.bind(this));
     }
@@ -131,6 +134,7 @@ class Game {
 
     private render() {
         this.ctx.clearRect(0, 0, Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
+        this.worldHandler.render(this.ctx);
         this.ctx.save();  
 
         this.ctx.scale(this.camera.getView().zoom, this.camera.getView().zoom);
