@@ -97,7 +97,6 @@ export class UIComponentButton extends UIComponentLabel {
         }
     }
     handleTouchEnd(event) {
-        event.preventDefault();
         const rect = this.canvas.getBoundingClientRect();
         var changedTouches = event.changedTouches;
         for (var i = 0; i < changedTouches.length; i++) {
