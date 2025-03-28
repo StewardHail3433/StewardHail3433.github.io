@@ -7,22 +7,22 @@
 
 body {
     margin: 5;
-    background: green;
+    background: rgb(192, 65, 255);
 }
 
 canvas {
     background: #2b8eff;
     display: block;
     margin: 0 auto;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
 }
 
 p {
     color: gold;
-}
-
-*:not(button) {
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
-  }
+}
   
