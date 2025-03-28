@@ -4,6 +4,7 @@ import { HitboxComponent } from "./components/HitboxComponent.js";
 import { Entity } from "./entity/Enity.js";
 import { Player } from "./entity/player/Player.js";
 import { UIHandler } from "./ui/UIHandler.js";
+import { Constants } from "./utils/Constants.js";
 class Game {
     constructor() {
         this.players = {};
@@ -12,14 +13,14 @@ class Game {
         this.lastTime = 0;
         this.canvas = document.getElementById("gameCanvas");
         this.ctx = this.canvas.getContext("2d");
-        this.canvas.width = 480;
-        this.canvas.height = 320;
+        this.canvas.width = Constants.CANVAS_WIDTH;
+        this.canvas.height = Constants.CANVAS_HEIGHT;
         this.joinButton = document.getElementById("joinMultiplayer");
         this.warningDiv = document.getElementById("test");
         this.player = new Player("TIm", new HealthComponent(100, 100), new HitboxComponent({
             x: 100, y: 100, width: 32, height: 32,
         }));
-        this.camera = new Camera({ x: 100, y: 100, width: this.canvas.width, height: this.canvas.height, zoom: 1.0 });
+        this.camera = new Camera({ x: 100, y: 100, width: Constants.CANVAS_WIDTH, height: Constants.CANVAS_HEIGHT, zoom: 1.0 });
         this.camera.trackEntity(this.player);
         this.uiHandler = new UIHandler(this.canvas, this.player, this.camera);
         this.setupEventListeners();
@@ -96,11 +97,11 @@ class Game {
         this.uiHandler.update();
     }
     render() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.clearRect(0, 0, Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
         this.ctx.save();
         this.ctx.scale(this.camera.getView().zoom, this.camera.getView().zoom);
         this.ctx.translate(Math.round(-this.camera.getView().x), Math.round(-this.camera.getView().y));
-        this.ctx.clearRect(0, 0, this.canvas.width / this.camera.getView().zoom, this.canvas.height / this.camera.getView().zoom);
+        this.ctx.clearRect(0, 0, Constants.CANVAS_WIDTH / this.camera.getView().zoom, Constants.CANVAS_HEIGHT / this.camera.getView().zoom);
         this.player.render(this.ctx);
         if (this.isMultiplayer) {
             for (const id in this.players) {
