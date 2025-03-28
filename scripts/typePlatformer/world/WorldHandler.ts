@@ -2,7 +2,7 @@ import { Constants } from "../utils/Constants.js";
 import { Tile } from "./Tile.js";
 
 export class WorldHandler {
-    private worldMap: Tile[5][5] = {};
+    private worldMap: Tile[][] = [];
     
     constructor() {
         this.generateWorld();
