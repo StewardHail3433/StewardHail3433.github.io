@@ -1,15 +1,18 @@
+import { UIComponentLabel } from "../components/ui/UIComponentLabel";
+
 export class CommandSystem {
 
     private commands: Map<string, (args: string[]) => void>;
-    constructor() {
+    private label?: UIComponentLabel;
+    public constructor() {
         this.commands = new Map<string, (args: string[]) => void>();
     }
 
-    addCommand(cmd: string, func: (args: string[]) => void) {
+    public addCommand(cmd: string, func: (args: string[]) => void) {
         this.commands.set(cmd, func);
     }
 
-    runCommand(cmd: string): string | undefined {
+    public runCommand(cmd: string): string | undefined {
         cmd = cmd.trim();
         cmd = cmd.replace('/', "");
 
@@ -25,4 +28,13 @@ export class CommandSystem {
         return "Unknown Command";
 
     }
+
+    public setOutputLabel(label: UIComponentLabel) {
+        this.label = label
+    }
+
+    public outputArgsError(cmd: string) {
+        this.label?.update(this.label?.getText() + "\nThe command had the wrong amount of errors or not correct data type. Pleas make sure your command matches:\n"+cmd+"\n");
+    }
+
 }

@@ -79,6 +79,9 @@ export class UIHandler {
                 this.keysToggled["F3"] = true;
             } else if(args[0] === "hide") {
                 this.keysToggled["F3"] = false;
+            } else {
+                console.log("IDK")
+                Constants.COMMAND_SYSTEM.outputArgsError("/debug (hide || show)");
             }
         });
     }
@@ -130,6 +133,11 @@ export class UIHandler {
             this.debugZoomOut.hide();
             this.debugSpeedUp.hide();
             this.debugSpeedDown.hide();
+        }
+        if(this.keysToggled["/"]) { 
+            this.uiChatHandler.hide()
+        } else {
+            this.uiChatHandler.show()
         }
         if(this.keysToggled["l"]) {
             this.player.setToKeyboard();

@@ -60,6 +60,10 @@ export class UIHandler {
             else if (args[0] === "hide") {
                 this.keysToggled["F3"] = false;
             }
+            else {
+                console.log("IDK");
+                Constants.COMMAND_SYSTEM.outputArgsError("/debug (hide || show)");
+            }
         });
     }
     render(ctx) {
@@ -106,6 +110,12 @@ export class UIHandler {
             this.debugZoomOut.hide();
             this.debugSpeedUp.hide();
             this.debugSpeedDown.hide();
+        }
+        if (this.keysToggled["/"]) {
+            this.uiChatHandler.hide();
+        }
+        else {
+            this.uiChatHandler.show();
         }
         if (this.keysToggled["l"]) {
             this.player.setToKeyboard();

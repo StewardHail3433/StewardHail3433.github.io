@@ -18,4 +18,11 @@ export class CommandSystem {
         }
         return "Unknown Command";
     }
+    setOutputLabel(label) {
+        this.label = label;
+    }
+    outputArgsError(cmd) {
+        var _a, _b;
+        (_a = this.label) === null || _a === void 0 ? void 0 : _a.update(((_b = this.label) === null || _b === void 0 ? void 0 : _b.getText()) + "\nThe command had the wrong amount of errors or not correct data type. Pleas make sure your command matches:\n" + cmd + "\n");
+    }
 }
