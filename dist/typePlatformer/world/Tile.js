@@ -1,8 +1,11 @@
 export class Tile {
-    constructor(index) {
-        this.index = index;
+    constructor(layers) {
+        this.layers = layers;
     }
-    getIndex() {
-        return this.index;
+    setLayer(layer, indexTile) {
+        this.layers[layer].index = indexTile;
+    }
+    getLayers() {
+        return Object.assign({}, this.layers);
     }
 }

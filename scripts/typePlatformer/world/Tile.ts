@@ -1,11 +1,15 @@
 export class Tile {
-    private index: number;
+    private layers: {index: number}[];
 
-    constructor(index: number) {
-        this.index = index;
+    constructor(layers: {index: number}[]) {
+        this.layers = layers;
     }
 
-    public getIndex(): number {
-        return this.index;
+    setLayer(layer: number, indexTile: number) {
+        this.layers[layer].index = indexTile
+    }
+
+    public getLayers(): {index: number}[] {
+        return {...this.layers};
     }
 }
