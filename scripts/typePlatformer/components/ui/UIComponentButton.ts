@@ -24,6 +24,7 @@ export class UIComponentButton extends UIComponentLabel {
         text: string = "", 
         textColor: {red: number; green: number; blue: number; alpha?: number} = { red: 0, green: 0, blue: 0, alpha: 1.0 }, 
         fontSize: number = 8,
+        textAlign: CanvasTextAlign = "left",
         hoverColor: {red: number; green: number; blue: number; alpha?: number} = color, 
         hoverTextColor: {red: number; green: number; blue: number; alpha?: number} = textColor,
         clickColor: {red: number; green: number; blue: number; alpha?: number} = color,
@@ -32,7 +33,7 @@ export class UIComponentButton extends UIComponentLabel {
         whileTrue?: () => void,
         whileFalse?: () => void,
     ) {
-        super(hitbox, color, hidden, text, textColor, fontSize);
+        super(hitbox, color, hidden, text, textColor, fontSize, textAlign);
         this.hoverColor = hoverColor;
         this.hoverTextColor = hoverTextColor;
         this.click = false;

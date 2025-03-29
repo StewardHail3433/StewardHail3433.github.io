@@ -10,19 +10,19 @@ export class Player extends Entity {
     private controls: any;
     private touchMode =false;
 
-    private movementButtons = [new UIComponentButton((document.getElementById("gameCanvas") as HTMLCanvasElement), {x:10, y:270, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "<-", undefined, 15, {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
+    private movementButtons = [new UIComponentButton((document.getElementById("gameCanvas") as HTMLCanvasElement), {x:10, y:270, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "<-", undefined, 15, "center", {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
         this.keys[this.controls.left] = false;
     }, () => {
         this.keys[this.controls.left] = true;
-    }), new UIComponentButton((document.getElementById("gameCanvas") as HTMLCanvasElement), {x:55, y:270, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "v", undefined, 15, {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
+    }), new UIComponentButton((document.getElementById("gameCanvas") as HTMLCanvasElement), {x:55, y:270, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "v", undefined, 15, "center", {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
         this.keys[this.controls.down] = false;
     }, () => {
         this.keys[this.controls.down] = true;
-    }), new UIComponentButton((document.getElementById("gameCanvas") as HTMLCanvasElement), {x:100, y:270, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "->", undefined, 15, {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
+    }), new UIComponentButton((document.getElementById("gameCanvas") as HTMLCanvasElement), {x:100, y:270, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "->", undefined, 15, "center", {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
         this.keys[this.controls.right] = false;
     },() => {
         this.keys[this.controls.right] = true;
-    }), new UIComponentButton((document.getElementById("gameCanvas") as HTMLCanvasElement), {x:55, y:225, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "^", undefined, 15, {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
+    }), new UIComponentButton((document.getElementById("gameCanvas") as HTMLCanvasElement), {x:55, y:225, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "^", undefined, 15, "center", {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
         this.keys[this.controls.up] = false;
     }, () => {
         this.keys[this.controls.up] = true;

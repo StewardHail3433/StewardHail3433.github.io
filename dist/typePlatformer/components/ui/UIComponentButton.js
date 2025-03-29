@@ -1,7 +1,7 @@
 import { UIComponentLabel } from "./UIComponentLabel.js";
 export class UIComponentButton extends UIComponentLabel {
-    constructor(canvas, hitbox, color = { red: 255, green: 0, blue: 255, alpha: 1.0 }, hidden, text = "", textColor = { red: 0, green: 0, blue: 0, alpha: 1.0 }, fontSize = 8, hoverColor = color, hoverTextColor = textColor, clickColor = color, onTrue, onFalse, whileTrue, whileFalse) {
-        super(hitbox, color, hidden, text, textColor, fontSize);
+    constructor(canvas, hitbox, color = { red: 255, green: 0, blue: 255, alpha: 1.0 }, hidden, text = "", textColor = { red: 0, green: 0, blue: 0, alpha: 1.0 }, fontSize = 8, textAlign = "left", hoverColor = color, hoverTextColor = textColor, clickColor = color, onTrue, onFalse, whileTrue, whileFalse) {
+        super(hitbox, color, hidden, text, textColor, fontSize, textAlign);
         this.activeTouches = new Set();
         this.hoverColor = hoverColor;
         this.hoverTextColor = hoverTextColor;

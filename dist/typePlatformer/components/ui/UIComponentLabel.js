@@ -1,10 +1,11 @@
 import { UIComponent } from "./UIComponent.js";
 export class UIComponentLabel extends UIComponent {
-    constructor(hitbox, color = { red: 255, green: 0, blue: 255, alpha: 1.0 }, hidden, text = "", textColor = { red: 0, green: 0, blue: 0, alpha: 1.0 }, fontSize = 8) {
+    constructor(hitbox, color = { red: 255, green: 0, blue: 255, alpha: 1.0 }, hidden, text = "", textColor = { red: 0, green: 0, blue: 0, alpha: 1.0 }, fontSize = 8, textAlign = "left") {
         super(hitbox, color, hidden);
         this.text = text;
         this.textColor = textColor;
         this.fontSize = fontSize;
+        this.textAlign = textAlign;
     }
     render(ctx, element) {
         if (this.hidden) {
@@ -17,7 +18,7 @@ export class UIComponentLabel extends UIComponent {
             x += element.getHitbox().x;
             y += element.getHitbox().y;
         }
-        ctx.textAlign = "center";
+        ctx.textAlign = this.textAlign;
         if (this.textColor.alpha) {
             ctx.fillStyle = "rgba(" + this.textColor.red + "," + this.textColor.green + "," + this.textColor.blue + ", " + this.textColor.alpha + ")";
         }
@@ -36,7 +37,15 @@ export class UIComponentLabel extends UIComponent {
                 let testWidth = ctx.measureText(testLine).width;
                 if (testWidth > this.hitbox.width && line.length > 0) {
                     // Draw current line and move down
-                    ctx.fillText(line, x + this.hitbox.width / 2, y + this.hitbox.height / 2);
+                    if (this.textAlign === "left") {
+                        ctx.fillText(line, x, y + lineHeight);
+                    }
+                    else if (this.textAlign === "center") {
+                        ctx.fillText(line, x + this.hitbox.width / 2, y + this.hitbox.height / 2);
+                    }
+                    else {
+                        ctx.fillText(line, x + this.hitbox.width / 2, y + this.hitbox.height / 2);
+                    }
                     line = word;
                     y += lineHeight;
                 }
@@ -44,8 +53,15 @@ export class UIComponentLabel extends UIComponent {
                     line = testLine;
                 }
             }
-            // Draw last part of line
-            ctx.fillText(line, x + this.hitbox.width / 2, y + this.hitbox.height / 2);
+            if (this.textAlign === "left") {
+                ctx.fillText(line, x, y + lineHeight);
+            }
+            else if (this.textAlign === "center") {
+                ctx.fillText(line, x + this.hitbox.width / 2, y + this.hitbox.height / 2);
+            }
+            else {
+                ctx.fillText(line, x + this.hitbox.width / 2, y + this.hitbox.height / 2);
+            }
             y += lineHeight; // Move down for next full line (after \n)
         }
     }

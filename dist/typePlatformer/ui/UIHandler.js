@@ -1,6 +1,8 @@
 import { UIComponent } from "../components/ui/UIComponent.js";
 import { UIComponentButton } from "../components/ui/UIComponentButton.js";
 import { UIComponentLabel } from "../components/ui/UIComponentLabel.js";
+import { UIComponentTextbox } from "../components/ui/UIComponetTextbox.js";
+import { Constants } from "../utils/Constants.js";
 export class UIHandler {
     constructor(canvas, player, camera) {
         this.keys = {};
@@ -13,28 +15,31 @@ export class UIHandler {
         }, { red: 0, green: 255, blue: 0 }, true, "Boo", { red: 0, green: 0, blue: 255 }, 9);
         this.debugTeleportToCenterButton = new UIComponentButton(canvas, {
             x: 5, y: 90, width: this.debug.getHitbox().width - 10, height: 20
-        }, { red: 0, green: 255, blue: 0 }, true, "Teleport Center", { red: 0, green: 0, blue: 255 }, 9, { red: 123, green: 123, blue: 0 }, undefined, { red: 255, green: 0, blue: 255 }, () => { });
+        }, { red: 0, green: 255, blue: 0 }, true, "Teleport Center", { red: 0, green: 0, blue: 255 }, 9, "center", { red: 123, green: 123, blue: 0 }, undefined, { red: 255, green: 0, blue: 255 }, () => { });
         this.camera = camera;
         this.debugZoomIn = new UIComponentButton(canvas, {
             x: 5, y: 120, width: (this.debug.getHitbox().width - 10) / 2 - 10, height: 20
-        }, { red: 0, green: 255, blue: 0 }, true, "Zoom In", { red: 0, green: 0, blue: 255 }, 9, { red: 123, green: 123, blue: 0 }, undefined, { red: 255, green: 0, blue: 255 }, () => {
+        }, { red: 0, green: 255, blue: 0 }, true, "Zoom In", { red: 0, green: 0, blue: 255 }, 9, "center", { red: 123, green: 123, blue: 0 }, undefined, { red: 255, green: 0, blue: 255 }, () => {
             this.camera.setView(Object.assign(Object.assign({}, this.camera.getView()), { zoom: this.camera.getView().zoom + 0.25 }));
         });
         this.debugZoomOut = new UIComponentButton(canvas, {
             x: 5 + (this.debug.getHitbox().width - 10) / 2 + 10, y: 120, width: (this.debug.getHitbox().width - 10) / 2 - 10, height: 20
-        }, { red: 0, green: 255, blue: 0 }, true, "Zoom Out", { red: 0, green: 0, blue: 255 }, 9, { red: 123, green: 123, blue: 0 }, undefined, { red: 255, green: 0, blue: 255 }, () => {
+        }, { red: 0, green: 255, blue: 0 }, true, "Zoom Out", { red: 0, green: 0, blue: 255 }, 9, "center", { red: 123, green: 123, blue: 0 }, undefined, { red: 255, green: 0, blue: 255 }, () => {
             this.camera.setView(Object.assign(Object.assign({}, this.camera.getView()), { zoom: Math.max(this.camera.getView().zoom - 0.25, 0.25) }));
         });
         this.debugSpeedUp = new UIComponentButton(canvas, {
             x: 5, y: 150, width: (this.debug.getHitbox().width - 10) / 2 - 10, height: 20
-        }, { red: 0, green: 255, blue: 0 }, true, "Increase Speed", { red: 0, green: 0, blue: 255 }, 9, { red: 123, green: 123, blue: 0 }, undefined, { red: 255, green: 0, blue: 255 }, () => {
+        }, { red: 0, green: 255, blue: 0 }, true, "Increase Speed", { red: 0, green: 0, blue: 255 }, 9, "center", { red: 123, green: 123, blue: 0 }, undefined, { red: 255, green: 0, blue: 255 }, () => {
             this.player.setSpeed(this.player.getSpeed() + 15);
         });
         this.debugSpeedDown = new UIComponentButton(canvas, {
             x: 5 + (this.debug.getHitbox().width - 10) / 2 + 10, y: 150, width: (this.debug.getHitbox().width - 10) / 2 - 10, height: 20
-        }, { red: 0, green: 255, blue: 0 }, true, "Decrease Speed", { red: 0, green: 0, blue: 255 }, 9, { red: 123, green: 123, blue: 0 }, undefined, { red: 255, green: 0, blue: 255 }, () => {
+        }, { red: 0, green: 255, blue: 0 }, true, "Decrease Speed", { red: 0, green: 0, blue: 255 }, 9, "center", { red: 123, green: 123, blue: 0 }, undefined, { red: 255, green: 0, blue: 255 }, () => {
             this.player.setSpeed(this.player.getSpeed() - 15);
         });
+        this.debugTextbox = new UIComponentTextbox(canvas, {
+            x: Constants.CANVAS_WIDTH - this.debugTeleportToCenterButton.getHitbox().width - 5, y: 180, width: this.debugTeleportToCenterButton.getHitbox().width, height: 20
+        }, { red: 0, green: 255, blue: 0 }, false, "RANDOME textbox", { red: 0, green: 0, blue: 255 }, 9);
         this.debug.hide();
         this.debugInfo.hide();
         this.debugTeleportToCenterButton.hide();
@@ -56,6 +61,7 @@ export class UIHandler {
         this.debugZoomOut.render(ctx, this.debug);
         this.debugSpeedUp.render(ctx, this.debug);
         this.debugSpeedDown.render(ctx, this.debug);
+        this.debugTextbox.render(ctx, this.debug);
     }
     update() {
         var _a, _b, _c;
@@ -68,6 +74,7 @@ export class UIHandler {
         this.debugZoomOut.update();
         this.debugSpeedUp.update();
         this.debugSpeedDown.update();
+        this.debugTextbox.update();
         if (this.keysToggled["F3"]) {
             this.debug.show();
             this.debugInfo.show();
