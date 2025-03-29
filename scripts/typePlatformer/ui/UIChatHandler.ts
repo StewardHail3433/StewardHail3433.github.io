@@ -14,16 +14,27 @@ export class UIChatHandler {
     constructor(canvas: HTMLCanvasElement, chatComponent: UIComponent) {
         this.canvas = canvas;
         this.chatComponent = chatComponent;
+        Constants.COMMAND_SYSTEM.addCommand("print", (args) => {
+            console.log(args[0]);
+        });
         this.chatbox = new UIComponentLabel({
                     x: 5, y: 5, width: this.chatComponent.getHitbox().width - 10, height: this.chatComponent.getHitbox().height * .8 - 15
                 }, {red: 0, green: 255, blue: 0}, false, "", {red: 0, green: 0, blue: 255}, 9, "left", true);
         this.textbox = new UIComponentTextbox(this.canvas, {
             x: 5, y: this.chatbox.getHitbox().y + this.chatbox.getHitbox().height + 5 , width: this.chatComponent.getHitbox().width - 10, height: this.chatComponent.getHitbox().height * .2 - 15
         }, {red: 0, green: 255, blue: 0}, false, "", {red: 0, green: 0, blue: 255}, 9, "left", true, () => {
-            this.addMessage(this.textbox.getText());
+            if(this.textbox.getText().trim()[0] === '/') {
+                let info = Constants.COMMAND_SYSTEM.runCommand(this.textbox.getText());
+                if(info) {
+                    this.chatbox.update(this.chatbox.getText() + "\n" + info);
+                }
+            } else {
+                this.addMessage(this.textbox.getText());
+            }  
             this.textbox.update("");
         });
 
+        
 
         this.chatbox.setParentComponent(this.chatComponent);
         this.textbox.setParentComponent(this.chatComponent);

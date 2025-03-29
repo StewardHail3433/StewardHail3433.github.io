@@ -2,7 +2,6 @@ import { Camera } from "../camera/Camera.js";
 import { UIComponent } from "../components/ui/UIComponent.js";
 import { UIComponentButton } from "../components/ui/UIComponentButton.js";
 import { UIComponentLabel } from "../components/ui/UIComponentLabel.js";
-import { UIComponentTextbox } from "../components/ui/UIComponetTextbox.js";
 import { Player } from "../entity/player/Player.js";
 import { Constants } from "../utils/Constants.js";
 import { UIChatHandler } from "./UIChatHandler.js";
@@ -15,7 +14,6 @@ export class UIHandler {
     private debugZoomOut: UIComponent;
     private debugSpeedUp: UIComponentButton;
     private debugSpeedDown: UIComponentButton;
-    private debugTextbox: UIComponentLabel;
     private uiChatHandler: UIChatHandler;
     private keys: { [key: string]: boolean } = {};
     private keysToggled: { [key: string]: boolean } = {"F3": false};
@@ -57,10 +55,6 @@ export class UIHandler {
             this.player.setSpeed(this.player.getSpeed() - 15);
         });
 
-        this.debugTextbox = new UIComponentTextbox(canvas, {
-            x: Constants.CANVAS_WIDTH - this.debugTeleportToCenterButton.getHitbox().width - 5, y: 180, width: this.debugTeleportToCenterButton.getHitbox().width, height: 20
-        }, {red: 0, green: 255, blue: 0}, false, "RANDOME textbox", {red: 0, green: 0, blue: 255}, 9, undefined, true);
-
         this.uiChatHandler = new UIChatHandler(canvas, new UIComponent({
             x: Constants.CANVAS_WIDTH - Constants.CANVAS_WIDTH / 5, y: 0, width: Constants.CANVAS_WIDTH / 5, height: Constants.CANVAS_HEIGHT / 2
         }, {red: 255, green: 0, blue: 0, alpha: 0.5}, false))
@@ -79,6 +73,14 @@ export class UIHandler {
 
         document.addEventListener("keydown", (event) => this.handleKeyDown(event));
         document.addEventListener("keyup", (event) => this.handleKeyUp(event));
+
+        Constants.COMMAND_SYSTEM.addCommand("debug", (args) => {
+            if(args[0] === "show") {
+                this.keysToggled["F3"] = true;
+            } else if(args[0] === "hide") {
+                this.keysToggled["F3"] = false;
+            }
+        });
     }
 
     public render(ctx: CanvasRenderingContext2D) {
@@ -94,7 +96,6 @@ export class UIHandler {
         this.debugZoomOut.render(ctx);
         this.debugSpeedUp.render(ctx);
         this.debugSpeedDown.render(ctx);
-        this.debugTextbox.render(ctx);
         this.uiChatHandler.render(ctx);
     }
 
@@ -112,7 +113,6 @@ export class UIHandler {
         (this.debugZoomOut as UIComponentButton).update();
         this.debugSpeedUp.update();
         this.debugSpeedDown.update();
-        this.debugTextbox.update();
         this.uiChatHandler.update();
         if(this.keysToggled["F3"]) {
             this.debug.show();
