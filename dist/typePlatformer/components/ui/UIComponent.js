@@ -4,7 +4,7 @@ export class UIComponent extends HitboxComponent {
         super(hitbox, color);
         this.hidden = hidden;
     }
-    render(ctx, element) {
+    render(ctx) {
         if (this.hidden) {
             return;
         }
@@ -18,9 +18,9 @@ export class UIComponent extends HitboxComponent {
         }
         var x = this.hitbox.x;
         var y = this.hitbox.y;
-        if (element && !element.isHidden()) {
-            x += element.getHitbox().x;
-            y += element.getHitbox().y;
+        if (this.parentComponent && !this.parentComponent.isHidden()) {
+            x += this.parentComponent.getHitbox().x;
+            y += this.parentComponent.getHitbox().y;
         }
         ctx.fillRect(x, y, this.hitbox.width, this.hitbox.height);
     }
@@ -32,5 +32,8 @@ export class UIComponent extends HitboxComponent {
     }
     isHidden() {
         return this.hidden;
+    }
+    setParentComponent(parentComponent) {
+        this.parentComponent = parentComponent;
     }
 }

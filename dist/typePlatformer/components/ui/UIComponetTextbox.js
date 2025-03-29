@@ -1,8 +1,8 @@
 import { isInside } from "../../utils/Collisions.js";
 import { UIComponentLabel } from "./UIComponentLabel.js";
 export class UIComponentTextbox extends UIComponentLabel {
-    constructor(canvas, hitbox, color = { red: 255, green: 0, blue: 255, alpha: 1.0 }, hidden, placeHolder = "Type Here...", textColor = { red: 0, green: 0, blue: 0, alpha: 1.0 }, fontSize = 8) {
-        super(hitbox, color, hidden, placeHolder, textColor, fontSize);
+    constructor(canvas, hitbox, color = { red: 255, green: 0, blue: 255, alpha: 1.0 }, hidden, placeHolder = "Type Here...", textColor = { red: 0, green: 0, blue: 0, alpha: 1.0 }, fontSize = 8, textAlign = "left", lockTextHeight = false, onSubmit) {
+        super(hitbox, color, hidden, placeHolder, textColor, fontSize, textAlign, lockTextHeight);
         this.canvas = canvas;
         this.placeholder = placeHolder;
         this.text = "";
@@ -12,13 +12,20 @@ export class UIComponentTextbox extends UIComponentLabel {
         this.handleKeyDown = this.handleKeyDown.bind(this);
         document.addEventListener("mousedown", this.handleMouseDown);
         document.addEventListener("touchstart", this.handleTouchStart);
+        this.onSubmit = onSubmit;
     }
     handleMouseDown(event) {
         event.preventDefault();
         const rect = this.canvas.getBoundingClientRect();
         let x = event.clientX - rect.left;
         let y = event.clientY - rect.top;
-        if (isInside({ x, y }, this.hitbox)) {
+        var boxx = this.hitbox.x;
+        var boxy = this.hitbox.y;
+        if (this.parentComponent && !this.parentComponent.isHidden()) {
+            boxx += this.parentComponent.getHitbox().x;
+            boxy += this.parentComponent.getHitbox().y;
+        }
+        if (isInside({ x, y }, Object.assign(Object.assign({}, this.hitbox), { x: boxx, y: boxy }))) {
             this.startTextElement();
         }
         else {
@@ -34,7 +41,13 @@ export class UIComponentTextbox extends UIComponentLabel {
         const rect = this.canvas.getBoundingClientRect();
         let x = event.touches[0].clientX - rect.left;
         let y = event.touches[0].clientY - rect.top;
-        if (isInside({ x, y }, this.hitbox)) {
+        var boxx = this.hitbox.x;
+        var boxy = this.hitbox.y;
+        if (this.parentComponent && !this.parentComponent.isHidden()) {
+            boxx += this.parentComponent.getHitbox().x;
+            boxy += this.parentComponent.getHitbox().y;
+        }
+        if (isInside({ x, y }, Object.assign(Object.assign({}, this.hitbox), { x: boxx, y: boxy }))) {
             this.startTextElement();
         }
         else {
@@ -54,6 +67,9 @@ export class UIComponentTextbox extends UIComponentLabel {
         if (event.key === "Enter") {
             this.boxFocus = false;
             this.removeTextElement();
+            if (this.onSubmit) {
+                this.onSubmit();
+            }
             return;
         }
     }
@@ -63,9 +79,15 @@ export class UIComponentTextbox extends UIComponentLabel {
         this.inputElement = document.createElement("input");
         this.inputElement.type = "text";
         this.inputElement.style.position = "absolute";
+        var x = this.hitbox.x;
+        var y = this.hitbox.y;
+        if (this.parentComponent) {
+            x += this.parentComponent.getHitbox().x;
+            y += this.parentComponent.getHitbox().y;
+        }
         const rect = this.canvas.getBoundingClientRect();
-        this.inputElement.style.left = rect.left + this.hitbox.x + "px";
-        this.inputElement.style.top = rect.top + this.hitbox.y + "px";
+        this.inputElement.style.left = rect.left + x + "px";
+        this.inputElement.style.top = rect.top + y + "px";
         this.inputElement.style.width = this.hitbox.width + "px";
         this.inputElement.style.height = this.hitbox.height + "px";
         this.inputElement.style.opacity = "1.0"; // bugged right now so show showing

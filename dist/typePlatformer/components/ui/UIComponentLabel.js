@@ -1,22 +1,24 @@
 import { UIComponent } from "./UIComponent.js";
 export class UIComponentLabel extends UIComponent {
-    constructor(hitbox, color = { red: 255, green: 0, blue: 255, alpha: 1.0 }, hidden, text = "", textColor = { red: 0, green: 0, blue: 0, alpha: 1.0 }, fontSize = 8, textAlign = "left") {
+    constructor(hitbox, color = { red: 255, green: 0, blue: 255, alpha: 1.0 }, hidden, text = "", textColor = { red: 0, green: 0, blue: 0, alpha: 1.0 }, fontSize = 8, textAlign = "left", lockTextHeight = false) {
         super(hitbox, color, hidden);
+        this.lockTextHeight = false;
         this.text = text;
         this.textColor = textColor;
         this.fontSize = fontSize;
         this.textAlign = textAlign;
+        this.lockTextHeight = lockTextHeight;
     }
-    render(ctx, element) {
+    render(ctx) {
         if (this.hidden) {
             return;
         }
-        super.render(ctx, element);
+        super.render(ctx);
         var x = this.hitbox.x;
         var y = this.hitbox.y;
-        if (element && !element.isHidden()) {
-            x += element.getHitbox().x;
-            y += element.getHitbox().y;
+        if (this.parentComponent) {
+            x += this.parentComponent.getHitbox().x;
+            y += this.parentComponent.getHitbox().y;
         }
         ctx.textAlign = this.textAlign;
         if (this.textColor.alpha) {
@@ -26,46 +28,51 @@ export class UIComponentLabel extends UIComponent {
             ctx.fillStyle = "rgb(" + this.textColor.red + "," + this.textColor.green + "," + this.textColor.blue + ")";
         }
         ctx.font = this.fontSize + "px serif";
-        let lines = this.text.split("\n"); // Split by actual newlines first
+        let lines = [];
+        let paragraphs = this.text.split("\n"); // Preserve explicit newlines
         let lineHeight = this.fontSize * 1.2;
-        y -= 3;
-        for (let i = 0; i < lines.length; i++) {
-            let words = lines[i].split(" "); // Split line into words for wrapping
-            let line = "";
+        let maxLines = Math.round(this.hitbox.height / lineHeight);
+        for (let paragraph of paragraphs) {
+            let words = paragraph.split(" ");
+            let currentLine = "";
             for (let word of words) {
-                let testLine = line.length === 0 ? word : line + " " + word;
+                let testLine = currentLine.length === 0 ? word : currentLine + " " + word;
                 let testWidth = ctx.measureText(testLine).width;
-                if (testWidth > this.hitbox.width && line.length > 0) {
-                    // Draw current line and move down
-                    if (this.textAlign === "left") {
-                        ctx.fillText(line, x, y + lineHeight);
-                    }
-                    else if (this.textAlign === "center") {
-                        ctx.fillText(line, x + this.hitbox.width / 2, y + this.hitbox.height / 2);
-                    }
-                    else {
-                        ctx.fillText(line, x + this.hitbox.width / 2, y + this.hitbox.height / 2);
-                    }
-                    line = word;
-                    y += lineHeight;
+                if (testWidth > this.hitbox.width && currentLine.length > 0) {
+                    lines.push(currentLine);
+                    currentLine = word;
                 }
                 else {
-                    line = testLine;
+                    currentLine = testLine;
                 }
             }
+            if (currentLine) {
+                lines.push(currentLine);
+            }
+        }
+        // Remove excess lines if lockTextHeight is enabled
+        if (this.lockTextHeight && lines.length > maxLines) {
+            lines = lines.slice(lines.length - maxLines);
+        }
+        // Render text line by line
+        y -= 3;
+        for (let i = 0; i < lines.length; i++) {
             if (this.textAlign === "left") {
-                ctx.fillText(line, x, y + lineHeight);
+                ctx.fillText(lines[i], x, y + lineHeight);
             }
             else if (this.textAlign === "center") {
-                ctx.fillText(line, x + this.hitbox.width / 2, y + this.hitbox.height / 2);
+                ctx.fillText(lines[i], x + this.hitbox.width / 2, y + this.hitbox.height / 2);
             }
             else {
-                ctx.fillText(line, x + this.hitbox.width / 2, y + this.hitbox.height / 2);
+                ctx.fillText(lines[i], x + this.hitbox.width / 2, y + this.hitbox.height / 2);
             }
             y += lineHeight; // Move down for next full line (after \n)
         }
     }
     update(text = this.text) {
         this.text = text;
+    }
+    getText() {
+        return this.text;
     }
 }

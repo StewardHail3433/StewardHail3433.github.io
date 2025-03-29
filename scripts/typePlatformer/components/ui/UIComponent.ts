@@ -2,13 +2,14 @@ import { HitboxComponent } from "../HitboxComponent.js";
 
 export class UIComponent extends HitboxComponent {
     protected hidden: boolean;
+    protected parentComponent?: UIComponent;
     
     constructor(hitbox: {x: number; y: number; width: number; height: number}, color: {red: number; green: number; blue: number; alpha?: number} = { red: 255, green: 0, blue: 255, alpha: 1.0}, hidden: boolean) {
         super(hitbox, color);
         this.hidden = hidden;
     }
 
-    public render(ctx: CanvasRenderingContext2D, element?: UIComponent) {
+    public render(ctx: CanvasRenderingContext2D) {
         if(this.hidden) {
             return;
         }
@@ -19,9 +20,9 @@ export class UIComponent extends HitboxComponent {
         }
         var x: number = this.hitbox.x; 
         var y: number = this.hitbox.y;
-        if(element && !element.isHidden()) {
-            x += element.getHitbox().x;
-            y += element.getHitbox().y;
+        if(this.parentComponent && !this.parentComponent.isHidden()) {
+            x += this.parentComponent.getHitbox().x;
+            y += this.parentComponent.getHitbox().y;
         }
         ctx.fillRect(x, y, this.hitbox.width, this.hitbox.height);
     }
@@ -38,4 +39,8 @@ export class UIComponent extends HitboxComponent {
         return this.hidden
     }
 
+
+    public setParentComponent(parentComponent: UIComponent) {
+        this.parentComponent = parentComponent;
+    }
 }

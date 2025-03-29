@@ -1,4 +1,3 @@
-import { Console } from "console";
 import { Camera } from "../camera/Camera.js";
 import { UIComponent } from "../components/ui/UIComponent.js";
 import { UIComponentButton } from "../components/ui/UIComponentButton.js";
@@ -6,6 +5,7 @@ import { UIComponentLabel } from "../components/ui/UIComponentLabel.js";
 import { UIComponentTextbox } from "../components/ui/UIComponetTextbox.js";
 import { Player } from "../entity/player/Player.js";
 import { Constants } from "../utils/Constants.js";
+import { UIChatHandler } from "./UIChatHandler.js";
 
 export class UIHandler {
     private debug: UIComponent;
@@ -16,6 +16,7 @@ export class UIHandler {
     private debugSpeedUp: UIComponentButton;
     private debugSpeedDown: UIComponentButton;
     private debugTextbox: UIComponentLabel;
+    private uiChatHandler: UIChatHandler;
     private keys: { [key: string]: boolean } = {};
     private keysToggled: { [key: string]: boolean } = {"F3": false};
     private playermovement?: UIComponent[];
@@ -58,12 +59,20 @@ export class UIHandler {
 
         this.debugTextbox = new UIComponentTextbox(canvas, {
             x: Constants.CANVAS_WIDTH - this.debugTeleportToCenterButton.getHitbox().width - 5, y: 180, width: this.debugTeleportToCenterButton.getHitbox().width, height: 20
-        }, {red: 0, green: 255, blue: 0}, false, "RANDOME textbox", {red: 0, green: 0, blue: 255}, 9);
+        }, {red: 0, green: 255, blue: 0}, false, "RANDOME textbox", {red: 0, green: 0, blue: 255}, 9, undefined, true);
 
-
+        this.uiChatHandler = new UIChatHandler(canvas, new UIComponent({
+            x: Constants.CANVAS_WIDTH - Constants.CANVAS_WIDTH / 5, y: 0, width: Constants.CANVAS_WIDTH / 5, height: Constants.CANVAS_HEIGHT / 2
+        }, {red: 255, green: 0, blue: 0, alpha: 0.5}, false))
         this.debug.hide();
         this.debugInfo.hide();
         this.debugTeleportToCenterButton.hide();
+        this.debugSpeedUp.setParentComponent(this.debug);
+        this.debugSpeedDown.setParentComponent(this.debug);
+        this.debugZoomIn.setParentComponent(this.debug);
+        this.debugZoomOut.setParentComponent(this.debug);
+        this.debugInfo.setParentComponent(this.debug);
+        this.debugTeleportToCenterButton.setParentComponent(this.debug);
         this.player = player;
 
         this.playermovement = this.player.getMovementButton(canvas);
@@ -74,19 +83,19 @@ export class UIHandler {
 
     public render(ctx: CanvasRenderingContext2D) {
         this.debug.render(ctx);
-        this.debugInfo.render(ctx, this.debug)
-        this.debugTeleportToCenterButton.render(ctx, this.debug);
+        this.debugInfo.render(ctx);
+        this.debugTeleportToCenterButton.render(ctx);
         if(this.player.getTouchMode() && this.playermovement) {
             for(var button of this.playermovement) {
                 (button as UIComponentButton).render(ctx);
             }
         }
-        this.debugZoomIn.render(ctx, this.debug);
-        this.debugZoomOut.render(ctx, this.debug);
-        this.debugSpeedUp.render(ctx, this.debug);
-        this.debugSpeedDown.render(ctx, this.debug);
-        this.debugTextbox.render(ctx, this.debug);
-        
+        this.debugZoomIn.render(ctx);
+        this.debugZoomOut.render(ctx);
+        this.debugSpeedUp.render(ctx);
+        this.debugSpeedDown.render(ctx);
+        this.debugTextbox.render(ctx);
+        this.uiChatHandler.render(ctx);
     }
 
     public update() {
@@ -104,6 +113,7 @@ export class UIHandler {
         this.debugSpeedUp.update();
         this.debugSpeedDown.update();
         this.debugTextbox.update();
+        this.uiChatHandler.update();
         if(this.keysToggled["F3"]) {
             this.debug.show();
             this.debugInfo.show();
@@ -149,6 +159,10 @@ export class UIHandler {
     private handleKeyUp(event: KeyboardEvent) {
         event.preventDefault();
         this.keys[event.key] = false;
+    }
+
+    public getChatHandler(): UIChatHandler {
+        return this.uiChatHandler;
     }
 
 }

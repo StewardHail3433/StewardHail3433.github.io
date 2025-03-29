@@ -72,6 +72,7 @@ class Game {
                 this.isMultiplayer = true;
                 this.joinButton.textContent = "Connected!";
                 this.socket.emit("newPlayer", this.player.serialize());
+                this.uiHandler.getChatHandler().setSocket(this.socket);
             });
         
             this.socket.on("updatePlayers", (data: Record<string, any>) => {
@@ -97,18 +98,21 @@ class Game {
                 this.socket.disconnect();
                 alert(data.message);
                 this.warningDiv.textContent = "";
+                this.uiHandler.getChatHandler().setSocket(null);
             });
         
             this.socket.on("disconnect", () => {
                 console.log("Disconnected from server. Returning to single-player mode.");
                 this.isMultiplayer = false;
                 this.joinButton.textContent = "Join Multiplayer";
+                this.uiHandler.getChatHandler().setSocket(null);
             });
         
             this.socket.on("connect_error", () => {
                 console.log("Multiplayer server not available.");
                 this.isMultiplayer = false;
                 this.joinButton.textContent = "Join Multiplayer";
+                this.uiHandler.getChatHandler().setSocket(null);
             });
         });
     }
