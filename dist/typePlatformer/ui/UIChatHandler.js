@@ -28,7 +28,6 @@ export class UIChatHandler {
     }
     setSocket(socket) {
         this.socket = socket;
-        console.log("kkkkkk");
         this.readMessage();
     }
     ;
@@ -39,14 +38,12 @@ export class UIChatHandler {
     ;
     sendMessage(text) {
         if (this.socket) {
-            console.log("sjdfnk");
             this.socket.emit("sendChatMessage", this.serializeMessage(text, "NAME"));
         }
     }
     readMessage() {
         if (this.socket) {
             this.socket.on("readChatMesage", (data) => {
-                console.log(data);
                 this.chatbox.update(this.chatbox.getText() + "\n" + data.name + ": " + data.text);
             });
         }
