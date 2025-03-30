@@ -73,6 +73,7 @@ class Game {
         this.resizeCanvasBound();
     }
     resizeCanvas() {
+        // AI I want to redo and learn more
         const container = document.getElementById("gameDiv");
         let scale;
         const screenWidth = window.innerWidth;
