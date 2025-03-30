@@ -1,4 +1,5 @@
 import { isInside } from "../../utils/Collisions.js";
+import { Constants } from "../../utils/Constants.js";
 import { UIComponent } from "./UIComponent.js";
 import { UIComponentLabel } from "./UIComponentLabel.js";
 
@@ -35,18 +36,38 @@ export class UIComponentTextbox extends UIComponentLabel{
         this.onSubmit = onSubmit;
     }
 
+
+    public updatePosition(scale: number): void {
+        super.updatePosition(scale);
+        if(this.inputElement) {
+            var x: number = this.hitbox.x; 
+            var y: number = this.hitbox.y;
+            if(this.parentComponent) {
+                x += this.parentComponent.getHitbox().x;
+                y += this.parentComponent.getHitbox().y;
+            }
+
+            const rect = this.canvas.getBoundingClientRect();
+            this.inputElement.style.left = rect.left + x * this.scale + ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2)+ "px";
+            this.inputElement.style.top = rect.top + y * this.scale + ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2) + "px";
+        
+            this.inputElement.style.width = this.hitbox.width * this.scale + "px";
+            this.inputElement.style.height = this.hitbox.height * this.scale + "px";
+        }
+    }
+
     private handleMouseDown(event: MouseEvent) {
         event.preventDefault();
         const rect = this.canvas.getBoundingClientRect(); 
-        let x = event.clientX - rect.left;
-        let y = event.clientY - rect.top;
+        let x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2);
+        let y = event.clientY - rect.top- ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
         var boxx: number = this.hitbox.x; 
         var boxy: number = this.hitbox.y;
         if(this.parentComponent && !this.parentComponent.isHidden()) {
             boxx += this.parentComponent.getHitbox().x;
             boxy += this.parentComponent.getHitbox().y;
         }
-        if(isInside({x, y}, {...this.hitbox, x: boxx, y: boxy})) {
+        if(isInside({x, y}, {...this.hitbox, x: boxx, y: boxy}, this.scale)) {
             this.startTextElement();
         } else {
             this.boxFocus = false;
@@ -60,8 +81,8 @@ export class UIComponentTextbox extends UIComponentLabel{
     private handleTouchStart(event: TouchEvent) {
         event.preventDefault();
         const rect = this.canvas.getBoundingClientRect(); 
-        let x = event.touches[0].clientX - rect.left;
-        let y = event.touches[0].clientY - rect.top;
+        let x = event.touches[0].clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2);
+        let y = event.touches[0].clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
         var boxx: number = this.hitbox.x; 
         var boxy: number = this.hitbox.y;
         if(this.parentComponent && !this.parentComponent.isHidden()) {
@@ -111,19 +132,23 @@ export class UIComponentTextbox extends UIComponentLabel{
         }
 
         const rect = this.canvas.getBoundingClientRect();
-        this.inputElement.style.left = rect.left + x + "px";
-        this.inputElement.style.top = rect.top + y + "px";
+        this.inputElement.style.left = rect.left + x * this.scale + ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2)+ "px";
+        this.inputElement.style.top = rect.top + y * this.scale + ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2)+ "px";
     
-        this.inputElement.style.width = this.hitbox.width + "px";
-        this.inputElement.style.height = this.hitbox.height + "px";
+        this.inputElement.style.width = this.hitbox.width * this.scale + "px";
+        this.inputElement.style.height = this.hitbox.height  * this.scale + "px";
+
+        this.inputElement.style.fontSize = this.fontSize * this.scale + "px";
     
+        this.inputElement.style.zIndex = "1000";
         this.inputElement.style.opacity = "1.0"; // bugged right now so show showing
         this.inputElement.style.pointerEvents = "auto";
-    
+
+        this.inputElement.autocomplete = "off";
         this.inputElement.placeholder = this.placeholder;
         this.inputElement.value = this.text; 
         this.inputElement.id = "textboxCanvas"
-        document.body.appendChild(this.inputElement);
+        document.getElementById("gameDiv")?.appendChild(this.inputElement);
         
         this.inputElement.focus();
         this.boxFocus = true;
@@ -137,7 +162,7 @@ export class UIComponentTextbox extends UIComponentLabel{
     private removeTextElement() {
         if (this.inputElement) {
             this.inputElement.removeEventListener("keydown", this.handleKeyDown);
-            document.body.removeChild(this.inputElement);
+            document.getElementById("gameDiv")?.removeChild(this.inputElement);
             this.inputElement = undefined;
         }
     }

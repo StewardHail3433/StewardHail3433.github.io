@@ -173,4 +173,20 @@ export class UIHandler {
         return this.uiChatHandler;
     }
 
+    public updatePositions(scale: number) {
+        this.debug.updatePosition(scale);
+        this.debugInfo.updatePosition(scale);
+        this.debugTeleportToCenterButton.updatePosition(scale);
+        this.debugZoomIn.updatePosition(scale);
+        this.debugZoomOut.updatePosition(scale);
+        this.debugSpeedUp.updatePosition(scale);
+        this.debugSpeedDown.updatePosition(scale);
+        if(this.playermovement) {
+            for(var button of this.playermovement) {
+                (button as UIComponentButton).updatePosition(scale);
+            }
+        }
+        this.uiChatHandler.updatePositions(scale);
+    }
+
 }

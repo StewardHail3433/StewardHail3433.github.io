@@ -12,6 +12,7 @@ class Game {
         this.isMultiplayer = false;
         this.socket = null;
         this.lastTime = 0;
+        this.isFullscreen = false;
         this.canvas = document.getElementById("gameCanvas");
         this.ctx = this.canvas.getContext("2d");
         this.canvas.width = Constants.CANVAS_WIDTH;
@@ -27,6 +28,82 @@ class Game {
         this.worldHandler = new WorldHandler();
         this.setupEventListeners();
         requestAnimationFrame(this.gameLoop.bind(this));
+        // Resize on window load and when resized
+        this.resizeCanvasBound = this.resizeCanvas.bind(this);
+        window.addEventListener("resize", this.resizeCanvasBound);
+        document.addEventListener("keydown", (event) => { if (event.key === "?") {
+            event.preventDefault();
+            this.toggleFullScreen();
+        } });
+        document.getElementById("fullscreenButton").addEventListener("click", () => { this.toggleFullScreen(); });
+    }
+    toggleFullScreen() {
+        if (!this.isFullscreen) {
+            //https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullscreen
+            //https://www.w3schools.com/howto/howto_js_fullscreen.asp
+            if (document.getElementById("gameDiv").requestFullscreen) {
+                document.getElementById("gameDiv").requestFullscreen().catch(err => {
+                    console.error(`Error attempting fullscreen: ${err.message}`);
+                    return;
+                }).then(() => {
+                    window.removeEventListener("resize", this.resizeCanvasBound);
+                    this.dofullscreen();
+                });
+            }
+            else if (document.getElementById("gameDiv").webkitRequestFullscreen) { /* Safari */
+                document.getElementById("gameDiv").webkitRequestFullscreen();
+                this.dofullscreen();
+            }
+            else if (document.getElementById("gameDiv").msRequestFullscreen) { /* IE11 */
+                document.getElementById("gameDiv").msRequestFullscreen();
+                this.dofullscreen();
+            }
+        }
+        else {
+            this.isFullscreen = false;
+            this.canvas.style = "overflow: hidden;";
+            this.resizeCanvasBound = this.resizeCanvas.bind(this);
+            window.addEventListener("resize", this.resizeCanvasBound);
+            document.exitFullscreen();
+        }
+    }
+    dofullscreen() {
+        window.removeEventListener("resize", this.resizeCanvasBound);
+        this.isFullscreen = true;
+        this.resizeCanvasBound();
+    }
+    resizeCanvas() {
+        const container = document.getElementById("gameDiv");
+        let scale;
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        const baseWidth = Constants.CANVAS_WIDTH;
+        const baseHeight = Constants.CANVAS_HEIGHT;
+        const canvasAspect = baseWidth / baseHeight;
+        const screenAspect = screenWidth / screenHeight;
+        if (screenAspect > canvasAspect) {
+            // Screen is wider than canvas aspect ratio, scale by height
+            scale = screenHeight / baseHeight;
+        }
+        else {
+            // Screen is taller than canvas aspect ratio, scale by width
+            scale = screenWidth / baseWidth;
+        }
+        if (this.isFullscreen) {
+            // Apply the calculated scale
+            this.canvas.style.width = `${baseWidth * scale}px`;
+            this.canvas.style.height = `${baseHeight * scale}px`;
+            this.canvas.style.position = "absolute";
+            this.canvas.style.left = `${(screenWidth - baseWidth * scale) / 2}px`;
+            this.canvas.style.top = `${(screenHeight - baseHeight * scale) / 2}px`;
+        }
+        else {
+            // Reset to default size
+            this.canvas.style.width = `${Constants.CANVAS_WIDTH}px`;
+            this.canvas.style.height = `${Constants.CANVAS_HEIGHT}px`;
+            this.canvas.style.position = "static";
+        }
+        this.uiHandler.updatePositions(scale);
     }
     setupEventListeners() {
         this.multiplayerEvents();

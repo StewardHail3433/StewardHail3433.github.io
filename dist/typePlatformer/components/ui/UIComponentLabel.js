@@ -75,4 +75,7 @@ export class UIComponentLabel extends UIComponent {
     getText() {
         return this.text;
     }
+    updatePosition(scale) {
+        super.updatePosition(scale);
+    }
 }

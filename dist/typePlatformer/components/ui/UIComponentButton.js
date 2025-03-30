@@ -1,3 +1,5 @@
+import { isInside } from "../../utils/Collisions.js";
+import { Constants } from "../../utils/Constants.js";
 import { UIComponentLabel } from "./UIComponentLabel.js";
 export class UIComponentButton extends UIComponentLabel {
     constructor(canvas, hitbox, color = { red: 255, green: 0, blue: 255, alpha: 1.0 }, hidden, text = "", textColor = { red: 0, green: 0, blue: 0, alpha: 1.0 }, fontSize = 8, textAlign = "left", hoverColor = color, hoverTextColor = textColor, clickColor = color, onTrue, onFalse, whileTrue, whileFalse) {
@@ -25,10 +27,15 @@ export class UIComponentButton extends UIComponentLabel {
     handleMouseDown(event) {
         event.preventDefault();
         const rect = this.canvas.getBoundingClientRect();
-        let x = event.clientX - rect.left;
-        let y = event.clientY - rect.top;
-        if (x > this.hitbox.x && x < this.hitbox.x + this.hitbox.width
-            && y > this.hitbox.y && y < this.hitbox.y + this.hitbox.height) {
+        let x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2); // - offest
+        let y = event.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
+        var boxx = this.hitbox.x;
+        var boxy = this.hitbox.y;
+        if (this.parentComponent && !this.parentComponent.isHidden()) {
+            boxx += this.parentComponent.getHitbox().x;
+            boxy += this.parentComponent.getHitbox().y;
+        }
+        if (isInside({ x, y }, Object.assign(Object.assign({}, this.hitbox), { x: boxx, y: boxy }), this.scale)) {
             if (!this.click) {
                 this.shouldOnTrue = true;
             }
@@ -38,10 +45,15 @@ export class UIComponentButton extends UIComponentLabel {
     }
     handleMouseMove(event) {
         const rect = this.canvas.getBoundingClientRect();
-        let x = event.clientX - rect.left;
-        let y = event.clientY - rect.top;
-        if (x > this.hitbox.x && x < this.hitbox.x + this.hitbox.width
-            && y > this.hitbox.y && y < this.hitbox.y + this.hitbox.height) {
+        let x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2);
+        let y = event.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
+        var boxx = this.hitbox.x;
+        var boxy = this.hitbox.y;
+        if (this.parentComponent && !this.parentComponent.isHidden()) {
+            boxx += this.parentComponent.getHitbox().x;
+            boxy += this.parentComponent.getHitbox().y;
+        }
+        if (isInside({ x, y }, Object.assign(Object.assign({}, this.hitbox), { x: boxx, y: boxy }), this.scale)) {
             this.color = this.hoverColor;
         }
         else {
@@ -58,15 +70,20 @@ export class UIComponentButton extends UIComponentLabel {
     }
     handleTouchStart(event) {
         var changedTouches = event.changedTouches;
+        var boxx = this.hitbox.x;
+        var boxy = this.hitbox.y;
+        if (this.parentComponent && !this.parentComponent.isHidden()) {
+            boxx += this.parentComponent.getHitbox().x;
+            boxy += this.parentComponent.getHitbox().y;
+        }
         for (var i = 0; i < changedTouches.length; i++) {
             let touch = changedTouches[i];
             const rect = this.canvas.getBoundingClientRect();
-            let x = touch.clientX - rect.left;
-            let y = touch.clientY - rect.top;
-            if (x >= 0 && y >= 0 && y <= 320 && x <= 480) {
+            let x = touch.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2);
+            let y = touch.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
+            if (x >= 0 && y >= 0 && y <= Constants.CANVAS_HEIGHT * this.scale && x <= Constants.CANVAS_WIDTH * this.scale) {
                 event.preventDefault();
-                if (x > this.hitbox.x && x < this.hitbox.x + this.hitbox.width
-                    && y > this.hitbox.y && y < this.hitbox.y + this.hitbox.height) {
+                if (isInside({ x, y }, Object.assign(Object.assign({}, this.hitbox), { x: boxx, y: boxy }), this.scale)) {
                     if (!this.activeTouches.size) {
                         this.shouldOnTrue = true;
                     }
@@ -80,14 +97,19 @@ export class UIComponentButton extends UIComponentLabel {
     handleTouchMove(event) {
         const rect = this.canvas.getBoundingClientRect();
         var changedTouches = event.changedTouches;
+        var boxx = this.hitbox.x;
+        var boxy = this.hitbox.y;
+        if (this.parentComponent && !this.parentComponent.isHidden()) {
+            boxx += this.parentComponent.getHitbox().x;
+            boxy += this.parentComponent.getHitbox().y;
+        }
         for (var i = 0; i < changedTouches.length; i++) {
             let touch = changedTouches[i];
-            let x = touch.clientX - rect.left;
-            let y = touch.clientY - rect.top;
-            if (x >= 0 && y >= 0 && y <= 320 && x <= 480) {
+            let x = touch.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2);
+            let y = touch.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
+            if (x >= 0 && y >= 0 && y <= Constants.CANVAS_HEIGHT * this.scale && x <= Constants.CANVAS_WIDTH * this.scale) {
                 event.preventDefault();
-                if (x > this.hitbox.x && x < this.hitbox.x + this.hitbox.width
-                    && y > this.hitbox.y && y < this.hitbox.y + this.hitbox.height) {
+                if (isInside({ x, y }, Object.assign(Object.assign({}, this.hitbox), { x: boxx, y: boxy }), this.scale)) {
                     this.color = this.hoverColor;
                 }
                 else {
@@ -101,9 +123,9 @@ export class UIComponentButton extends UIComponentLabel {
         var changedTouches = event.changedTouches;
         for (var i = 0; i < changedTouches.length; i++) {
             let touch = changedTouches[i];
-            let x = touch.clientX - rect.left;
-            let y = touch.clientY - rect.top;
-            if (x >= 0 && y >= 0 && y <= 320 && x <= 480) {
+            let x = touch.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2);
+            let y = touch.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
+            if (x >= 0 && y >= 0 && y <= Constants.CANVAS_HEIGHT * this.scale && x <= Constants.CANVAS_WIDTH * this.scale) {
                 event.preventDefault();
             }
             if (this.activeTouches.has(touch.identifier)) {

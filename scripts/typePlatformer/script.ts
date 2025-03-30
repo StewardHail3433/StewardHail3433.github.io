@@ -23,6 +23,8 @@ class Game {
     private isMultiplayer: boolean = false;
     private socket: any = null;
     private lastTime: number = 0;
+    resizeCanvasBound: () => void;
+    private isFullscreen: boolean =false;
 
     constructor() {
         this.canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
@@ -44,7 +46,96 @@ class Game {
         this.worldHandler = new WorldHandler();
         this.setupEventListeners();
         requestAnimationFrame(this.gameLoop.bind(this));
+
+        
+        
+        // Resize on window load and when resized
+        this.resizeCanvasBound = this.resizeCanvas.bind(this);
+        window.addEventListener("resize", this.resizeCanvasBound);
+        document.addEventListener("keydown", (event) => {if(event.key === "?"){event.preventDefault();this.toggleFullScreen()}});
+        document.getElementById("fullscreenButton")!.addEventListener("click", () => {this.toggleFullScreen()});
+
     }
+
+    private toggleFullScreen() {
+        if (!this.isFullscreen) {
+            //https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullscreen
+            //https://www.w3schools.com/howto/howto_js_fullscreen.asp
+
+            if ( (<any>document.getElementById("gameDiv")!).requestFullscreen) {
+                document.getElementById("gameDiv")!.requestFullscreen().catch(err => {
+                    console.error(`Error attempting fullscreen: ${err.message}`);
+                    return;
+                }).then(
+                    () => {
+                        window.removeEventListener("resize", this.resizeCanvasBound);
+                        this.dofullscreen();
+    
+                    }
+                );
+              } else if ((<any>document.getElementById("gameDiv")!).webkitRequestFullscreen) { /* Safari */
+                (<any>document.getElementById("gameDiv")!).webkitRequestFullscreen();
+                this.dofullscreen();
+              } else if ((<any>document.getElementById("gameDiv")!).msRequestFullscreen) { /* IE11 */
+                (<any>document.getElementById("gameDiv")!).msRequestFullscreen();
+                this.dofullscreen();
+              }
+
+        } else {
+            this.isFullscreen = false;
+            this.canvas.style = "overflow: hidden;"; 
+            this.resizeCanvasBound = this.resizeCanvas.bind(this);
+            window.addEventListener("resize", this.resizeCanvasBound);
+            document.exitFullscreen();
+        }
+    }
+
+    private dofullscreen() {
+        window.removeEventListener("resize", this.resizeCanvasBound);
+        this.isFullscreen = true;
+        this.resizeCanvasBound();
+    }
+    
+
+    private resizeCanvas() {
+
+        // AI I want to redo and learn more
+        const container = document.getElementById("gameDiv")!;
+        let scale: number;
+        const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+    
+            const baseWidth = Constants.CANVAS_WIDTH;
+            const baseHeight = Constants.CANVAS_HEIGHT;
+    
+            const canvasAspect = baseWidth / baseHeight;
+            const screenAspect = screenWidth / screenHeight;
+    
+            if (screenAspect > canvasAspect) {
+                // Screen is wider than canvas aspect ratio, scale by height
+                scale = screenHeight / baseHeight;
+            } else {
+                // Screen is taller than canvas aspect ratio, scale by width
+                scale = screenWidth / baseWidth;
+            }
+        if (this.isFullscreen) {
+    
+            // Apply the calculated scale
+            this.canvas.style.width = `${baseWidth * scale}px`;
+            this.canvas.style.height = `${baseHeight * scale}px`;
+            this.canvas.style.position = "absolute";
+            this.canvas.style.left = `${(screenWidth - baseWidth * scale) / 2}px`;
+            this.canvas.style.top = `${(screenHeight - baseHeight * scale) / 2}px`;
+        } else {
+            // Reset to default size
+            this.canvas.style.width = `${Constants.CANVAS_WIDTH}px`;
+            this.canvas.style.height = `${Constants.CANVAS_HEIGHT}px`;
+            this.canvas.style.position = "static";
+        }
+    
+        this.uiHandler.updatePositions(scale);
+    }
+    
 
     private setupEventListeners() {
         this.multiplayerEvents();
