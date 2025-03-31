@@ -119,7 +119,12 @@ export class UIComponentTextbox extends UIComponentLabel{
 
     private startTextElement() {
         if (this.inputElement) return; // Prevent creating multiple input elements
-
+        let wasFullscreen = false
+        if (document.fullscreenElement) {
+            document.getElementById("fullscreenButton")!.dispatchEvent(new Event("click"));
+            wasFullscreen= true;
+        }
+    
         this.inputElement = document.createElement("input");
         this.inputElement.type = "text";
         this.inputElement.style.position = "absolute";
@@ -156,6 +161,11 @@ export class UIComponentTextbox extends UIComponentLabel{
         this.inputElement.value = this.text; 
     
         this.inputElement.addEventListener("keydown", this.handleKeyDown);
+    
+        this.inputElement.addEventListener("blur", () => {
+            if(wasFullscreen) document.getElementById("fullscreenButton")!.dispatchEvent(new Event("click"));
+            // document.getElementById("fullscreenButton")!.dispatchEvent(new Event("click"));
+        });
     
     }
 

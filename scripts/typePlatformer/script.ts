@@ -101,23 +101,23 @@ class Game {
 
         // AI I want to redo and learn more
         const container = document.getElementById("gameDiv")!;
-        let scale: number;
+        let scale: number = 1.0;
         const screenWidth = window.innerWidth;
-            const screenHeight = window.innerHeight;
-    
-            const baseWidth = Constants.CANVAS_WIDTH;
-            const baseHeight = Constants.CANVAS_HEIGHT;
-    
-            const canvasAspect = baseWidth / baseHeight;
-            const screenAspect = screenWidth / screenHeight;
-    
-            if (screenAspect > canvasAspect) {
-                // Screen is wider than canvas aspect ratio, scale by height
-                scale = screenHeight / baseHeight;
-            } else {
-                // Screen is taller than canvas aspect ratio, scale by width
-                scale = screenWidth / baseWidth;
-            }
+        const screenHeight = window.innerHeight;
+
+        const baseWidth = Constants.CANVAS_WIDTH;
+        const baseHeight = Constants.CANVAS_HEIGHT;
+
+        const canvasAspect = baseWidth / baseHeight;
+        const screenAspect = screenWidth / screenHeight;
+
+        if (screenAspect > canvasAspect) {
+            // Screen is wider than canvas aspect ratio, scale by height
+            scale = screenHeight / baseHeight;
+        } else {
+            // Screen is taller than canvas aspect ratio, scale by width
+            scale = screenWidth / baseWidth;
+        }
         if (this.isFullscreen) {
     
             // Apply the calculated scale
@@ -126,14 +126,15 @@ class Game {
             this.canvas.style.position = "absolute";
             this.canvas.style.left = `${(screenWidth - baseWidth * scale) / 2}px`;
             this.canvas.style.top = `${(screenHeight - baseHeight * scale) / 2}px`;
+            this.uiHandler.updatePositions(scale);
         } else {
             // Reset to default size
             this.canvas.style.width = `${Constants.CANVAS_WIDTH}px`;
             this.canvas.style.height = `${Constants.CANVAS_HEIGHT}px`;
             this.canvas.style.position = "static";
+            this.uiHandler.updatePositions(1);
+            console.log("hbubu")
         }
-    
-        this.uiHandler.updatePositions(scale);
     }
     
 
