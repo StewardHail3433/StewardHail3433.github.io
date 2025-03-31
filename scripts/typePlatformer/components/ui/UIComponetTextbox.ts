@@ -120,7 +120,7 @@ export class UIComponentTextbox extends UIComponentLabel{
     private startTextElement() {
         if (this.inputElement) return; // Prevent creating multiple input elements
         let wasFullscreen = false
-        if (document.fullscreenElement) {
+        if (document.fullscreenElement && !(<any>document.getElementById("gameDiv")!).requestFullscreen) {
             document.getElementById("fullscreenButton")!.dispatchEvent(new Event("click"));
             wasFullscreen= true;
         }
