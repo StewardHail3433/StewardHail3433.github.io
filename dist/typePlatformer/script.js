@@ -189,6 +189,7 @@ class Game {
         this.ctx.translate(Math.round(-this.camera.getView().x), Math.round(-this.camera.getView().y));
         this.ctx.clearRect(0, 0, Constants.CANVAS_WIDTH / this.camera.getView().zoom, Constants.CANVAS_HEIGHT / this.camera.getView().zoom);
         this.worldHandler.renderBackground(this.ctx, this.camera);
+        this.worldHandler.render(this.ctx);
         this.player.render(this.ctx);
         if (this.isMultiplayer) {
             for (const id in this.players) {
