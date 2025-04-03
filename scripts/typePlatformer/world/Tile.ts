@@ -1,5 +1,5 @@
 export class Tile {
-    private layers: {index: number}[];
+    private layers: {index: number}[10];
 
     constructor(layers: {index: number}[]) {
         this.layers = layers;

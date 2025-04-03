@@ -31,6 +31,22 @@ export class WorldHandler {
         }
     }
 
+    public renderLayer(layer: number, ctx: CanvasRenderingContext2D) {
+        let tilex = 0;
+        let tiley = 0;
+        for(let i = 0; i < Constants.WORLD_HEIGHT; i++) {
+            tiley = Constants.TILE_SIZE * i;
+            for(let j = 0; j < Constants.WORLD_WIDTH; j++) {
+                tilex =  Constants.TILE_SIZE * j;
+                ctx.fillStyle = "red";
+                if(this.worldMap[i][j].getLayers()[layer].index === 1) ctx.fillStyle = "rgba(0,0,0,0.0)";
+                else if(this.worldMap[i][j].getLayers()[layer].index === 2) ctx.fillStyle = "blue";
+                else if(this.worldMap[i][j].getLayers()[layer].index === 3) ctx.fillStyle = "rgba(0,0,0,0.0)";
+                ctx.fillRect(tilex, tiley, Constants.TILE_SIZE, Constants.TILE_SIZE)
+            }
+        }
+    }
+
     private generateWorld(seed: number) {
         for(let i = 0; i < Constants.WORLD_HEIGHT; i++) {
             let row = [];
