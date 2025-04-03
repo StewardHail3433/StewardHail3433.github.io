@@ -1,12 +1,12 @@
 export class ImageLoader {
-    private images: Image[] = [];
+    private images: HTMLImageElement[] = [];
 
     public constructor() {
         this.images.push(this.createImage("resources/typePlatformer/tiles/"));
     }
 
 
-    private createImage(src: string): Image {
+    private createImage(src: string): HTMLImageElement {
         let img = new Image()
 
         img.onload = () => {
