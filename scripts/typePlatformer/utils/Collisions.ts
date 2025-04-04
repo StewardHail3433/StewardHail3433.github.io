@@ -9,3 +9,15 @@ export function isInside(pt: {x: number, y: number}, box: {x: number; y: number;
 
 
 }
+
+export function containBox(box1: {x: number; y: number; width: number; height: number}, box2: {x: number; y: number; width: number; height: number}, scale?: number) {
+
+    if(scale)
+    return box1.x * scale < (box2.x + box2.width) * scale && (box1.x + box1.width) * scale > box2.x * scale
+    && box1.y * scale < (box2.y + box2.height) * scale && (box1.y + box1.height) * scale > box2.y * scale
+
+    return box1.x < box2.x + box2.width && box1.x + box1.width > box2.x 
+    && box1.y < box2.y + box2.height && box1.y + box1.height > box2.y
+
+
+}

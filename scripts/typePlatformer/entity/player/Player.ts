@@ -31,6 +31,7 @@ export class Player extends Entity {
     constructor(name: string, healthComponent: HealthComponent, hitboxComponent: HitboxComponent) {
         super(healthComponent, hitboxComponent);
         this.name = name;
+        this.speed = 60;
         this.setControls();
 
         document.addEventListener("keydown", (event) => this.keys[event.key] = true);

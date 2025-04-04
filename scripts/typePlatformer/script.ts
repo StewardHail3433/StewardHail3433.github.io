@@ -1,9 +1,11 @@
+import { error } from "console";
 import { Camera } from "./camera/Camera.js";
 import { HealthComponent } from "./components/HealthComponent.js";
 import { HitboxComponent } from "./components/HitboxComponent.js";
 import { Entity } from "./entity/Enity.js";
 import { Player } from "./entity/player/Player.js";
 import { UIHandler } from "./ui/UIHandler.js";
+import { CommandSystem } from "./utils/CommandSystem.js";
 import { Constants } from "./utils/Constants.js";
 import { WorldHandler } from "./world/WorldHandler.js";
 
@@ -37,7 +39,7 @@ class Game {
         this.warningDiv = document.getElementById("test") as HTMLElement;
         
         this.player = new Player("TIm", new HealthComponent(100, 100), new HitboxComponent({
-            x: 100, y: 100, width: 32, height: 32,
+            x: 100, y: 100, width: 16, height: 16,
         }));
         this.camera = new Camera({ x: 100, y: 100, width: Constants.CANVAS_WIDTH, height: Constants.CANVAS_HEIGHT, zoom: 1.0});
         this.camera.trackEntity(this.player);
@@ -206,11 +208,33 @@ class Game {
                 this.joinButton.textContent = "Join Multiplayer";
                 this.uiHandler.getChatHandler().setSocket(null);
             });
+
+            
+        });
+        Constants.COMMAND_SYSTEM.addCommand("server", (args: string[]) => {
+            if(args[0] == "reloadWorld") {
+                if(this.socket) {
+                    if(2 <= args.length) {
+                        if(args[1] == "seed") {
+                            if(isNaN(parseFloat(args[2]))) {
+                                this.socket.emit("loadWorld", {seed: parseFloat(args[2])});
+                            } 
+                        } else {
+                            Constants.COMMAND_SYSTEM.outputArgsError("/server reloadWorld seed ###")
+                        }
+                    } else {
+                        this.socket.emit("loadWorld", {seed:-1});
+                    }
+                }
+                else {
+                    Constants.COMMAND_SYSTEM.outputCustomError("/server reloadWorld seed ###", "Not connected to a server")
+                }
+            }
         });
     }
 
     private gameLoop(currentTime: number) {
-        const dt = (currentTime - this.lastTime) / 1000; // Convert milliseconds to seconds
+        const dt = (currentTime - this.lastTime) / 1000; 
         this.lastTime = currentTime;
 
         this.update(dt);
@@ -238,8 +262,9 @@ class Game {
 
         this.ctx.clearRect(0, 0, Constants.CANVAS_WIDTH / this.camera.getView().zoom, Constants.CANVAS_HEIGHT / this.camera.getView().zoom);
         this.worldHandler.renderBackground(this.ctx, this.camera);
-        this.worldHandler.render(this.ctx);
+        this.worldHandler.renderLayer(0, this.ctx, this.camera);
         this.player.render(this.ctx);
+        this.worldHandler.renderLayer(1, this.ctx, this.camera);
 
         if (this.isMultiplayer) {
             for (const id in this.players) {

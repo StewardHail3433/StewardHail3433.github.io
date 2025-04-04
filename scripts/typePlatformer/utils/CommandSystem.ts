@@ -37,4 +37,8 @@ export class CommandSystem {
         this.label?.update(this.label?.getText() + "\nThe command had the wrong amount of errors or not correct data type. Pleas make sure your command matches:\n"+cmd+"\n");
     }
 
+    public outputCustomError(cmd: string, message: string) {
+        this.label?.update(this.label?.getText() + "\n"+message+" The command need is: " + "\n"+cmd+"\n");
+    }
+
 }

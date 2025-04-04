@@ -25,4 +25,8 @@ export class CommandSystem {
         var _a, _b;
         (_a = this.label) === null || _a === void 0 ? void 0 : _a.update(((_b = this.label) === null || _b === void 0 ? void 0 : _b.getText()) + "\nThe command had the wrong amount of errors or not correct data type. Pleas make sure your command matches:\n" + cmd + "\n");
     }
+    outputCustomError(cmd, message) {
+        var _a, _b;
+        (_a = this.label) === null || _a === void 0 ? void 0 : _a.update(((_b = this.label) === null || _b === void 0 ? void 0 : _b.getText()) + "\n" + message + " The command need is: " + "\n" + cmd + "\n");
+    }
 }
