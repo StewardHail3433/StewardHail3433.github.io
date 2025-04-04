@@ -59,6 +59,19 @@ export class WorldHandler {
         }
     }
 
+    public getWorldMap(): Tile[][] {
+        return this.worldMap;
+    }
+
+    public setWorldMap(worldMap: Tile[][]) {
+        for(let i = 0; i < worldMap.length; i++) {
+            for(let j = 0; j < worldMap[0].length; j++) {
+                this.worldMap[i][j] = worldMap[i][j];
+            }
+        }
+
+    }
+
     public saveWorld() {
         
     }

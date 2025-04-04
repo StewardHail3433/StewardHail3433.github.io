@@ -53,6 +53,16 @@ export class WorldHandler {
             this.worldMap.push(row);
         }
     }
+    getWorldMap() {
+        return this.worldMap;
+    }
+    setWorldMap(worldMap) {
+        for (let i = 0; i < worldMap.length; i++) {
+            for (let j = 0; j < worldMap[0].length; j++) {
+                this.worldMap[i][j] = worldMap[i][j];
+            }
+        }
+    }
     saveWorld() {
     }
 }

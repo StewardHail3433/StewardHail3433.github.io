@@ -6,6 +6,7 @@ import { Player } from "./entity/player/Player.js";
 import { UIHandler } from "./ui/UIHandler.js";
 import { Constants } from "./utils/Constants.js";
 import { WorldHandler } from "./world/WorldHandler.js";
+import { Tile } from "./world/Tile.js";
 class Game {
     constructor() {
         this.players = {};
@@ -165,27 +166,44 @@ class Game {
                 this.joinButton.textContent = "Join Multiplayer";
                 this.uiHandler.getChatHandler().setSocket(null);
             });
+            this.socket.on("initNewWorld", (data) => {
+                console.log(data);
+                let wMAp = [];
+                for (let i = 0; i < data.worldMap.length; i++) {
+                    let row = [];
+                    for (let j = 0; j < data.worldMap[i].length; j++) {
+                        row.push(new Tile(data.worldMap[i][j].layers, HitboxComponent.deserialize(data.worldMap[i][j].hitboxComponent)));
+                    }
+                    wMAp.push(row);
+                }
+                this.worldHandler.setWorldMap(wMAp);
+            });
         });
         Constants.COMMAND_SYSTEM.addCommand("server", (args) => {
-            if (args[0] == "reloadWorld") {
-                if (this.socket) {
-                    if (2 <= args.length) {
-                        if (args[1] == "seed") {
-                            if (isNaN(parseFloat(args[2]))) {
-                                this.socket.emit("loadWorld", { seed: parseFloat(args[2]) });
+            if (args.length > 0) {
+                if (args[0] == "reloadWorld") {
+                    if (this.socket) {
+                        if (args.length >= 2) {
+                            if (args[1] == "seed") {
+                                if (isNaN(parseFloat(args[2]))) {
+                                    this.socket.emit("loadWorld", { seed: parseFloat(args[2]) });
+                                }
+                            }
+                            else {
+                                Constants.COMMAND_SYSTEM.outputArgsError("/server reloadWorld seed? ###?");
                             }
                         }
                         else {
-                            Constants.COMMAND_SYSTEM.outputArgsError("/server reloadWorld seed ###");
+                            this.socket.emit("loadWorld", { seed: -1 });
                         }
                     }
                     else {
-                        this.socket.emit("loadWorld", { seed: -1 });
+                        Constants.COMMAND_SYSTEM.outputCustomError("/server reloadWorld seed? ###?", "Not connected to a server");
                     }
                 }
-                else {
-                    Constants.COMMAND_SYSTEM.outputCustomError("/server reloadWorld seed ###", "Not connected to a server");
-                }
+            }
+            else {
+                Constants.COMMAND_SYSTEM.outputArgsError("/server reloadWorld seed? ###?");
             }
         });
     }
