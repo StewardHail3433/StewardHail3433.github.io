@@ -26,7 +26,7 @@ export class Tile {
         if(this.layers[layer].index != 0) {
             let spriteSheetMapX = (this.layers[layer].index % 3) * Constants.TILE_SIZE;
             let spriteSheetMapY = Math.floor(this.layers[layer].index / 3) * Constants.TILE_SIZE;
-            
+            ctx.imageSmoothingEnabled = false;
             ctx.drawImage(ImageLoader.getImages()[0], spriteSheetMapX, spriteSheetMapY, Constants.TILE_SIZE, Constants.TILE_SIZE,   this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, Constants.TILE_SIZE, Constants.TILE_SIZE);
         }
     }

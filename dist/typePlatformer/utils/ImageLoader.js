@@ -18,5 +18,5 @@ export class ImageLoader {
 _a = ImageLoader;
 ImageLoader.images = [
     _a.createImage("resources/typePlatformer/tiles/fields.png"),
-    _a.createImage("resources/typePlatformer/tiles/fields.png")
+    _a.createImage("resources/typePlatformer/entity/player/playerSheet.png")
 ];

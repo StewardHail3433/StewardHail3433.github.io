@@ -1,7 +1,7 @@
 export class ImageLoader {
     private static images: HTMLImageElement[] = [
         this.createImage("resources/typePlatformer/tiles/fields.png"),
-        this.createImage("resources/typePlatformer/tiles/fields.png")];
+        this.createImage("resources/typePlatformer/entity/player/playerSheet.png")];
 
     static getImages(): HTMLImageElement[]  {
         return this.images;

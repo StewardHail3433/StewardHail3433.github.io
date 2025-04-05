@@ -1,10 +1,13 @@
 import { UIComponentButton } from "../../components/ui/UIComponentButton.js";
+import { Constants } from "../../utils/Constants.js";
+import { ImageLoader } from "../../utils/ImageLoader.js";
 import { Entity } from "../Enity.js";
 export class Player extends Entity {
     constructor(name, healthComponent, hitboxComponent) {
         super(healthComponent, hitboxComponent);
         this.keys = {};
         this.touchMode = false;
+        this.frame = 0;
         this.movementButtons = [new UIComponentButton(document.getElementById("gameCanvas"), { x: 10, y: 270, width: 40, height: 40 }, { red: 255, green: 255, blue: 255 }, false, "<-", undefined, 15, "center", { red: 200, green: 200, blue: 200 }, undefined, this.hitboxComponent.getColor(), undefined, () => {
                 this.keys[this.controls.left] = false;
             }, () => {
@@ -70,6 +73,7 @@ export class Player extends Entity {
                 button.hide();
             }
         }
+        this.frame += 1;
         super.update(dt);
     }
     getControls() {
@@ -99,5 +103,111 @@ export class Player extends Entity {
     }
     getTouchMode() {
         return this.touchMode;
+    }
+    render(ctx) {
+        // super.render(ctx);
+        if (this.velocity.x != 0 || this.velocity.y != 0) {
+            ctx.imageSmoothingEnabled = false;
+            if (this.direction === "up" || this.direction === "down") {
+                if (this.frame % 40 < 10) {
+                    if (this.direction === "down") {
+                        ctx.drawImage(ImageLoader.getImages()[1], 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                    else {
+                        ctx.drawImage(ImageLoader.getImages()[1], 0, Constants.TILE_SIZE * 1, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                }
+                else if (this.frame % 40 < 20) {
+                    if (this.direction === "down") {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 1, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                    else {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 1, Constants.TILE_SIZE * 1, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                }
+                else if (this.frame % 40 < 30) {
+                    if (this.direction === "down") {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 2, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                    else {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 2, Constants.TILE_SIZE * 1, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                }
+                else if (this.frame % 40 < 40) {
+                    if (this.direction === "down") {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 3, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                    else {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 3, Constants.TILE_SIZE * 1, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                }
+            }
+            else {
+                if (this.frame % 80 < 10) {
+                    if (this.direction === "left") {
+                        ctx.drawImage(ImageLoader.getImages()[1], 0, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                    else {
+                        ctx.drawImage(ImageLoader.getImages()[1], 0, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                }
+                else if (this.frame % 80 < 20) {
+                    if (this.direction === "left") {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 1, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                    else {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 1, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                }
+                else if (this.frame % 80 < 30) {
+                    if (this.direction === "left") {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 2, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                    else {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 2, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                }
+                else if (this.frame % 80 < 40) {
+                    if (this.direction === "left") {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 4, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                    else {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 4, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                }
+                else if (this.frame % 80 < 50) {
+                    if (this.direction === "left") {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 3, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                    else {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 3, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                }
+                else if (this.frame % 80 < 60) {
+                    if (this.direction === "left") {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 4, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                    else {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 4, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                }
+                else if (this.frame % 80 < 70) {
+                    if (this.direction === "left") {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 5, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                    else {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 5, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                }
+                else if (this.frame % 80 < 80) {
+                    if (this.direction === "left") {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 1, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                    else {
+                        ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE * 1, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+                    }
+                }
+            }
+        }
     }
 }
