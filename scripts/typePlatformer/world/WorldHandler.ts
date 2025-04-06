@@ -12,7 +12,7 @@ export class WorldHandler {
     
     constructor() {
         this.generateWorld(1);
-        this.img.src = "./resources/typePlatformer/tiles/background/grass.png"
+        this.img.src = "./resources/typePlatformer/images/tiles/background/grass.png"
     }
 
     public renderBackground(ctx: CanvasRenderingContext2D, camera: Camera) {

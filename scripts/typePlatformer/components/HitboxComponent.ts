@@ -1,6 +1,6 @@
 export class HitboxComponent {
     protected hitbox: {x: number; y: number; width: number; height: number};
-    protected color: {red: number; green: number; blue: number; alpha?: number}
+    protected color: {red: number; green: number; blue: number; alpha?: number};
 
     public constructor(hitbox: {x: number; y: number; width: number; height: number}, color: {red: number; green: number; blue: number, alpha?: number} = { red: 0, green: 0, blue: 0, alpha: 0.0}) {
         this.hitbox = hitbox;

@@ -87,6 +87,7 @@ export class UIHandler {
     }
 
     public render(ctx: CanvasRenderingContext2D) {
+        this.player.getInventoryUI().render(ctx);
         this.debug.render(ctx);
         this.debugInfo.render(ctx);
         this.debugTeleportToCenterButton.render(ctx);

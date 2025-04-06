@@ -9,6 +9,7 @@ import { CommandSystem } from "./utils/CommandSystem.js";
 import { Constants } from "./utils/Constants.js";
 import { WorldHandler } from "./world/WorldHandler.js";
 import { Tile } from "./world/Tile.js";
+import { ImageLoader } from "./utils/ImageLoader.js";
 
 declare const io: any;
 class Game {

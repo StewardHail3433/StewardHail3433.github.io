@@ -1,4 +1,7 @@
+import { UIInventory } from "../../components/ui/inventory/UIInventory.js";
 import { UIComponentButton } from "../../components/ui/UIComponentButton.js";
+import { Inventory } from "../../inventory/Inventory.js";
+import { Items } from "../../item/items.js";
 import { Constants } from "../../utils/Constants.js";
 import { ImageLoader } from "../../utils/ImageLoader.js";
 import { Entity } from "../Enity.js";
@@ -8,6 +11,8 @@ export class Player extends Entity {
         this.keys = {};
         this.touchMode = false;
         this.frame = 0;
+        this.inventory = new Inventory(14);
+        this.hotbar = new Inventory(7);
         this.movementButtons = [new UIComponentButton(document.getElementById("gameCanvas"), { x: 10, y: 270, width: 40, height: 40 }, { red: 255, green: 255, blue: 255 }, false, "<-", undefined, 15, "center", { red: 200, green: 200, blue: 200 }, undefined, this.hitboxComponent.getColor(), undefined, () => {
                 this.keys[this.controls.left] = false;
             }, () => {
@@ -28,6 +33,16 @@ export class Player extends Entity {
         this.name = name;
         this.speed = 60;
         this.setControls();
+        this.hotbar.getSlot(3).setItem(Items.stick);
+        this.inventory.getSlot(0).setItem(Items.stick);
+        this.inventory.getSlot(2).setItem(Items.stick);
+        this.inventory.getSlot(4).setItem(Items.stick);
+        this.inventory.getSlot(6).setItem(Items.stick);
+        this.inventory.getSlot(8).setItem(Items.stick);
+        this.inventory.getSlot(10).setItem(Items.stick);
+        this.inventory.getSlot(12).setItem(Items.sword);
+        this.hotbarUi = new UIInventory(this.hotbar, { x: 0, y: 0, row: 2, col: 7 }, undefined, false);
+        this.inventory.setSelecteSlot(0);
         document.addEventListener("keydown", (event) => this.keys[event.key] = true);
         document.addEventListener("keyup", (event) => this.keys[event.key] = false);
         this.setToTouch();
@@ -62,6 +77,27 @@ export class Player extends Entity {
         }
         if (this.keys[this.controls.debug]) {
             this.hitboxComponent.setHitbox(Object.assign(Object.assign({}, this.hitboxComponent.getHitbox()), { x: 200 }));
+        }
+        if (this.keys["1"]) {
+            this.hotbar.setSelecteSlot(0);
+        }
+        else if (this.keys["2"]) {
+            this.hotbar.setSelecteSlot(1);
+        }
+        else if (this.keys["3"]) {
+            this.hotbar.setSelecteSlot(2);
+        }
+        else if (this.keys["4"]) {
+            this.hotbar.setSelecteSlot(3);
+        }
+        else if (this.keys["5"]) {
+            this.hotbar.setSelecteSlot(4);
+        }
+        else if (this.keys["6"]) {
+            this.hotbar.setSelecteSlot(5);
+        }
+        else if (this.keys["7"]) {
+            this.hotbar.setSelecteSlot(6);
         }
         if (this.touchMode) {
             for (var button of this.movementButtons) {
@@ -209,5 +245,8 @@ export class Player extends Entity {
                 }
             }
         }
+    }
+    getInventoryUI() {
+        return this.hotbarUi;
     }
 }

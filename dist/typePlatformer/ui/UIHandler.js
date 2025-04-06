@@ -67,6 +67,7 @@ export class UIHandler {
         });
     }
     render(ctx) {
+        this.player.getInventoryUI().render(ctx);
         this.debug.render(ctx);
         this.debugInfo.render(ctx);
         this.debugTeleportToCenterButton.render(ctx);

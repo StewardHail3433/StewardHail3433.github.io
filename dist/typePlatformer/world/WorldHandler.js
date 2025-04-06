@@ -7,7 +7,7 @@ export class WorldHandler {
         this.worldMap = [];
         this.img = new Image();
         this.generateWorld(1);
-        this.img.src = "./resources/typePlatformer/tiles/background/grass.png";
+        this.img.src = "./resources/typePlatformer/images/tiles/background/grass.png";
     }
     renderBackground(ctx, camera) {
         ctx.drawImage(this.img, camera.getView().x - (camera.getView().x % Constants.TILE_SIZE * 2) - Constants.TILE_SIZE * 2, camera.getView().y - (camera.getView().y % Constants.TILE_SIZE * 2) - Constants.TILE_SIZE * 2);
