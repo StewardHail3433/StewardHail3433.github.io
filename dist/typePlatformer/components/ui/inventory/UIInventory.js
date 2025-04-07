@@ -29,7 +29,7 @@ export class UIInventory {
                     slotX += spacing;
                     if (!this.inventory.getSlot(i * this.placement.col + j).isEmpty() && isInside({ x, y }, { x: slotX, y: slotY, width: Constants.TILE_SIZE, height: Constants.TILE_SIZE }, this.scale)) {
                         console.log("hi");
-                        this.discription.setHitbox(Object.assign(Object.assign({}, this.discription.getHitbox()), { x: x / this.scale, y }));
+                        this.discription.setHitbox(Object.assign(Object.assign({}, this.discription.getHitbox()), { x: x / this.scale, y: y / this.scale }));
                         this.discription.update(this.inventory.getSlot(i * this.placement.col + j).getItem().getDiscription());
                         this.discription.show();
                         break col;
