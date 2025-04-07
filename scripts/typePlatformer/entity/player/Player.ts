@@ -40,6 +40,8 @@ export class Player extends Entity {
     }, () => {
         this.keys[this.controls.up] = true;
     })]
+
+    private isArrows = false;
     
     constructor(name: string, healthComponent: HealthComponent, hitboxComponent: HitboxComponent) {
         super(healthComponent, hitboxComponent);
@@ -138,6 +140,16 @@ export class Player extends Entity {
             }
         }
         this.frame += 1;
+
+        if(this.keys["p"]) {
+            if(this.isArrows) {
+                this.setControls();
+                this.isArrows = false;
+            } else {
+                this.setControls({up: "ArrowUp", down: "ArrowDown", left: "ArrowLeft", right: "ArrowRight"});
+                this.isArrows = false;
+            }
+        }
 
         super.update(dt);
     }
