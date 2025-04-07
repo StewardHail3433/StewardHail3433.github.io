@@ -30,6 +30,7 @@ export class Player extends Entity {
             }, () => {
                 this.keys[this.controls.up] = true;
             })];
+        this.isArrows = false;
         this.name = name;
         this.speed = 60;
         this.setControls();
@@ -113,6 +114,17 @@ export class Player extends Entity {
             }
         }
         this.frame += 1;
+        if (this.keys["p"]) {
+            if (this.isArrows) {
+                this.setControls();
+                this.isArrows = false;
+            }
+            else {
+                this.setControls(Object.assign(Object.assign({}, this.controls), { up: "ArrowUp", down: "ArrowDown", left: "ArrowLeft", right: "ArrowRight" }));
+                this.isArrows = true;
+            }
+            this.keys["p"] = false;
+        }
         super.update(dt);
     }
     getControls() {
