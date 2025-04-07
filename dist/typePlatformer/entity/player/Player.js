@@ -33,7 +33,7 @@ export class Player extends Entity {
         this.name = name;
         this.speed = 60;
         this.setControls();
-        this.hotbar.getSlot(3).setItem(Items.stick);
+        this.hotbar.getSlot(3).setItem(Items.sword);
         this.inventory.getSlot(0).setItem(Items.stick);
         this.inventory.getSlot(2).setItem(Items.stick);
         this.inventory.getSlot(4).setItem(Items.stick);
@@ -41,7 +41,7 @@ export class Player extends Entity {
         this.inventory.getSlot(8).setItem(Items.stick);
         this.inventory.getSlot(10).setItem(Items.stick);
         this.inventory.getSlot(12).setItem(Items.sword);
-        this.hotbarUi = new UIInventory(this.hotbar, { x: 0, y: 0, row: 2, col: 7 }, undefined, false);
+        this.hotbarUi = new UIInventory(document.getElementById("gameCanvas"), this.hotbar, { x: 0, y: 0, row: 2, col: 7 }, undefined, false);
         this.inventory.setSelecteSlot(0);
         document.addEventListener("keydown", (event) => this.keys[event.key] = true);
         document.addEventListener("keyup", (event) => this.keys[event.key] = false);

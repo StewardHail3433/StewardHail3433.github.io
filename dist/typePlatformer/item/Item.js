@@ -13,6 +13,9 @@ export class Item {
             }
         });
     }
+    getDiscription() {
+        return this.discription;
+    }
     getImage() {
         return this.img;
     }

@@ -148,6 +148,7 @@ export class UIHandler {
         return this.uiChatHandler;
     }
     updatePositions(scale) {
+        this.player.getInventoryUI().updatePosition(scale);
         this.debug.updatePosition(scale);
         this.debugInfo.updatePosition(scale);
         this.debugTeleportToCenterButton.updatePosition(scale);

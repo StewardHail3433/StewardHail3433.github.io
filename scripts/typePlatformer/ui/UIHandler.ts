@@ -175,6 +175,7 @@ export class UIHandler {
     }
 
     public updatePositions(scale: number) {
+        this.player.getInventoryUI().updatePosition(scale);
         this.debug.updatePosition(scale);
         this.debugInfo.updatePosition(scale);
         this.debugTeleportToCenterButton.updatePosition(scale);

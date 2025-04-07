@@ -18,6 +18,10 @@ export class Item {
         })
     }
 
+    public getDiscription(): string {
+        return this.discription;
+    }
+
     public getImage(): HTMLImageElement | undefined  {
         return this.img
     }
