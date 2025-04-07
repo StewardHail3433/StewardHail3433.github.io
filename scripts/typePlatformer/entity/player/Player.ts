@@ -47,7 +47,7 @@ export class Player extends Entity {
         this.speed = 60;
         this.setControls();
 
-        this.hotbar.getSlot(3).setItem(Items.sword);
+        this.hotbar.getSlot(3).setItem(Items.stick);
         this.inventory.getSlot(0).setItem(Items.stick);
         this.inventory.getSlot(2).setItem(Items.stick);
         this.inventory.getSlot(4).setItem(Items.stick);
