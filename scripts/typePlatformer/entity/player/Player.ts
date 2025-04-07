@@ -64,7 +64,7 @@ export class Player extends Entity {
         this.setToTouch();
 
 
-        Constants.COMMAND_SYSTEM.addCommand("tp", (args:sring[]) => {
+        Constants.COMMAND_SYSTEM.addCommand("tp", (args:string[]) => {
             this.hitboxComponent.setHitbox({...hitboxComponent.getHitbox(), x: parseFloat(args[0]), y: parseFloat(args[1])});
         });
     }
