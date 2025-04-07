@@ -147,8 +147,9 @@ export class Player extends Entity {
                 this.isArrows = false;
             } else {
                 this.setControls({up: "ArrowUp", down: "ArrowDown", left: "ArrowLeft", right: "ArrowRight"});
-                this.isArrows = false;
+                this.isArrows = true;
             }
+            this.keys["p"] = false;
         }
 
         super.update(dt);
