@@ -62,6 +62,11 @@ export class Player extends Entity {
         document.addEventListener("keydown", (event) => this.keys[event.key] = true);
         document.addEventListener("keyup", (event) => this.keys[event.key] = false);
         this.setToTouch();
+
+
+        Constants.COMMAND_SYSTEM.addCommand("tp", (args:sring[]) => {
+            this.hitboxComponent.setHitbox({...hitboxComponent.getHitbox(), x: parseFloat(args[0]), y: parseFloat(args[1])});
+        });
     }
 
     public setControls(controls: {
@@ -251,6 +256,16 @@ export class Player extends Entity {
                         ctx.drawImage(ImageLoader.getImages()[1], Constants.TILE_SIZE*1, Constants.TILE_SIZE*3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
                     }
                 }
+            }
+        } else {
+            if(this.direction === "up") {
+                ctx.drawImage(ImageLoader.getImages()[1], 0, Constants.TILE_SIZE*1, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+            } else if(this.direction === "down") {
+                ctx.drawImage(ImageLoader.getImages()[1], 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+            } else if(this.direction === "right") {
+                ctx.drawImage(ImageLoader.getImages()[1], 0, Constants.TILE_SIZE*3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+            } else if(this.direction === "left") {
+                ctx.drawImage(ImageLoader.getImages()[1], 0, Constants.TILE_SIZE*2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
             }
         }
     }
