@@ -10,7 +10,7 @@ export class WorldHandler {
         this.img.src = "./resources/typePlatformer/images/tiles/background/grass.png";
     }
     renderBackground(ctx, camera) {
-        ctx.drawImage(this.img, camera.getView().x - ((camera.getView().x + camera.getView().width / 2) % Constants.TILE_SIZE * 2), camera.getView().y - ((camera.getView().y + camera.getView().height / 2) % Constants.TILE_SIZE * 2));
+        ctx.drawImage(this.img, camera.getView().x - ((camera.getView().x + camera.getView().width / 2) % (Constants.TILE_SIZE * 2)), camera.getView().y - ((camera.getView().y + camera.getView().height / 2) % (Constants.TILE_SIZE * 2)));
     }
     render(ctx) {
         let tilex = 0;
