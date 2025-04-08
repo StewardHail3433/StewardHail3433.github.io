@@ -16,7 +16,7 @@ export class WorldHandler {
     }
 
     public renderBackground(ctx: CanvasRenderingContext2D, camera: Camera) {
-        ctx.drawImage(this.img, camera.getView().x - ((camera.getView().x+camera.getView().width/2) % (Constants.TILE_SIZE*2)), camera.getView().y - ((camera.getView().y+camera.getView().height/2) % (Constants.TILE_SIZE*2)));
+        ctx.drawImage(this.img, camera.getView().x - ((camera.getView().x+camera.getView().width/2) % (Constants.TILE_SIZE*2)), camera.getView().y - ((camera.getView().y+camera.getView().height/2) % (Constants.TILE_SIZE*2)) -32);
     }
     public render(ctx: CanvasRenderingContext2D) {
         let tilex = 0;
