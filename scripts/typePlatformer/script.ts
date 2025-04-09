@@ -141,9 +141,11 @@ class Game {
             this.canvas.style.top = `${(screenHeight - baseHeight * scale) / 2}px`;
             this.uiHandler.updatePositions(scale);
         } else {
+            this.canvas.style.position = "static";
             this.canvas.style.width = (Constants.CANVAS_WIDTH) +"px";
             this.canvas.style.height = (Constants.CANVAS_HEIGHT) +"px";
-            this.canvas.style.position = "static";
+            this.canvas.style.left = `${(screenWidth - baseWidth) / 2}px`;
+            this.canvas.style.top = `${(screenHeight - baseHeight) / 2}px`;
             this.uiHandler.updatePositions(1);
         }
     }
