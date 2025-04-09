@@ -69,6 +69,10 @@ export class Player extends Entity {
         Constants.COMMAND_SYSTEM.addCommand("tp", (args:string[]) => {
             this.hitboxComponent.setHitbox({...hitboxComponent.getHitbox(), x: parseFloat(args[0]), y: parseFloat(args[1])});
         });
+
+        Constants.COMMAND_SYSTEM.addCommand("speed", (args:string[]) => {
+            this.speed = parseFloat(args[0]);
+        });
     }
 
     public setControls(controls: {

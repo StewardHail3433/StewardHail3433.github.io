@@ -156,7 +156,9 @@ export class Player extends Entity {
         return this.touchMode;
     }
     render(ctx) {
-        // super.render(ctx);
+        super.render(ctx);
+        ctx.imageSmoothingQuality = "high";
+        ctx.imageSmoothingEnabled = false;
         if (this.velocity.x != 0 || this.velocity.y != 0) {
             ctx.imageSmoothingEnabled = false;
             if (this.direction === "up" || this.direction === "down") {

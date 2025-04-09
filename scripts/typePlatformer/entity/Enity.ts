@@ -7,7 +7,7 @@ export class Entity {
     protected hitboxComponent: HitboxComponent;
     protected velocity = { x: 0, y: 0 };
     protected speed: number = 120;
-    protected direction: string = "up";
+    protected direction: string = "down";
 
 
     constructor(healthComponent: HealthComponent, hitboxComponent: HitboxComponent) {

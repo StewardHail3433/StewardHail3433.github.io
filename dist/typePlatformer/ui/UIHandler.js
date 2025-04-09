@@ -8,7 +8,7 @@ export class UIHandler {
         this.keys = {};
         this.keysToggled = { "F3": false };
         this.debug = new UIComponent({
-            x: 0, y: 0, width: canvas.width / 5, height: canvas.height
+            x: 0, y: 0, width: Constants.CANVAS_WIDTH / 5, height: Constants.CANVAS_HEIGHT
         }, { red: 255, green: 0, blue: 0, alpha: 0.5 }, true);
         this.debugInfo = new UIComponentLabel({
             x: 5, y: 5, width: this.debug.getHitbox().width - 10, height: 80

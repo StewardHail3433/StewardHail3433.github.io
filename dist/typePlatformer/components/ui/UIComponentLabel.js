@@ -13,6 +13,7 @@ export class UIComponentLabel extends UIComponent {
         if (this.hidden) {
             return;
         }
+        // ctx.transform(1/window.devicePixelRatio, 0, 0,1/window.devicePixelRatio, 0, 0);
         super.render(ctx);
         var x = this.hitbox.x;
         var y = this.hitbox.y;
@@ -68,6 +69,7 @@ export class UIComponentLabel extends UIComponent {
             }
             y += lineHeight; // Move down for next full line (after \n)
         }
+        // ctx.transform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
     }
     update(text = this.text) {
         this.text = text;

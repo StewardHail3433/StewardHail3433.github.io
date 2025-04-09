@@ -16,8 +16,11 @@ class Game {
         this.isFullscreen = false;
         this.canvas = document.getElementById("gameCanvas");
         this.ctx = this.canvas.getContext("2d");
-        this.canvas.width = Constants.CANVAS_WIDTH;
-        this.canvas.height = Constants.CANVAS_HEIGHT;
+        this.canvas.width = Constants.CANVAS_WIDTH; //* 10;
+        this.canvas.height = Constants.CANVAS_HEIGHT; //* 10;
+        this.ctx.imageSmoothingEnabled = false;
+        this.ctx.imageSmoothingQuality = "high";
+        // this.ctx.scale(10, 10);
         this.joinButton = document.getElementById("joinMultiplayer");
         this.warningDiv = document.getElementById("test");
         this.player = new Player("TIm", new HealthComponent(100, 100), new HitboxComponent({
@@ -74,7 +77,7 @@ class Game {
         this.resizeCanvasBound();
     }
     resizeCanvas() {
-        // AI I want to redo and learn more
+        const dpr = window.devicePixelRatio * 3.25;
         const container = document.getElementById("gameDiv");
         let scale = 1.0;
         const screenWidth = window.innerWidth;
@@ -84,29 +87,29 @@ class Game {
         const canvasAspect = baseWidth / baseHeight;
         const screenAspect = screenWidth / screenHeight;
         if (screenAspect > canvasAspect) {
-            // Screen is wider than canvas aspect ratio, scale by height
             scale = screenHeight / baseHeight;
         }
         else {
-            // Screen is taller than canvas aspect ratio, scale by width
             scale = screenWidth / baseWidth;
         }
+        // Set the physical canvas size (taking DPR into account)
+        this.canvas.width = baseWidth * dpr;
+        this.canvas.height = baseHeight * dpr;
+        // Apply appropriate styles
+        this.canvas.style.width = `${baseWidth * scale}px`;
+        this.canvas.style.height = `${baseHeight * scale}px`;
+        // Rescale the drawing context
+        this.ctx.scale(dpr, dpr);
+        // Handle fullscreen scaling
         if (this.isFullscreen) {
-            // Apply the calculated scale
-            this.canvas.style.width = `${baseWidth * scale}px`;
-            this.canvas.style.height = `${baseHeight * scale}px`;
             this.canvas.style.position = "absolute";
             this.canvas.style.left = `${(screenWidth - baseWidth * scale) / 2}px`;
             this.canvas.style.top = `${(screenHeight - baseHeight * scale) / 2}px`;
             this.uiHandler.updatePositions(scale);
         }
         else {
-            // Reset to default size
-            this.canvas.style.width = `${Constants.CANVAS_WIDTH}px`;
-            this.canvas.style.height = `${Constants.CANVAS_HEIGHT}px`;
             this.canvas.style.position = "static";
             this.uiHandler.updatePositions(1);
-            console.log("hbubu");
         }
     }
     setupEventListeners() {

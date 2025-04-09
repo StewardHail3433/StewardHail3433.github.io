@@ -4,7 +4,7 @@ export class Entity {
     constructor(healthComponent, hitboxComponent) {
         this.velocity = { x: 0, y: 0 };
         this.speed = 120;
-        this.direction = "up";
+        this.direction = "down";
         this.healthComponent = healthComponent;
         this.hitboxComponent = hitboxComponent;
     }
