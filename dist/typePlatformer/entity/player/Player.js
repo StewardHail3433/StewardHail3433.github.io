@@ -50,6 +50,9 @@ export class Player extends Entity {
         Constants.COMMAND_SYSTEM.addCommand("tp", (args) => {
             this.hitboxComponent.setHitbox(Object.assign(Object.assign({}, hitboxComponent.getHitbox()), { x: parseFloat(args[0]), y: parseFloat(args[1]) }));
         });
+        Constants.COMMAND_SYSTEM.addCommand("speed", (args) => {
+            this.speed = parseFloat(args[0]);
+        });
     }
     setControls(controls = {
         up: 'w',
@@ -156,9 +159,7 @@ export class Player extends Entity {
         return this.touchMode;
     }
     render(ctx) {
-        super.render(ctx);
-        ctx.imageSmoothingQuality = "high";
-        ctx.imageSmoothingEnabled = false;
+        // super.render(ctx);
         if (this.velocity.x != 0 || this.velocity.y != 0) {
             ctx.imageSmoothingEnabled = false;
             if (this.direction === "up" || this.direction === "down") {

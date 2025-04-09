@@ -16,11 +16,11 @@ class Game {
         this.isFullscreen = false;
         this.canvas = document.getElementById("gameCanvas");
         this.ctx = this.canvas.getContext("2d");
-        this.canvas.width = Constants.CANVAS_WIDTH; //* 10;
-        this.canvas.height = Constants.CANVAS_HEIGHT; //* 10;
+        this.canvas.width = Constants.CANVAS_WIDTH * window.devicePixelRatio * 3.25;
+        this.canvas.height = Constants.CANVAS_HEIGHT * window.devicePixelRatio * 3.25;
         this.ctx.imageSmoothingEnabled = false;
         this.ctx.imageSmoothingQuality = "high";
-        // this.ctx.scale(10, 10);
+        this.ctx.scale(window.devicePixelRatio * 3.25, window.devicePixelRatio * 3.25);
         this.joinButton = document.getElementById("joinMultiplayer");
         this.warningDiv = document.getElementById("test");
         this.player = new Player("TIm", new HealthComponent(100, 100), new HitboxComponent({
@@ -77,6 +77,7 @@ class Game {
         this.resizeCanvasBound();
     }
     resizeCanvas() {
+        // AI I want to redo and learn more
         const dpr = window.devicePixelRatio * 3.25;
         const container = document.getElementById("gameDiv");
         let scale = 1.0;
