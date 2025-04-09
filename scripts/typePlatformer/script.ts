@@ -104,6 +104,7 @@ class Game {
     
 
     private resizeCanvas() {
+        // AI I want to redo and learn more
         const dpr = window.devicePixelRatio*3.25;
         const container = document.getElementById("gameDiv")!;
         let scale: number = 1.0;
