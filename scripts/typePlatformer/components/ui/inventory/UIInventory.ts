@@ -109,17 +109,12 @@ export class UIInventory {
                     return;
                 }
             }
-            if(this.inventory.getSlot(this.mouseItem.index).getItem().getImage()) {
-                this.mouseItem.x = 0;
-                this.mouseItem.y = 0;
-                ctx.drawImage(this.inventory.getSlot(this.mouseItem.index).getItem().getImage()!, this.slotPlacement[this.mouseItem.index].x, this.slotPlacement[this.mouseItem.index].y);
-                this.mouseItem.index = -1;
-            }
-
+            this.mouseItem.index = -1;
         }
     }
 
     public render(ctx: CanvasRenderingContext2D) {
+        // this was ai code that did not work
         // Get device pixel ratio
                 // const dpr = window.devicePixelRatio || 1;
         
