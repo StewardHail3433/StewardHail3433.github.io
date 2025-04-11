@@ -10,7 +10,7 @@ export class Items {
 }
 _a = Items;
 Items.EMPTY = new Item("empty", "empty");
-Items.SWORD = new Item("sword", "Sword");
+Items.SWORD = new Item("sword", "Sword", "This is sharp\nBe careful");
 Items.STICK = new Item("stick", "Stick", "This is a stick");
 Items.items = {}; // YAY I get to try a record
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyNames
