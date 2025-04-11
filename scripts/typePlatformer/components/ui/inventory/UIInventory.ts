@@ -104,14 +104,18 @@ export class UIInventory {
             for(let i = 0; i < this.inventory.getSize(); i++) {
                 if(this.inventory.getSlot(i).isEmpty() && isInside({x, y}, {...this.slotPlacement[i], width: Constants.TILE_SIZE, height: Constants.TILE_SIZE}, this.scale,) && i != this.mouseItem.index) {
                     this.inventory.getSlot(i).setItem(this.inventory.getSlot(this.mouseItem.index).getItem());
-                    this.inventory.getSlot(this.mouseItem.index).setItem(Items.empty, 0);
+                    this.inventory.getSlot(this.mouseItem.index).removeItem();
                     this.mouseItem.index = -1;
-
-                    break;
-                } else {
-                    this.discription.hide();
+                    return;
                 }
             }
+            if(this.inventory.getSlot(this.mouseItem.index).getItem().getImage()) {
+                this.mouseItem.x = 0;
+                this.mouseItem.y = 0;
+                ctx.drawImage(this.inventory.getSlot(this.mouseItem.index).getItem().getImage()!, this.slotPlacement[this.mouseItem.index].x, this.slotPlacement[this.mouseItem.index].y);
+                this.mouseItem.index = -1;
+            }
+
         }
     }
 
