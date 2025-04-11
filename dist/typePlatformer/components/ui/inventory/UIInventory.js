@@ -1,4 +1,3 @@
-import { Items } from "../../../item/items.js";
 import { isInside } from "../../../utils/Collisions.js";
 import { Constants } from "../../../utils/Constants.js";
 import { UIComponentLabel } from "../UIComponentLabel.js";
@@ -81,17 +80,16 @@ export class UIInventory {
             for (let i = 0; i < this.inventory.getSize(); i++) {
                 if (this.inventory.getSlot(i).isEmpty() && isInside({ x, y }, Object.assign(Object.assign({}, this.slotPlacement[i]), { width: Constants.TILE_SIZE, height: Constants.TILE_SIZE }), this.scale) && i != this.mouseItem.index) {
                     this.inventory.getSlot(i).setItem(this.inventory.getSlot(this.mouseItem.index).getItem());
-                    this.inventory.getSlot(this.mouseItem.index).setItem(Items.empty, 0);
+                    this.inventory.getSlot(this.mouseItem.index).removeItem();
                     this.mouseItem.index = -1;
-                    break;
-                }
-                else {
-                    this.discription.hide();
+                    return;
                 }
             }
+            this.mouseItem.index = -1;
         }
     }
     render(ctx) {
+        // this was ai code that did not work
         // Get device pixel ratio
         // const dpr = window.devicePixelRatio || 1;
         // // // Set actual canvas size in memory (higher resolution)
