@@ -66,6 +66,7 @@ export class WorldHandler {
     }
     updateServer(camera, socket) {
         if (socket) {
+            // cause crasing because spaming load chuns but now only calling when new chuns are found. WOW look at me commenting haha
             let x = Math.floor((camera.getView().x + camera.getView().width / 2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
             let y = Math.floor((camera.getView().y + camera.getView().height / 2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
             let cx = x - Constants.RENDER_DISTANCE + 1;
@@ -118,15 +119,15 @@ export class WorldHandler {
         this.showChunks = false;
     }
     getVisibleChunks(camera) {
-        const visibleChunks = new Map();
+        const visibleChunks = {};
         let x = Math.floor((camera.getView().x + camera.getView().width / 2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
         let y = Math.floor((camera.getView().y + camera.getView().height / 2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
         let cx = x - Constants.RENDER_DISTANCE + 1;
         let cy = y - Constants.RENDER_DISTANCE + 1;
-        for (let i = cx; i < x + ((Constants.RENDER_DISTANCE)); i++) {
-            for (let j = cy; j < y + ((Constants.RENDER_DISTANCE)); j++) {
+        for (let i = cx; i < x + Constants.RENDER_DISTANCE; i++) {
+            for (let j = cy; j < y + Constants.RENDER_DISTANCE; j++) {
                 if (this.worldMap.has(i + ", " + j)) {
-                    visibleChunks.set(i + ", " + j, this.worldMap.get(i + ", " + j));
+                    visibleChunks[i + ", " + j] = this.worldMap.get(i + ", " + j).map(row => row.map(tile => tile.serialize()));
                 }
             }
         }
