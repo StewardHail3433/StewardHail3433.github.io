@@ -58,7 +58,7 @@ export class Player extends Entity {
         this.inventory.getSlot(10).setItem(Items.stick);
         this.inventory.getSlot(12).setItem(Items.sword);
 
-        this.hotbarUi = new UIInventory(document.getElementById("gameCanvas") as HTMLCanvasElement, this.hotbar, {x: 0, y: 0, row: 2, col: 7}, undefined, false);
+        this.hotbarUi = new UIInventory(document.getElementById("gameCanvas") as HTMLCanvasElement, this.inventory, {x: 0, y: 0, row: 2, col: 7}, undefined, false);
         this.inventory.setSelecteSlot(0);
 
         document.addEventListener("keydown", (event) => this.keys[event.key] = true);
