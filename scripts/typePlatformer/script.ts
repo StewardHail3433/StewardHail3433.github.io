@@ -2,7 +2,7 @@ import { error } from "console";
 import { Camera } from "./camera/Camera.js";
 import { HealthComponent } from "./components/HealthComponent.js";
 import { HitboxComponent } from "./components/HitboxComponent.js";
-import { Entity } from "./entity/Enity.js";
+import { Entity } from "./entity/Entity.js";
 import { Player } from "./entity/player/Player.js";
 import { UIHandler } from "./ui/UIHandler.js";
 import { CommandSystem } from "./utils/CommandSystem.js";

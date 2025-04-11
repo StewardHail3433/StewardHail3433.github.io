@@ -1,4 +1,4 @@
-import { Entity } from "../entity/Enity";
+import { Entity } from "../entity/Entity";
 
 export class Camera {
     private view: {x: number; y: number; width: number; height: number; zoom: number};

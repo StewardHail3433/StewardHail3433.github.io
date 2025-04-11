@@ -1,6 +1,6 @@
 import { Camera } from "../camera/Camera.js";
 import { HitboxComponent } from "../components/HitboxComponent.js";
-import { Entity } from "../entity/Enity.js";
+import { Entity } from "../entity/Entity.js";
 import { containBox, isInside } from "../utils/Collisions.js";
 import { Constants } from "../utils/Constants.js";
 import { ImageLoader } from "../utils/ImageLoader.js";

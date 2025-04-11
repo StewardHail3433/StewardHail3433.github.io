@@ -1,4 +1,4 @@
-import { Items } from "../item/items.js";
+import { Items } from "../item/Items.js";
 import { Slot } from "./Slot.js";
 
 export class Inventory {
@@ -8,8 +8,8 @@ export class Inventory {
 
     constructor(size: number) {
         this.size = size;
-        for(let i = 0; i < size; i++) {
-            this.inventory.push(new Slot(Items.empty, 0));
+        for(let i = 0; i < this.size; i++) {
+            this.inventory.push(new Slot(Items.EMPTY, 0));
         }
     }
 
@@ -30,5 +30,11 @@ export class Inventory {
 
     public getSlot(index: number): Slot {
         return this.inventory[index];
+    }
+
+    public clear() {
+        for(let i = 0; i < this.size; i++) {
+            this.inventory[i].removeItem();
+        }
     }
 }

@@ -1,12 +1,12 @@
-import { Items } from "../item/items.js";
+import { Items } from "../item/Items.js";
 import { Slot } from "./Slot.js";
 export class Inventory {
     constructor(size) {
         this.inventory = [];
         this.selectedSlotIndex = 0;
         this.size = size;
-        for (let i = 0; i < size; i++) {
-            this.inventory.push(new Slot(Items.empty, 0));
+        for (let i = 0; i < this.size; i++) {
+            this.inventory.push(new Slot(Items.EMPTY, 0));
         }
     }
     getSize() {
@@ -23,5 +23,10 @@ export class Inventory {
     }
     getSlot(index) {
         return this.inventory[index];
+    }
+    clear() {
+        for (let i = 0; i < this.size; i++) {
+            this.inventory[i].removeItem();
+        }
     }
 }

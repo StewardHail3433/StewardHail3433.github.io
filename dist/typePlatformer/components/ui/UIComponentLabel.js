@@ -28,6 +28,7 @@ export class UIComponentLabel extends UIComponent {
             ctx.fillStyle = "rgb(" + this.textColor.red + "," + this.textColor.green + "," + this.textColor.blue + ")";
         }
         ctx.font = this.fontSize + "px serif";
+        //AI I want to redo
         let lines = [];
         let paragraphs = this.text.split("\n"); // Preserve explicit newlines
         let lineHeight = this.fontSize * 1.2;

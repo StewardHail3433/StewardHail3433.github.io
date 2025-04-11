@@ -1,4 +1,4 @@
-import { Items } from "../item/items.js";
+import { Items } from "../item/Items.js";
 export class Slot {
     constructor(item, count) {
         if (item) {
@@ -11,34 +11,39 @@ export class Slot {
             }
         }
         else {
-            this.item = Items.empty;
+            this.item = Items.EMPTY;
             this.count = 0;
         }
         this.empty = true;
     }
-    setItem(item, count = 1) {
+    setItem(item, count) {
         this.item = item;
         this.count = count;
         this.empty = false;
     }
     removeItem() {
-        this.item = Items.empty;
+        this.item = Items.EMPTY;
+        this.count = 0;
         this.empty = true;
     }
     isEmpty() {
         return this.empty;
     }
     addItems(amount) {
-        if (this.item.getMaxStackAmount() < this.count + amount) {
+        let c = this.count;
+        if (this.item.getMaxStackAmount() < c + amount) {
             this.count = this.item.getMaxStackAmount();
-            return this.count + amount - this.item.getMaxStackAmount();
+            return c + amount - this.item.getMaxStackAmount();
         }
         else {
             this.count = this.count + amount;
-            return this.count + amount;
+            return 0;
         }
     }
     getItem() {
         return this.item;
+    }
+    getItemCount() {
+        return this.count;
     }
 }

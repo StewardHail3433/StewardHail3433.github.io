@@ -1,10 +1,10 @@
 import { UIInventory } from "../../components/ui/inventory/UIInventory.js";
 import { UIComponentButton } from "../../components/ui/UIComponentButton.js";
 import { Inventory } from "../../inventory/Inventory.js";
-import { Items } from "../../item/items.js";
+import { Items } from "../../item/Items.js";
 import { Constants } from "../../utils/Constants.js";
 import { ImageLoader } from "../../utils/ImageLoader.js";
-import { Entity } from "../Enity.js";
+import { Entity } from "../Entity.js";
 export class Player extends Entity {
     constructor(name, healthComponent, hitboxComponent) {
         super(healthComponent, hitboxComponent);
@@ -34,14 +34,14 @@ export class Player extends Entity {
         this.name = name;
         this.speed = 60;
         this.setControls();
-        this.hotbar.getSlot(3).setItem(Items.stick);
-        this.inventory.getSlot(0).setItem(Items.stick);
-        this.inventory.getSlot(2).setItem(Items.stick);
-        this.inventory.getSlot(4).setItem(Items.stick);
-        this.inventory.getSlot(6).setItem(Items.stick);
-        this.inventory.getSlot(8).setItem(Items.stick);
-        this.inventory.getSlot(10).setItem(Items.stick);
-        this.inventory.getSlot(12).setItem(Items.sword);
+        // this.hotbar.getSlot(3).setItem(Items.STICK);
+        // this.inventory.getSlot(0).setItem(Items.STICK);
+        // this.inventory.getSlot(2).setItem(Items.STICK);
+        // this.inventory.getSlot(4).setItem(Items.STICK);
+        // this.inventory.getSlot(6).setItem(Items.STICK);
+        // this.inventory.getSlot(8).setItem(Items.STICK);
+        // this.inventory.getSlot(10).setItem(Items.STICK);
+        // this.inventory.getSlot(12).setItem(Items.SWORD);
         this.hotbarUi = new UIInventory(document.getElementById("gameCanvas"), this.inventory, { x: 0, y: 0, row: 2, col: 7 }, undefined, false);
         this.inventory.setSelecteSlot(0);
         document.addEventListener("keydown", (event) => this.keys[event.key] = true);
@@ -52,6 +52,82 @@ export class Player extends Entity {
         });
         Constants.COMMAND_SYSTEM.addCommand("speed", (args) => {
             this.speed = parseFloat(args[0]);
+        });
+        Constants.COMMAND_SYSTEM.addCommand("give", (args) => {
+            if (args[0] == "self") {
+                const item = Items.getItemById(args[1]);
+                let amount = 0;
+                let emptyIndex = -1;
+                if (item.getId() != "empty") {
+                    console.log(item.getId());
+                    for (let i = 0; i < this.inventory.getSize(); i++) {
+                        if (this.inventory.getSlot(i).isEmpty() && emptyIndex == -1)
+                            emptyIndex = i;
+                        if (this.inventory.getSlot(i).getItem().getId() == item.getId()) {
+                            console.log("AWsd");
+                            if (amount === 0) {
+                                if (parseInt(args[2]) > 0) {
+                                    amount = this.inventory.getSlot(i).addItems(parseInt(args[2]));
+                                }
+                                else {
+                                    return;
+                                }
+                                if (amount === 0) {
+                                    return;
+                                }
+                            }
+                            else {
+                                amount = this.inventory.getSlot(i).addItems(amount);
+                                if (amount === 0) {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    if (emptyIndex != -1) {
+                        for (let i = emptyIndex; i < this.inventory.getSize(); i++) {
+                            if (this.inventory.getSlot(i).isEmpty()) {
+                                if (amount === 0) {
+                                    if (parseInt(args[2]) > 0) {
+                                        if (parseInt(args[2]) > item.getMaxStackAmount()) {
+                                            this.inventory.getSlot(i).setItem(item, item.getMaxStackAmount());
+                                            amount = parseInt(args[2]) - item.getMaxStackAmount();
+                                        }
+                                        else {
+                                            this.inventory.getSlot(i).setItem(item, parseInt(args[2]));
+                                            amount = 0;
+                                        }
+                                    }
+                                    else {
+                                        return;
+                                    }
+                                    if (amount === 0) {
+                                        return;
+                                    }
+                                }
+                                else {
+                                    if (amount > item.getMaxStackAmount()) {
+                                        this.inventory.getSlot(i).setItem(item, item.getMaxStackAmount());
+                                        amount = amount - item.getMaxStackAmount();
+                                    }
+                                    else {
+                                        this.inventory.getSlot(i).setItem(item, amount);
+                                        amount = 0;
+                                    }
+                                    if (amount === 0) {
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        Constants.COMMAND_SYSTEM.addCommand("clear", (args) => {
+            if (args[0] == "self") {
+                this.inventory.clear();
+            }
         });
     }
     setControls(controls = {

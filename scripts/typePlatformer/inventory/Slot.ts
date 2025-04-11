@@ -1,5 +1,5 @@
 import { Item } from "../item/Item.js";
-import { Items } from "../item/items.js";
+import { Items } from "../item/Items.js";
 
 export class Slot {
     private item: Item;
@@ -16,21 +16,22 @@ export class Slot {
                 this.count = 1;
             }
         } else {
-            this.item = Items.empty;
+            this.item = Items.EMPTY;
             this.count = 0;
         }
         
         this.empty = true;
     }
 
-    public setItem(item: Item, count = 1) {
+    public setItem(item: Item, count: number) {
         this.item = item;
         this.count = count;
         this.empty = false;
     }
 
     public removeItem() {
-        this.item = Items.empty;
+        this.item = Items.EMPTY;
+        this.count = 0;
         this.empty = true;
     }
 
@@ -39,16 +40,21 @@ export class Slot {
     }
 
     public addItems(amount: number): number {
-        if(this.item.getMaxStackAmount() < this.count + amount) {
+        let c = this.count;
+        if(this.item.getMaxStackAmount() < c + amount) {
             this.count = this.item.getMaxStackAmount();
-            return this.count + amount - this.item.getMaxStackAmount();
+            return c + amount - this.item.getMaxStackAmount();
         } else {
             this.count = this.count + amount;
-            return this.count + amount;
+            return 0;
         }
     }
 
     public getItem(): Item {
         return this.item;
+    }
+
+    public getItemCount(): number {
+        return this.count;
     }
 }
