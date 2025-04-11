@@ -114,19 +114,6 @@ export class UIInventory {
     }
 
     public render(ctx: CanvasRenderingContext2D) {
-        // this was ai code that did not work
-        // Get device pixel ratio
-                // const dpr = window.devicePixelRatio || 1;
-        
-                // // // Set actual canvas size in memory (higher resolution)
-                // this.canvas.width = Constants.CANVAS_WIDTH * dpr;
-                // this.canvas.height = Constants.CANVAS_HEIGHT * dpr;
-        
-                // // Style it to look the same on screen
-                // this.canvas.style.width = `${Constants.CANVAS_WIDTH}px`;
-                // this.canvas.style.height = `${Constants.CANVAS_HEIGHT}px`;
-        
-                // // Scale context to account for DPR
         for(let i = 0; i < this.inventory.getSize(); i++) {
             ctx.fillStyle = "purple";
             ctx.fillRect(this.slotPlacement[i].x, this.slotPlacement[i].y, Constants.TILE_SIZE, Constants.TILE_SIZE);
@@ -143,7 +130,7 @@ export class UIInventory {
                         ctx.fillRect(this.slotPlacement[i].x+Constants.TILE_SIZE/2, this.slotPlacement[i].y, Constants.TILE_SIZE/2, Constants.TILE_SIZE/2);
                     }
                 } else {
-                    if(this.mouseItem.index =i) {
+                    if(this.mouseItem.index == i) {
                         if(this.inventory.getSlot(i).getItem().getImage()) {
                             ctx.drawImage(this.inventory.getSlot(i).getItem().getImage()!, this.mouseItem.x, this.mouseItem.y);
                         } else {
