@@ -30,4 +30,19 @@ export class Tile {
             ctx.drawImage(ImageLoader.getImages()[0], spriteSheetMapX, spriteSheetMapY, Constants.TILE_SIZE, Constants.TILE_SIZE,   this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, Constants.TILE_SIZE, Constants.TILE_SIZE);
         }
     }
+
+    serialize() {
+        return {
+            layers: this.layers.map(layer => ({ index: layer.index })),
+            hitboxComponent: this.hitboxComponent.serialize(),
+        };
+    }
+
+    static deserialize(data: any): Tile {
+        const layers = data.layers.map((layerData: any) => ({ index: layerData.index }));
+        const hitboxComponent = HitboxComponent.deserialize(data.hitboxComponent);
+        return new Tile(layers, hitboxComponent);
+    }
+    
+    
 }

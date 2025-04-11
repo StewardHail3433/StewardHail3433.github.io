@@ -175,16 +175,30 @@ class Game {
                 this.uiHandler.getChatHandler().setSocket(null);
             });
             this.socket.on("initNewWorld", (data) => {
-                console.log(data);
-                let wMAp = [];
-                for (let i = 0; i < data.worldMap.length; i++) {
-                    let row = [];
-                    for (let j = 0; j < data.worldMap[i].length; j++) {
-                        row.push(new Tile(data.worldMap[i][j].layers, HitboxComponent.deserialize(data.worldMap[i][j].hitboxComponent)));
+                const deserializedChunks = new Map();
+                for (const key in data) {
+                    const tileMatrix = data[key];
+                    if (Array.isArray(tileMatrix)) {
+                        const chunk = tileMatrix.map((row) => row.map((tileData) => Tile.deserialize(tileData)));
+                        deserializedChunks.set(key, chunk);
                     }
-                    wMAp.push(row);
                 }
-                this.worldHandler.setWorldMap(wMAp);
+                this.worldHandler.loadChunksFromServer(deserializedChunks);
+            });
+            this.socket.on("loadChunks", (data) => {
+                let wMAp = new Map();
+                for (var key in data) {
+                    let chunkTiles = [];
+                    for (let i = 0; i < data[key].length; i++) {
+                        let row = [];
+                        for (let j = 0; j < data[key][i].length; j++) {
+                            row.push(new Tile(data[key][i][j].layers, HitboxComponent.deserialize(data[key][i][j].hitboxComponent)));
+                        }
+                        chunkTiles.push(row);
+                    }
+                    wMAp.set(key, chunkTiles);
+                }
+                this.worldHandler.loadChunksFromServer(wMAp);
             });
         });
         Constants.COMMAND_SYSTEM.addCommand("server", (args) => {
@@ -225,6 +239,12 @@ class Game {
     update(dt) {
         this.player.update(dt);
         this.camera.update();
+        if (this.isMultiplayer && this.socket) {
+            this.worldHandler.updateServer(this.camera, this.socket);
+        }
+        else {
+            this.worldHandler.update(this.camera);
+        }
         if (this.player.isMoving() && this.isMultiplayer && this.socket) {
             this.socket.emit("updatePlayer", this.player.serialize());
         }

@@ -222,16 +222,38 @@ class Game {
             });
 
             this.socket.on("initNewWorld", (data: any) => {
-                console.log(data);
-                let wMAp: Tile[][] = [];
-                for(let i = 0; i < data.worldMap.length; i++) {
-                    let row = [];
-                    for(let j = 0; j < data.worldMap[i].length; j++) {
-                        row.push(new Tile(data.worldMap[i][j].layers, HitboxComponent.deserialize(data.worldMap[i][j].hitboxComponent)));
+                const deserializedChunks = new Map<string, Tile[][]>();
+            
+                for (const key in data) {
+                    const tileMatrix = data[key];
+            
+                    if (Array.isArray(tileMatrix)) {
+                        const chunk: Tile[][] = tileMatrix.map((row: any[]) =>
+                            row.map((tileData: any) => Tile.deserialize(tileData))
+                        );
+                        deserializedChunks.set(key, chunk);
                     }
-                    wMAp.push(row);
                 }
-                this.worldHandler.setWorldMap(wMAp);
+            
+                this.worldHandler.loadChunksFromServer(deserializedChunks);
+            });
+            
+
+            this.socket.on("loadChunks", (data: any) => {
+                let wMAp: Map<string, Tile[][]> = new Map<string, Tile[][]>()
+                for(var key in data) {
+                    let chunkTiles: Tile[][] =[]
+                    for(let i = 0; i < data[key].length; i++) {
+                        let row = [];
+                        for(let j = 0; j < data[key][i].length; j++) {
+                            row.push(new Tile(data[key][i][j].layers, HitboxComponent.deserialize(data[key][i][j].hitboxComponent)));
+                        }
+                        chunkTiles.push(row);
+                    }
+                    
+                    wMAp.set(key, chunkTiles)
+                }
+                this.worldHandler.loadChunksFromServer(wMAp);
             });
 
             
@@ -274,7 +296,12 @@ class Game {
     private update(dt:number) {
         this.player.update(dt);
         this.camera.update();
-
+        
+        if(this.isMultiplayer && this.socket) {
+            this.worldHandler.updateServer(this.camera, this.socket);
+        } else {
+            this.worldHandler.update(this.camera);
+        }
         if (this.player.isMoving() && this.isMultiplayer && this.socket) {
             this.socket.emit("updatePlayer", this.player.serialize());
         }
