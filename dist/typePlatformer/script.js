@@ -186,6 +186,7 @@ class Game {
                 this.worldHandler.loadChunksFromServer(deserializedChunks);
             });
             this.socket.on("loadChunks", (data) => {
+                // so from my understanding the data was record in server and then a json object to send and then cnoverted to map here and this stop the crashing because the JSON.stringify can do the record with eaiser tha map so no crashing so server end
                 const deserializedChunks = new Map();
                 for (const key in data) {
                     const tileMatrix = data[key];
