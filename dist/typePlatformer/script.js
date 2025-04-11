@@ -186,19 +186,15 @@ class Game {
                 this.worldHandler.loadChunksFromServer(deserializedChunks);
             });
             this.socket.on("loadChunks", (data) => {
-                let wMAp = new Map();
-                for (var key in data) {
-                    let chunkTiles = [];
-                    for (let i = 0; i < data[key].length; i++) {
-                        let row = [];
-                        for (let j = 0; j < data[key][i].length; j++) {
-                            row.push(new Tile(data[key][i][j].layers, HitboxComponent.deserialize(data[key][i][j].hitboxComponent)));
-                        }
-                        chunkTiles.push(row);
+                const deserializedChunks = new Map();
+                for (const key in data) {
+                    const tileMatrix = data[key];
+                    if (Array.isArray(tileMatrix)) {
+                        const chunk = tileMatrix.map((row) => row.map((tileData) => Tile.deserialize(tileData)));
+                        deserializedChunks.set(key, chunk);
                     }
-                    wMAp.set(key, chunkTiles);
                 }
-                this.worldHandler.loadChunksFromServer(wMAp);
+                this.worldHandler.loadChunksFromServer(deserializedChunks);
             });
         });
         Constants.COMMAND_SYSTEM.addCommand("server", (args) => {

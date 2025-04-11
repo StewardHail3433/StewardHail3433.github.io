@@ -79,7 +79,22 @@ export class WorldHandler {
 
     public updateServer(camera: Camera, socket: any) {
         if(socket) {
-            socket.emit("loadChunk", camera.getView());
+            // cause crasing because spaming load chuns but now only calling when new chuns are found. WOW look at me commenting haha
+            let x = Math.floor((camera.getView().x+camera.getView().width/2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
+            let y = Math.floor((camera.getView().y+camera.getView().height/2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
+
+            
+            let cx = x - Constants.RENDER_DISTANCE+1;
+            let cy = y - Constants.RENDER_DISTANCE+1;
+            top:
+            for (let i = cx; i < x + ((Constants.RENDER_DISTANCE)); i++) {
+                for (let j = cy; j < y + ((Constants.RENDER_DISTANCE)); j++) {
+                    if (!this.worldMap.has(i+", "+j)) {
+                        socket.emit("loadChunk", camera.getView());
+                        break top;
+                    }
+                }
+            }
         }
 
     }
@@ -129,18 +144,20 @@ export class WorldHandler {
         this.showChunks = false;
     }
 
-    public getVisibleChunks(camera: Camera): Map<string, Tile[][]> {
-        const visibleChunks = new Map<string, Tile[][]>();
-    
+    public getVisibleChunks(camera: Camera): Record<string, any> {
+        const visibleChunks: Record<string, any> = {};
+
         let x = Math.floor((camera.getView().x+camera.getView().width/2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
         let y = Math.floor((camera.getView().y+camera.getView().height/2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
-        
+
         let cx = x - Constants.RENDER_DISTANCE+1;
         let cy = y - Constants.RENDER_DISTANCE+1;
-        for (let i = cx; i < x + ((Constants.RENDER_DISTANCE)); i++) {
-            for (let j = cy; j < y + ((Constants.RENDER_DISTANCE)); j++) {
+        for (let i = cx; i < x + Constants.RENDER_DISTANCE; i++) {
+            for (let j = cy; j < y + Constants.RENDER_DISTANCE; j++) {
                 if (this.worldMap.has(i+", "+j)) {
-                    visibleChunks.set(i+", "+j, this.worldMap.get(i+", "+j)!)
+                    visibleChunks[i+", "+j] = this.worldMap.get(i+", "+j)!.map(row =>
+                        row.map(tile => tile.serialize())
+                    );
                 }
             }
         }

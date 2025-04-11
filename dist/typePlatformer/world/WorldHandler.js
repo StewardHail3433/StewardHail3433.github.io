@@ -54,7 +54,6 @@ export class WorldHandler {
     update(camera) {
         let x = Math.floor((camera.getView().x + camera.getView().width / 2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
         let y = Math.floor((camera.getView().y + camera.getView().height / 2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
-        console.log(x, y);
         let cx = x - Constants.RENDER_DISTANCE + 1;
         let cy = y - Constants.RENDER_DISTANCE + 1;
         for (let i = cx; i < x + ((Constants.RENDER_DISTANCE)); i++) {
@@ -67,7 +66,18 @@ export class WorldHandler {
     }
     updateServer(camera, socket) {
         if (socket) {
-            socket.emit("loadChunk", camera.getView());
+            let x = Math.floor((camera.getView().x + camera.getView().width / 2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
+            let y = Math.floor((camera.getView().y + camera.getView().height / 2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
+            let cx = x - Constants.RENDER_DISTANCE + 1;
+            let cy = y - Constants.RENDER_DISTANCE + 1;
+            top: for (let i = cx; i < x + ((Constants.RENDER_DISTANCE)); i++) {
+                for (let j = cy; j < y + ((Constants.RENDER_DISTANCE)); j++) {
+                    if (!this.worldMap.has(i + ", " + j)) {
+                        socket.emit("loadChunk", camera.getView());
+                        break top;
+                    }
+                }
+            }
         }
     }
     generateChunk(chunkX, chunkY, seed) {
@@ -87,7 +97,6 @@ export class WorldHandler {
             chunk.push(row);
         }
         this.worldMap.set(chunkX + ", " + chunkY, chunk);
-        console.log(this.worldMap);
         return chunk;
     }
     getWorldMap() {
