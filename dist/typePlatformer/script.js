@@ -251,7 +251,7 @@ class Game {
         this.ctx.clearRect(0, 0, Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
         this.ctx.save();
         this.ctx.scale(this.camera.getView().zoom, this.camera.getView().zoom);
-        this.ctx.translate(Math.round(-this.camera.getView().x), Math.round(-this.camera.getView().y));
+        this.ctx.translate(-this.camera.getView().x, -this.camera.getView().y);
         this.ctx.clearRect(0, 0, Constants.CANVAS_WIDTH / this.camera.getView().zoom, Constants.CANVAS_HEIGHT / this.camera.getView().zoom);
         this.worldHandler.renderBackground(this.ctx, this.camera);
         this.worldHandler.renderLayer(0, this.ctx, this.camera);

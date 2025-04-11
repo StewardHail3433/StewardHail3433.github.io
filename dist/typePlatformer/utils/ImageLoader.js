@@ -19,5 +19,6 @@ _a = ImageLoader;
 ImageLoader.images = [
     _a.createImage("resources/typePlatformer/images/tiles/fields.png"),
     _a.createImage("resources/typePlatformer/images/entity/player/playerSheet.png"),
-    _a.createImage("resources/typePlatformer/images/items/stick.png")
+    _a.createImage("resources/typePlatformer/images/items/stick.png"),
+    _a.createImage("resources/typePlatformer/images/items/sword.png")
 ];
