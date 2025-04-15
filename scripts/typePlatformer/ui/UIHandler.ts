@@ -25,7 +25,7 @@ export class UIHandler {
     private characterChooserLeftButton: UIComponentButton;
     private characterChooserRightButton: UIComponentButton;
     private characterChooserLabel: UIComponentLabel;
-    private characterIndex: int = 1;
+    private characterIndex: number = 1;
 
     constructor(canvas: HTMLCanvasElement, player: Player, camera: Camera) {
         this.debug = new UIComponent({

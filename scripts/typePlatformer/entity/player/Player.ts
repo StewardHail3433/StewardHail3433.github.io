@@ -17,7 +17,7 @@ export class Player extends Entity {
     private controls: any;
     private touchMode = false;
     private frame = 0;
-    private img: Image;
+    private img: HTMLImageElement;
 
     private inventory: Inventory =  new Inventory(14);
     private hotbar: Inventory =  new Inventory(7);
@@ -67,7 +67,7 @@ export class Player extends Entity {
         document.addEventListener("keyup", (event) => this.keys[event.key] = false);
         this.setToTouch();
 
-        img = ImageLoader.getImages()[1];
+        this.img = ImageLoader.getImages()[1];
 
 
 
