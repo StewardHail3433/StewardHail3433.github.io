@@ -165,7 +165,7 @@ export class UIHandler {
         else {
             this.uiChatHandler.show();
         }
-        if (this.keysToggled[">"]) {
+        if (this.keysToggled["m"]) {
             this.characterChooserComponent.show();
             this.characterChooserLabel.show();
             this.characterChooserLeftButton.show();
