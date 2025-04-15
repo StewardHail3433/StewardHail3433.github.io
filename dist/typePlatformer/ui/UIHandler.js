@@ -42,7 +42,7 @@ export class UIHandler {
         this.uiChatHandler = new UIChatHandler(canvas, new UIComponent({
             x: Constants.CANVAS_WIDTH - Constants.CANVAS_WIDTH / 5, y: 0, width: Constants.CANVAS_WIDTH / 5, height: Constants.CANVAS_HEIGHT / 2
         }, { red: 255, green: 0, blue: 0, alpha: 0.5 }, false));
-        this.characterChooserComponent = new UIComponent({ x: Constants.CANVAS_WIDTH / 2 - 100, y: Constants.CANVAS_HEIGHT / 2 - 100, width: 100, height: 100 }, undefined, true);
+        this.characterChooserComponent = new UIComponent({ x: Constants.CANVAS_WIDTH / 2 - 100, y: Constants.CANVAS_HEIGHT / 2 - 100, width: 100, height: 100 }, { red: 255, green: 0, blue: 0, alpha: 0.5 }, true);
         this.debug.hide();
         this.debugInfo.hide();
         this.debugTeleportToCenterButton.hide();
@@ -54,8 +54,8 @@ export class UIHandler {
         this.debugTeleportToCenterButton.setParentComponent(this.debug);
         this.player = player;
         this.playermovement = this.player.getMovementButton(canvas);
-        this.characterChooserLabel = new UIComponentLabel({ x: 5, y: 5, width: 90, height: 25 }, undefined, true, ImageLoader.getImages()[1].src, undefined, 8, undefined, true);
-        this.characterChooserLeftButton = new UIComponentButton(canvas, { x: 5, y: 70, width: 25, height: 25 }, undefined, true, "<=", undefined, 8, "center", undefined, undefined, undefined, () => {
+        this.characterChooserLabel = new UIComponentLabel({ x: 5, y: 5, width: 90, height: 25 }, { red: 0, green: 255, blue: 0 }, true, ImageLoader.getImages()[1].src, undefined, 8, undefined, true);
+        this.characterChooserLeftButton = new UIComponentButton(canvas, { x: 5, y: 70, width: 25, height: 25 }, { red: 0, green: 255, blue: 0 }, true, "<=", undefined, 8, "center", undefined, undefined, undefined, () => {
             this.characterIndex--;
             while (!ImageLoader.getImages()[this.characterIndex].src.includes("entity/player/player")) {
                 if (this.characterIndex - 1 > -1) {
@@ -72,7 +72,7 @@ export class UIHandler {
                 }
             }
         });
-        this.characterChooserRightButton = new UIComponentButton(canvas, { x: 70, y: 70, width: 25, height: 25 }, undefined, true, "=>", undefined, 8, "center", undefined, undefined, undefined, () => {
+        this.characterChooserRightButton = new UIComponentButton(canvas, { x: 70, y: 70, width: 25, height: 25 }, { red: 0, green: 255, blue: 0 }, true, "=>", undefined, 8, "center", undefined, undefined, undefined, () => {
             this.characterIndex++;
             while (!ImageLoader.getImages()[this.characterIndex].src.includes("entity/player/player")) {
                 if (this.characterIndex + 1 < ImageLoader.getImages().length) {
@@ -166,12 +166,14 @@ export class UIHandler {
             this.uiChatHandler.show();
         }
         if (this.keysToggled["m"]) {
+            document.getElementById("test3").innerText = "show";
             this.characterChooserComponent.show();
             this.characterChooserLabel.show();
             this.characterChooserLeftButton.show();
             this.characterChooserRightButton.show();
         }
         else {
+            document.getElementById("test3").innerText = "hide";
             this.characterChooserComponent.hide();
             this.characterChooserLabel.hide();
             this.characterChooserLeftButton.hide();
