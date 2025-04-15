@@ -203,13 +203,13 @@ export class UIHandler {
         }
 
         if(this.keysToggled["m"]) {
-            document.getElementById("test3")?.innerHTML = "show";
+            document.getElementById("test3")?.innerText = "show";
             this.characterChooserComponent.show();
             this.characterChooserLabel.show();
             this.characterChooserLeftButton.show();
             this.characterChooserRightButton.show();
         } else {
-            document.getElementById("test3")?.innerHTML = "show";
+            document.getElementById("test3")?.innerText = "hide";
             this.characterChooserComponent.hide();
             this.characterChooserLabel.hide();
             this.characterChooserLeftButton.hide();
