@@ -122,6 +122,10 @@ export class UIHandler {
         this.debugSpeedUp.render(ctx);
         this.debugSpeedDown.render(ctx);
         this.uiChatHandler.render(ctx);
+        this.characterChooserComponent.render(ctx);
+        this.characterChooserLabel.render(ctx);
+        this.characterChooserLeftButton.render(ctx);
+        this.characterChooserRightButton.render(ctx);
     }
     update() {
         var _a, _b, _c;
@@ -135,6 +139,8 @@ export class UIHandler {
         this.debugSpeedUp.update();
         this.debugSpeedDown.update();
         this.uiChatHandler.update();
+        this.characterChooserLeftButton.update();
+        this.characterChooserRightButton.update();
         if (this.keysToggled["F3"]) {
             this.debug.show();
             this.debugInfo.show();
