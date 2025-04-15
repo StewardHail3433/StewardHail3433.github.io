@@ -67,7 +67,7 @@ export class UIHandler {
         }, {red: 255, green: 0, blue: 0, alpha: 0.5}, false));
 
        this.characterChooserComponent = new UIComponent(
-        {x: Constants.CANVAS_WIDTH/2-100, y: Constants.CANVAS_HEIGHT/2-100, width:100, height:100}, undefined, true
+        {x: Constants.CANVAS_WIDTH/2-100, y: Constants.CANVAS_HEIGHT/2-100, width:100, height:100}, {red: 255, green: 0, blue: 0, alpha: 0.5}, true
        );
 
         this.debug.hide();
@@ -83,9 +83,9 @@ export class UIHandler {
 
         this.playermovement = this.player.getMovementButton(canvas);
 
-        this.characterChooserLabel = new UIComponentLabel({x: 5, y: 5, width:90, height: 25}, undefined, true, ImageLoader.getImages()[1].src, undefined, 8, undefined, true);
+        this.characterChooserLabel = new UIComponentLabel({x: 5, y: 5, width:90, height: 25}, {red: 0, green: 255, blue: 0}, true, ImageLoader.getImages()[1].src, undefined, 8, undefined, true);
 
-        this.characterChooserLeftButton = new UIComponentButton(canvas, {x: 5, y: 70, width: 25, height: 25},undefined,true,"<=",undefined,8, "center", undefined, undefined, undefined, () => {
+        this.characterChooserLeftButton = new UIComponentButton(canvas, {x: 5, y: 70, width: 25, height: 25},{red: 0, green: 255, blue: 0},true,"<=",undefined,8, "center", undefined, undefined, undefined, () => {
             this.characterIndex--;
             while(!ImageLoader.getImages()[this.characterIndex].src.includes("entity/player/player")) {
                 if(this.characterIndex - 1 > -1) {
@@ -102,7 +102,7 @@ export class UIHandler {
             }
         });
 
-        this.characterChooserRightButton = new UIComponentButton(canvas, {x: 70, y: 70, width: 25, height: 25},undefined,true,"=>",undefined,8, "center", undefined, undefined, undefined, () => {
+        this.characterChooserRightButton = new UIComponentButton(canvas, {x: 70, y: 70, width: 25, height: 25},{red: 0, green: 255, blue: 0},true,"=>",undefined,8, "center", undefined, undefined, undefined, () => {
             this.characterIndex++;
             while(!ImageLoader.getImages()[this.characterIndex].src.includes("entity/player/player")) {
                 if(this.characterIndex + 1 < ImageLoader.getImages().length) {
@@ -203,11 +203,13 @@ export class UIHandler {
         }
 
         if(this.keysToggled["m"]) {
+            document.getElementById("test3")?.innerHTML = "show";
             this.characterChooserComponent.show();
             this.characterChooserLabel.show();
             this.characterChooserLeftButton.show();
             this.characterChooserRightButton.show();
         } else {
+            document.getElementById("test3")?.innerHTML = "show";
             this.characterChooserComponent.hide();
             this.characterChooserLabel.hide();
             this.characterChooserLeftButton.hide();
