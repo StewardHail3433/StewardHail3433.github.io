@@ -2,6 +2,7 @@ export class ImageLoader {
     private static images: HTMLImageElement[] = [
         this.createImage("resources/typePlatformer/images/tiles/fields.png"),
         this.createImage("resources/typePlatformer/images/entity/player/playerSheet.png"),
+        this.createImage("resources/typePlatformer/images/entity/player/playerSheet2.png"),
         this.createImage("resources/typePlatformer/images/items/stick.png"),
         this.createImage("resources/typePlatformer/images/items/sword.png")];
 
