@@ -368,7 +368,7 @@ export class Player extends Entity {
         return this.hotbarUi;
     }
 
-    public setImage(img: Image) {
+    public setImage(img: HTMLImageElement) {
         this.img = img;
     }
 }
