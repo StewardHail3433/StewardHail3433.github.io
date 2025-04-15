@@ -2,11 +2,13 @@ import { UIComponent } from "../components/ui/UIComponent.js";
 import { UIComponentButton } from "../components/ui/UIComponentButton.js";
 import { UIComponentLabel } from "../components/ui/UIComponentLabel.js";
 import { Constants } from "../utils/Constants.js";
+import { ImageLoader } from "../utils/ImageLoader.js";
 import { UIChatHandler } from "./UIChatHandler.js";
 export class UIHandler {
     constructor(canvas, player, camera) {
         this.keys = {};
         this.keysToggled = { "F3": false };
+        this.characterIndex = 1;
         this.debug = new UIComponent({
             x: 0, y: 0, width: Constants.CANVAS_WIDTH / 5, height: Constants.CANVAS_HEIGHT
         }, { red: 255, green: 0, blue: 0, alpha: 0.5 }, true);
@@ -40,6 +42,7 @@ export class UIHandler {
         this.uiChatHandler = new UIChatHandler(canvas, new UIComponent({
             x: Constants.CANVAS_WIDTH - Constants.CANVAS_WIDTH / 5, y: 0, width: Constants.CANVAS_WIDTH / 5, height: Constants.CANVAS_HEIGHT / 2
         }, { red: 255, green: 0, blue: 0, alpha: 0.5 }, false));
+        this.characterChooserComponent = new UIComponent({ x: Constants.CANVAS_WIDTH / 2 - 100, y: Constants.CANVAS_HEIGHT / 2 - 100, width: 100, height: 100 }, undefined, true);
         this.debug.hide();
         this.debugInfo.hide();
         this.debugTeleportToCenterButton.hide();
@@ -51,6 +54,44 @@ export class UIHandler {
         this.debugTeleportToCenterButton.setParentComponent(this.debug);
         this.player = player;
         this.playermovement = this.player.getMovementButton(canvas);
+        this.characterChooserLabel = new UIComponentLabel({ x: 5, y: 5, width: 90, height: 25 }, undefined, true, ImageLoader.getImages()[1].src, undefined, 8, undefined, true);
+        this.characterChooserLeftButton = new UIComponentButton(canvas, { x: 5, y: 70, width: 25, height: 25 }, undefined, true, "<=", undefined, 8, "center", undefined, undefined, undefined, () => {
+            this.characterIndex--;
+            while (!ImageLoader.getImages()[this.characterIndex].src.includes("entity/player/player")) {
+                if (this.characterIndex - 1 > -1) {
+                    this.characterIndex--;
+                }
+                else {
+                    break;
+                }
+            }
+            if (this.characterIndex - 1 > -1) {
+                if (ImageLoader.getImages()[this.characterIndex].src.includes("entity/player/player")) {
+                    this.characterChooserLabel.update(ImageLoader.getImages()[this.characterIndex].src);
+                    this.player.setImage(ImageLoader.getImages()[this.characterIndex]);
+                }
+            }
+        });
+        this.characterChooserRightButton = new UIComponentButton(canvas, { x: 70, y: 70, width: 25, height: 25 }, undefined, true, "=>", undefined, 8, "center", undefined, undefined, undefined, () => {
+            this.characterIndex++;
+            while (!ImageLoader.getImages()[this.characterIndex].src.includes("entity/player/player")) {
+                if (this.characterIndex + 1 < ImageLoader.getImages().length) {
+                    this.characterIndex++;
+                }
+                else {
+                    break;
+                }
+            }
+            if (this.characterIndex + 1 < ImageLoader.getImages().length) {
+                if (ImageLoader.getImages()[this.characterIndex].src.includes("entity/player/player")) {
+                    this.characterChooserLabel.update(ImageLoader.getImages()[this.characterIndex].src);
+                    this.player.setImage(ImageLoader.getImages()[this.characterIndex]);
+                }
+            }
+        });
+        this.characterChooserLabel.setParentComponent(this.characterChooserComponent);
+        this.characterChooserLeftButton.setParentComponent(this.characterChooserComponent);
+        this.characterChooserRightButton.setParentComponent(this.characterChooserComponent);
         document.addEventListener("keydown", (event) => this.handleKeyDown(event));
         document.addEventListener("keyup", (event) => this.handleKeyUp(event));
         Constants.COMMAND_SYSTEM.addCommand("debug", (args) => {
@@ -117,6 +158,18 @@ export class UIHandler {
         }
         else {
             this.uiChatHandler.show();
+        }
+        if (this.keysToggled[">"]) {
+            this.characterChooserComponent.show();
+            this.characterChooserLabel.show();
+            this.characterChooserLeftButton.show();
+            this.characterChooserRightButton.show();
+        }
+        else {
+            this.characterChooserComponent.hide();
+            this.characterChooserLabel.hide();
+            this.characterChooserLeftButton.hide();
+            this.characterChooserRightButton.hide();
         }
         if (this.keysToggled["l"]) {
             this.player.setToKeyboard();
