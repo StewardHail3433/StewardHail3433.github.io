@@ -1,6 +1,7 @@
 import { Camera } from "../camera/Camera.js";
 import { UIComponent } from "../components/ui/UIComponent.js";
 import { UIComponentButton } from "../components/ui/UIComponentButton.js";
+import { UIComponentImage } from "../components/ui/UIComponentImage.js";
 import { UIComponentLabel } from "../components/ui/UIComponentLabel.js";
 import { Player } from "../entity/player/Player.js";
 import { Constants } from "../utils/Constants.js";
@@ -24,7 +25,7 @@ export class UIHandler {
     private characterChooserComponent: UIComponent;
     private characterChooserLeftButton: UIComponentButton;
     private characterChooserRightButton: UIComponentButton;
-    private characterChooserLabel: UIComponentLabel;
+    private characterChooserLabel: UIComponentImage;
     private characterIndex: number = 1;
 
     constructor(canvas: HTMLCanvasElement, player: Player, camera: Camera) {
@@ -67,7 +68,7 @@ export class UIHandler {
         }, {red: 255, green: 0, blue: 0, alpha: 0.5}, false));
 
        this.characterChooserComponent = new UIComponent(
-        {x: Constants.CANVAS_WIDTH/2-100, y: Constants.CANVAS_HEIGHT/2-100, width:100, height:100}, {red: 255, green: 0, blue: 0, alpha: 0.5}, true
+        {x: Constants.CANVAS_WIDTH/2-50, y: Constants.CANVAS_HEIGHT/2-55, width:100, height:135}, {red: 255, green: 0, blue: 0, alpha: 0.5}, true
        );
 
         this.debug.hide();
@@ -83,39 +84,39 @@ export class UIHandler {
 
         this.playermovement = this.player.getMovementButton(canvas);
 
-        this.characterChooserLabel = new UIComponentLabel({x: 5, y: 5, width:90, height: 25}, {red: 0, green: 255, blue: 0}, true, ImageLoader.getImages()[1].src, undefined, 8, undefined, true);
+        this.characterChooserLabel = new UIComponentImage({x: 5, y: 5, width:90, height: 90}, {red: 0, green: 255, blue: 0}, true, ImageLoader.getImages()[1], {x: 0, y: 0, width: Constants.TILE_SIZE, height: Constants.TILE_SIZE});
 
-        this.characterChooserLeftButton = new UIComponentButton(canvas, {x: 5, y: 70, width: 25, height: 25},{red: 0, green: 255, blue: 0},true,"<=",undefined,8, "center", undefined, undefined, undefined, () => {
-            this.characterIndex--;
-            while(!ImageLoader.getImages()[this.characterIndex].src.includes("entity/player/player")) {
+        this.characterChooserLeftButton = new UIComponentButton(canvas, {x: 5, y: 105, width: 25, height: 25},{red: 0, green: 255, blue: 0},true,"<=",undefined,8, "center", undefined, undefined, undefined, () => {
+            let old = this.characterIndex;
+            do {
                 if(this.characterIndex - 1 > -1) {
                     this.characterIndex--;
                 } else {
                     break;
                 }
-            }
-            if(this.characterIndex - 1 > -1) {
-                if(ImageLoader.getImages()[this.characterIndex].src.includes("entity/player/player")) {
-                    this.characterChooserLabel.update(ImageLoader.getImages()[this.characterIndex].src);
-                    this.player.setImage(ImageLoader.getImages()[this.characterIndex]);
-                }
+            } while(!ImageLoader.getImages()[this.characterIndex].src.includes("images/entity/player"));
+            if(ImageLoader.getImages()[this.characterIndex].src.includes("images/entity/player")) {
+                this.characterChooserLabel.setImage(ImageLoader.getImages()[this.characterIndex]);
+                this.player.setImage(ImageLoader.getImages()[this.characterIndex]);
+            } else {
+                this.characterIndex = old;
             }
         });
 
-        this.characterChooserRightButton = new UIComponentButton(canvas, {x: 70, y: 70, width: 25, height: 25},{red: 0, green: 255, blue: 0},true,"=>",undefined,8, "center", undefined, undefined, undefined, () => {
-            this.characterIndex++;
-            while(!ImageLoader.getImages()[this.characterIndex].src.includes("entity/player/player")) {
+        this.characterChooserRightButton = new UIComponentButton(canvas, {x: 70, y: 105, width: 25, height: 25},{red: 0, green: 255, blue: 0},true,"=>",undefined,8, "center", undefined, undefined, undefined, () => {
+            let old = this.characterIndex;
+            do {
                 if(this.characterIndex + 1 < ImageLoader.getImages().length) {
                     this.characterIndex++;
                 } else {
                     break;
                 }
-            }
-            if(this.characterIndex + 1 < ImageLoader.getImages().length) {
-                if(ImageLoader.getImages()[this.characterIndex].src.includes("entity/player/player")) {
-                    this.characterChooserLabel.update(ImageLoader.getImages()[this.characterIndex].src);
-                    this.player.setImage(ImageLoader.getImages()[this.characterIndex]);
-                }
+            } while(!ImageLoader.getImages()[this.characterIndex].src.includes("images/entity/player"));
+            if(ImageLoader.getImages()[this.characterIndex].src.includes("images/entity/player")) {
+                this.characterChooserLabel.setImage(ImageLoader.getImages()[this.characterIndex]);
+                this.player.setImage(ImageLoader.getImages()[this.characterIndex]);
+            } else {
+                this.characterIndex = old;
             }
         })
 
@@ -203,13 +204,11 @@ export class UIHandler {
         }
 
         if(this.keysToggled["m"]) {
-            document.getElementById("test3")!.innerText = "show";
             this.characterChooserComponent.show();
             this.characterChooserLabel.show();
             this.characterChooserLeftButton.show();
             this.characterChooserRightButton.show();
         } else {
-            document.getElementById("test3")!.innerText = "hide";
             this.characterChooserComponent.hide();
             this.characterChooserLabel.hide();
             this.characterChooserLeftButton.hide();
@@ -265,6 +264,10 @@ export class UIHandler {
             }
         }
         this.uiChatHandler.updatePositions(scale);
+        this.characterChooserComponent.updatePosition(scale);
+        this.characterChooserLabel.updatePosition(scale);
+        this.characterChooserLeftButton.updatePosition(scale);
+        this.characterChooserRightButton.updatePosition(scale);
     }
 
 }
