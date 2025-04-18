@@ -22,13 +22,8 @@ ImageLoader.images = [
     _a.createImage("resources/typePlatformer/images/entity/player/playerSheet3.png"),
     _a.createImage("resources/typePlatformer/images/items/stick.png"),
     _a.createImage("resources/typePlatformer/images/items/sword.png"),
-<<<<<<< HEAD
     _a.createImage("resources/typePlatformer/images/items/pickaxe.png"),
-    _a.createImage("resources/typePlatformer/images/entity/player/playerSheet2.png"),
-    _a.createImage("resources/typePlatformer/images/entity/player/duckMan.png")
-=======
     _a.createImage("resources/typePlatformer/images/entity/player/playerSheet2.png"),
     _a.createImage("resources/typePlatformer/images/entity/player/duckMan.png"),
     _a.createImage("resources/typePlatformer/images/entity/player/theVoid.png")
->>>>>>> ba4790e0e21de26785dc086efac5ec4132d65d08
 ];
