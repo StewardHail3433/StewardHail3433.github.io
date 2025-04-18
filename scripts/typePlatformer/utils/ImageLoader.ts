@@ -7,7 +7,8 @@ export class ImageLoader {
         this.createImage("resources/typePlatformer/images/items/sword.png"),
         this.createImage("resources/typePlatformer/images/items/pickaxe.png"),
         this.createImage("resources/typePlatformer/images/entity/player/playerSheet2.png"),
-        this.createImage("resources/typePlatformer/images/entity/player/duckMan.png")];
+        this.createImage("resources/typePlatformer/images/entity/player/duckMan.png"),
+        this.createImage("resources/typePlatformer/images/entity/player/theVoid.png")];
 
     static getImages(): HTMLImageElement[]  {
         return this.images;
