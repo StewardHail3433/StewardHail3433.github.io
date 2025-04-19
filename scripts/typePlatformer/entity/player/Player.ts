@@ -57,7 +57,7 @@ export class Player extends Entity {
         // this.inventory.getSlot(4).setItem(Items.STICK);
         // this.inventory.getSlot(6).setItem(Items.STICK);
         // this.inventory.getSlot(8).setItem(Items.STICK);
-        // this.inventory.getSlot(10).setItem(Items.STICK);
+        this.inventory.getSlot(10).setItem(Items.STICK, 1);
         // this.inventory.getSlot(12).setItem(Items.SWORD);
 
         this.hotbarUi = new UIInventory(document.getElementById("gameCanvas") as HTMLCanvasElement, this.inventory, {x: 0, y: 0, row: 2, col: 7}, undefined, false);

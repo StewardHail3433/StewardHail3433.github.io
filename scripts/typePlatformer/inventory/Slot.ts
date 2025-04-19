@@ -57,4 +57,7 @@ export class Slot {
     public getItemCount(): number {
         return this.count;
     }
+    public getMaxItemCount() {
+        return this.item.getMaxStackAmount()
+    }
 }
