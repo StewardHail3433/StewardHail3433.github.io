@@ -1,3 +1,4 @@
+import { UIInventories } from "../components/ui/inventory/UIInventories.js";
 import { UIComponent } from "../components/ui/UIComponent.js";
 import { UIComponentButton } from "../components/ui/UIComponentButton.js";
 import { UIComponentImage } from "../components/ui/UIComponentImage.js";
@@ -109,9 +110,11 @@ export class UIHandler {
                 Constants.COMMAND_SYSTEM.outputArgsError("/debug (hide || show)");
             }
         });
+        this.uiInventories = new UIInventories(canvas);
+        this.uiInventories.addInventory(player.getInventoryUI());
+        this.uiInventories.addInventory(player.getHotbarUI());
     }
     render(ctx) {
-        this.player.getInventoryUI().render(ctx);
         this.debug.render(ctx);
         this.debugInfo.render(ctx);
         this.debugTeleportToCenterButton.render(ctx);
@@ -129,6 +132,7 @@ export class UIHandler {
         this.characterChooserLabel.render(ctx);
         this.characterChooserLeftButton.render(ctx);
         this.characterChooserRightButton.render(ctx);
+        this.uiInventories.render(ctx);
     }
     update() {
         var _a, _b, _c;
@@ -191,6 +195,7 @@ export class UIHandler {
                 button.update();
             }
         }
+        this.uiInventories.update();
     }
     handleKeyDown(event) {
         event.preventDefault();
@@ -211,6 +216,7 @@ export class UIHandler {
     }
     updatePositions(scale) {
         this.player.getInventoryUI().updatePosition(scale);
+        this.player.getHotbarUI().updatePosition(scale);
         this.debug.updatePosition(scale);
         this.debugInfo.updatePosition(scale);
         this.debugTeleportToCenterButton.updatePosition(scale);

@@ -42,8 +42,9 @@ export class Player extends Entity {
         // this.inventory.getSlot(8).setItem(Items.STICK);
         this.inventory.getSlot(10).setItem(Items.STICK, 1);
         // this.inventory.getSlot(12).setItem(Items.SWORD);
-        this.hotbarUi = new UIInventory(document.getElementById("gameCanvas"), this.inventory, { x: 0, y: 0, row: 2, col: 7 }, undefined, false);
-        this.inventory.setSelecteSlot(0);
+        this.hotbarUi = new UIInventory(document.getElementById("gameCanvas"), this.hotbar, { x: 0, y: 0, row: 1, col: 7 }, { red: 128, green: 128, blue: 128, alpha: 1.0 }, false);
+        this.invUi = new UIInventory(document.getElementById("gameCanvas"), this.inventory, { x: 0, y: 18, row: 2, col: 7 }, undefined, false);
+        this.hotbar.setSelecteSlot(0);
         document.addEventListener("keydown", (event) => this.keys[event.key] = true);
         document.addEventListener("keyup", (event) => this.keys[event.key] = false);
         this.setToTouch();
@@ -182,6 +183,15 @@ export class Player extends Entity {
         }
         else if (this.keys["7"]) {
             this.hotbar.setSelecteSlot(6);
+        }
+        if (this.keys["e"]) {
+            if (this.invUi.ishidden()) {
+                this.invUi.show();
+            }
+            else {
+                this.invUi.hide();
+            }
+            this.keys["e"] = false;
         }
         if (this.touchMode) {
             for (var button of this.movementButtons) {
@@ -355,8 +365,11 @@ export class Player extends Entity {
             }
         }
     }
-    getInventoryUI() {
+    getHotbarUI() {
         return this.hotbarUi;
+    }
+    getInventoryUI() {
+        return this.invUi;
     }
     setImage(img) {
         this.img = img;

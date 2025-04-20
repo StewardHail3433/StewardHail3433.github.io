@@ -10,19 +10,18 @@ export class UIInventory {
     private color: {red: number; green: number; blue: number; alpha?: number};
     private placement: {x: number; y: number; row: number; col: number};
     private inventory: Inventory;
-    private mouseDown = false;
     private canvas: HTMLCanvasElement;
     private scale: number = 1.0;
     private discription: UIComponentLabel;
     private slotPlacement: {x: number, y: number}[] = [];
-    private mouseItem: {index: number, x: number, y: number} = {index:-1,x:0,y:0};
+    private mouseItem: {inv: Inventory, index: number, x: number, y: number} = {inv: new Inventory(0), index:-1,x:0,y:0};
     private holdingItem: boolean;
 
     constructor(
         canvas: HTMLCanvasElement,
         inventory: Inventory,
         placement: {x: number; y: number; row: number; col: number}, 
-        color: {red: number; green: number; blue: number; alpha?: number} = { red: 255, green: 0, blue: 255, alpha: 1.0}, 
+        color: {red: number; green: number; blue: number; alpha?: number} = { red: 128, green: 0, blue: 128, alpha: 1.0}, 
         hidden: boolean
     ) {
         this.canvas = canvas;
@@ -55,78 +54,82 @@ export class UIInventory {
             slotY += Constants.TILE_SIZE;
         }
         this.holdingItem = false;
+        this.mouseItem.inv = inventory;
 
-        document.addEventListener("mousedown", this.mousDown.bind(this));
-        document.addEventListener("mousemove", this.mouseMove.bind(this));
+        // document.addEventListener("mousedown", this.mouseDown.bind(this));
+        // document.addEventListener("mousemove", this.mouseMove.bind(this));
         // document.addEventListener("mouseup", this.mouseUp.bind(this));
     }
 
-    private mousDown(event: MouseEvent)  {
+    public mouseDown(event: MouseEvent, mouseItem: {inv: Inventory, index: number, x: number, y: number, holdingItem: boolean})  {
         const rect = this.canvas.getBoundingClientRect(); 
         let x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2);// - offest
         let y = event.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
 
         for(let i = 0; i < this.inventory.getSize(); i++) {
-                if(this.holdingItem == false) {
-                    if(!this.inventory.getSlot(i).isEmpty() && isInside({x, y}, {...this.slotPlacement[i], width: Constants.TILE_SIZE, height: Constants.TILE_SIZE}, this.scale)) {
-                        this.mouseItem.index = i;
-                        this.mouseItem.x = (x - Constants.TILE_SIZE/2)/this.scale;
-                        this.mouseItem.y = (y - Constants.TILE_SIZE/2)/this.scale;
-                        this.holdingItem =  true;
-                        this.discription.hide();
-                    }
-                } else {
-                    // this.mouseItem.index = -1;
-                    // (this.inventory.getSlot(i).isEmpty() || this.inventory.getSlot(i).getItem().getId() == this.inventory.getSlot(this.mouseItem.index).getItem().getId()) && i != this.mouseItem.index
-                    if(isInside({x, y}, {...this.slotPlacement[i], width: Constants.TILE_SIZE, height: Constants.TILE_SIZE}, this.scale)) {
-                        if(i == this.mouseItem.index) {
-                            this.mouseItem.index = -1;
-                            this.holdingItem = false;
-                        } else if(this.inventory.getSlot(i).isEmpty()) {
-                            this.inventory.getSlot(i).setItem(this.inventory.getSlot(this.mouseItem.index).getItem(), this.inventory.getSlot(this.mouseItem.index).getItemCount());
-                            this.inventory.getSlot(this.mouseItem.index).removeItem();
-                            this.mouseItem.index = -1;
-                            this.holdingItem = false;
-                        } else if(this.inventory.getSlot(i).getItem().getId() == this.inventory.getSlot(this.mouseItem.index).getItem().getId()) {
-                            if(this.inventory.getSlot(i).getItemCount() != this.inventory.getSlot(i).getMaxItemCount()) {
-                                let amount = 0;
-                                amount = this.inventory.getSlot(i).addItems(this.inventory.getSlot(this.mouseItem.index).getItemCount());
-                                if(amount > 0) {
-                                    this.inventory.getSlot(this.mouseItem.index).setItem(this.inventory.getSlot(this.mouseItem.index).getItem(), amount);
-                                } else {
-                                    this.inventory.getSlot(this.mouseItem.index).removeItem();
-                                    this.mouseItem.index = -1;
-                                    this.holdingItem = false;
-                                    break;
-                                }
+            if(mouseItem.holdingItem == false) {
+                if(!this.inventory.getSlot(i).isEmpty() && isInside({x, y}, {...this.slotPlacement[i], width: Constants.TILE_SIZE, height: Constants.TILE_SIZE}, this.scale)) {
+                    mouseItem.index = i;
+                    mouseItem.x = (x - Constants.TILE_SIZE/2)/this.scale;
+                    mouseItem.y = (y - Constants.TILE_SIZE/2)/this.scale;
+                    mouseItem.inv = this.inventory;
+                    mouseItem.holdingItem =  true;
+                    this.discription.hide();
+                }
+            } else {
+                if(isInside({x, y}, {...this.slotPlacement[i], width: Constants.TILE_SIZE, height: Constants.TILE_SIZE}, this.scale)) {
+                    if(i == mouseItem.index && this.mouseItem.inv == this.inventory) {
+                        mouseItem.index = -1;
+                        mouseItem.holdingItem = false;
+                        mouseItem.inv = this.inventory;
+                    } else if(this.inventory.getSlot(i).isEmpty()) {
+                        this.inventory.getSlot(i).setItem(mouseItem.inv.getSlot(mouseItem.index).getItem(), mouseItem.inv.getSlot(mouseItem.index).getItemCount());
+                        mouseItem.inv.getSlot(mouseItem.index).removeItem();
+                        mouseItem.index = -1;
+                        mouseItem.holdingItem = false;
+                        mouseItem.inv = this.inventory;
+                    } else if(this.inventory.getSlot(i).getItem().getId() == mouseItem.inv.getSlot(mouseItem.index).getItem().getId()) {
+                        if(this.inventory.getSlot(i).getItemCount() != this.inventory.getSlot(i).getMaxItemCount()) {
+                            let amount = 0;
+                            amount = this.inventory.getSlot(i).addItems(mouseItem.inv.getSlot(mouseItem.index).getItemCount());
+                            if(amount > 0) {
+                                mouseItem.inv.getSlot(mouseItem.index).setItem(mouseItem.inv.getSlot(mouseItem.index).getItem(), amount);
+                                mouseItem.inv = this.inventory;
                             } else {
-                                let c = this.inventory.getSlot(this.mouseItem.index).getItemCount();
-                                let item = this.inventory.getSlot(this.mouseItem.index).getItem();
-
-                                this.inventory.getSlot(this.mouseItem.index).setItem(this.inventory.getSlot(i).getItem(), this.inventory.getSlot(i).getItemCount());
-                                this.inventory.getSlot(i).setItem(item, c);
+                                mouseItem.inv.getSlot(mouseItem.index).removeItem();
+                                mouseItem.index = -1;
+                                mouseItem.holdingItem = false;
+                                mouseItem.inv = this.inventory;
+                                break;
                             }
                         } else {
-                            let c = this.inventory.getSlot(this.mouseItem.index).getItemCount();
-                            let item = this.inventory.getSlot(this.mouseItem.index).getItem();
+                            let c = mouseItem.inv.getSlot(mouseItem.index).getItemCount();
+                            let item = mouseItem.inv.getSlot(mouseItem.index).getItem();
 
-                            this.inventory.getSlot(this.mouseItem.index).setItem(this.inventory.getSlot(i).getItem(), this.inventory.getSlot(i).getItemCount());
+                            mouseItem.inv.getSlot(mouseItem.index).setItem(this.inventory.getSlot(i).getItem(), this.inventory.getSlot(i).getItemCount());
                             this.inventory.getSlot(i).setItem(item, c);
+                            mouseItem.inv = this.inventory;
                         }
+                    } else {
+                        let c = mouseItem.inv.getSlot(mouseItem.index).getItemCount();
+                        let item = mouseItem.inv.getSlot(mouseItem.index).getItem();
+
+                        mouseItem.inv.getSlot(mouseItem.index).setItem(this.inventory.getSlot(i).getItem(), this.inventory.getSlot(i).getItemCount());
+                        this.inventory.getSlot(i).setItem(item, c);
+                        mouseItem.inv = this.inventory;
                     }
                 }
             }
+        }
+        this.mouseItem = mouseItem;
     }
 
 
-    private mouseMove(event: MouseEvent) {
+    public mouseMove(event: MouseEvent) {
         const rect = this.canvas.getBoundingClientRect(); 
         let x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2);// - offest
         let y = event.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
-        if(this.mouseItem.index != -1) {
-            this.mouseItem.x = (x - Constants.TILE_SIZE/2)/this.scale;
-            this.mouseItem.y = (y - Constants.TILE_SIZE/2)/this.scale;
-        } else {
+        if(this.mouseItem.index == -1) {
             for(let i = 0; i < this.inventory.getSize(); i++) {
                 if(!this.inventory.getSlot(i).isEmpty() && isInside({x, y}, {...this.slotPlacement[i], width: Constants.TILE_SIZE, height: Constants.TILE_SIZE}, this.scale)) {
                     this.discription.setHitbox({...this.discription.getHitbox(), x:x/this.scale, y:y/this.scale});
@@ -169,13 +172,16 @@ export class UIInventory {
     }
 
     public render(ctx: CanvasRenderingContext2D) {
+        if(this.hidden) {
+            return;
+        }
         const textSpacing = 2; 
         const fontSize = 10;
         for(let i = 0; i < this.inventory.getSize(); i++) {
-            ctx.fillStyle = "purple";
+            ctx.fillStyle = "rgba(" + this.color.red + ", " + this.color.green + ", " + this.color.blue + ", " + this.color.alpha + ")";
             ctx.fillRect(this.slotPlacement[i].x, this.slotPlacement[i].y, Constants.TILE_SIZE, Constants.TILE_SIZE);
             if(!this.inventory.getSlot(i).isEmpty()) {
-                if(this.mouseItem.index != i) {
+                if(this.mouseItem.index != i && this.mouseItem.inv == this.inventory) {
                     if(this.inventory.getSlot(i).getItem().getImage()) {
                         ctx.drawImage(this.inventory.getSlot(i).getItem().getImage()!, this.slotPlacement[i].x, this.slotPlacement[i].y);
                     } else {
@@ -202,7 +208,14 @@ export class UIInventory {
             Constants.TILE_SIZE+2
         )
 
-        if(this.mouseItem.index != -1) {
+        
+        this.discription.render(ctx);
+    }
+
+    renderMouseItem(ctx: CanvasRenderingContext2D) {
+        const textSpacing = 2; 
+        const fontSize = 10;
+        if(this.mouseItem.index != -1 && this.mouseItem.inv == this.inventory) {
             if(this.inventory.getSlot(this.mouseItem.index).getItem().getImage()) {
                 ctx.drawImage(this.inventory.getSlot(this.mouseItem.index).getItem().getImage()!, this.mouseItem.x, this.mouseItem.y);
             } else {
@@ -217,13 +230,39 @@ export class UIInventory {
             ctx.font = fontSize+ "px serif";
             ctx.fillText(this.inventory.getSlot(this.mouseItem.index).getItemCount().toString(), this.mouseItem.x + textSpacing, this.mouseItem.y + Constants.TILE_SIZE - textSpacing - ctx.lineWidth);
         }
-
-        
-        this.discription.render(ctx);
     }
 
     public updatePosition(scale: number) {
         this.scale = scale;
         this.discription.updatePosition(scale);
+    }
+
+    public getPlacementBox(): { x: number; y: number; width: number; height: number } {
+        return {
+            x: this.placement.x,
+            y: this.placement.y,
+            width: this.placement.col * Constants.TILE_SIZE + (this.placement.col - 1) * 2,
+            height: this.placement.row * Constants.TILE_SIZE + (this.placement.row - 1) * 2
+        };
+    }
+
+    public getInventory(): Inventory {
+        return this.inventory;
+    }
+
+    public hide() {
+        this.hidden = true;
+    }
+
+    public show() {
+        this.hidden = false;
+    }
+    
+    public ishidden() {
+        return this.hidden;
+    }
+
+    public update(mI: {inv: Inventory,index: number, x: number, y: number, holdingItem: boolean}) {
+        this.mouseItem = mI;
     }
 }

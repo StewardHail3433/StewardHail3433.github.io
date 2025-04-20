@@ -24,6 +24,7 @@ export class Player extends Entity {
 
 
     private hotbarUi: UIInventory;
+    private invUi: UIInventory;
 
     private movementButtons = [new UIComponentButton((document.getElementById("gameCanvas") as HTMLCanvasElement), {x:10, y:270, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "<-", undefined, 15, "center", {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
         this.keys[this.controls.left] = false;
@@ -44,7 +45,7 @@ export class Player extends Entity {
     })]
 
     private isArrows = false;
-    
+
     constructor(name: string, healthComponent: HealthComponent, hitboxComponent: HitboxComponent) {
         super(healthComponent, hitboxComponent);
         this.name = name;
@@ -60,8 +61,10 @@ export class Player extends Entity {
         this.inventory.getSlot(10).setItem(Items.STICK, 1);
         // this.inventory.getSlot(12).setItem(Items.SWORD);
 
-        this.hotbarUi = new UIInventory(document.getElementById("gameCanvas") as HTMLCanvasElement, this.inventory, {x: 0, y: 0, row: 2, col: 7}, undefined, false);
-        this.inventory.setSelecteSlot(0);
+        this.hotbarUi = new UIInventory(document.getElementById("gameCanvas") as HTMLCanvasElement, this.hotbar, {x: 0, y: 0, row: 1, col: 7}, { red: 128, green: 128, blue: 128, alpha: 1.0}, false);
+        this.invUi = new UIInventory(document.getElementById("gameCanvas") as HTMLCanvasElement, this.inventory, {x: 0, y: 18, row: 2, col: 7}, undefined, false);
+
+        this.hotbar.setSelecteSlot(0);
 
         document.addEventListener("keydown", (event) => this.keys[event.key] = true);
         document.addEventListener("keyup", (event) => this.keys[event.key] = false);
@@ -211,6 +214,15 @@ export class Player extends Entity {
             this.hotbar.setSelecteSlot(6);
         }
 
+        if(this.keys["e"]) {
+            if(this.invUi.ishidden()) {
+                this.invUi.show();
+            } else {
+                this.invUi.hide();
+            }
+            this.keys["e"] = false;
+        }
+
         if(this.touchMode) {
             for(var button of  this.movementButtons) {
                 button.show();
@@ -256,7 +268,7 @@ export class Player extends Entity {
     }
 
     public setToKeyboard() {
-        this.touchMode =false;
+        this.touchMode = false;
         document.addEventListener("keydown", (event) => this.keys[event.key] = true);
         document.addEventListener("keyup", (event) => this.keys[event.key] = false);
     }
@@ -364,8 +376,12 @@ export class Player extends Entity {
         }
     }
 
-    public getInventoryUI(): UIInventory {
+    public getHotbarUI(): UIInventory {
         return this.hotbarUi;
+    }
+
+    public getInventoryUI(): UIInventory {
+        return this.invUi;
     }
 
     public setImage(img: HTMLImageElement) {

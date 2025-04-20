@@ -1,4 +1,5 @@
 import { Camera } from "../camera/Camera.js";
+import { UIInventories } from "../components/ui/inventory/UIInventories.js";
 import { UIComponent } from "../components/ui/UIComponent.js";
 import { UIComponentButton } from "../components/ui/UIComponentButton.js";
 import { UIComponentImage } from "../components/ui/UIComponentImage.js";
@@ -27,6 +28,7 @@ export class UIHandler {
     private characterChooserRightButton: UIComponentButton;
     private characterChooserLabel: UIComponentImage;
     private characterIndex: number = 1;
+    private uiInventories: UIInventories;
 
     constructor(canvas: HTMLCanvasElement, player: Player, camera: Camera) {
         this.debug = new UIComponent({
@@ -139,10 +141,14 @@ export class UIHandler {
                 Constants.COMMAND_SYSTEM.outputArgsError("/debug (hide || show)");
             }
         });
+
+        this.uiInventories = new UIInventories(canvas);
+        this.uiInventories.addInventory(player.getInventoryUI())
+        this.uiInventories.addInventory(player.getHotbarUI())
     }
 
     public render(ctx: CanvasRenderingContext2D) {
-        this.player.getInventoryUI().render(ctx);
+        
         this.debug.render(ctx);
         this.debugInfo.render(ctx);
         this.debugTeleportToCenterButton.render(ctx);
@@ -160,6 +166,8 @@ export class UIHandler {
         this.characterChooserLabel.render(ctx);
         this.characterChooserLeftButton.render(ctx);
         this.characterChooserRightButton.render(ctx);
+        this.uiInventories.render(ctx);
+
 
     }
 
@@ -227,6 +235,7 @@ export class UIHandler {
             }
         }
         
+        this.uiInventories.update();
     }
 
     private handleKeyDown(event: KeyboardEvent) {
@@ -251,6 +260,7 @@ export class UIHandler {
 
     public updatePositions(scale: number) {
         this.player.getInventoryUI().updatePosition(scale);
+        this.player.getHotbarUI().updatePosition(scale);
         this.debug.updatePosition(scale);
         this.debugInfo.updatePosition(scale);
         this.debugTeleportToCenterButton.updatePosition(scale);
