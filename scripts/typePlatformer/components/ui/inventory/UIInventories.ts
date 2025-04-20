@@ -1,3 +1,4 @@
+import { Player } from "../../../entity/player/Player.js";
 import { Inventory } from "../../../inventory/Inventory.js";
 import { isInside } from "../../../utils/Collisions.js";
 import { Constants } from "../../../utils/Constants.js";
@@ -8,11 +9,14 @@ export class UIInventories {
     private mouseItem: {inv: Inventory,index: number, x: number, y: number, holdingItem: boolean} = {inv: new Inventory(0),index:-1,x:0,y:0,holdingItem: false};
     private canvas: HTMLCanvasElement;
     private scale: number = 1.0;
+    private player: Player;
 
     constructor(
         canvas: HTMLCanvasElement,
+        player: Player
     ) {
         this.canvas = canvas;
+        this.player = player;
         this.inventories = [];
         document.addEventListener("mousedown", this.mouseDown.bind(this));
         document.addEventListener("mousemove", this.mouseMove.bind(this));
@@ -25,10 +29,11 @@ export class UIInventories {
     
             for(let i = 0; i < this.inventories.length; i++) {
                 if(isInside({x, y}, {...this.inventories[i].getPlacementBox()}, this.scale) && !this.inventories[i].ishidden()) { 
-                    this.inventories[i].mouseDown(event, this.mouseItem)
-                    console.log("inside: ", this.inventories[i].getInventory().getSize())
-                    console.log("this.mouseItem: ", this.mouseItem)
-                    console.log("this.holdingItem: ", this.mouseItem.holdingItem)
+                    if(this.inventories[i].getInventory().getType() == "hotbar" && !this.player.isInventoryOpen()) {
+                        this.inventories[i].mouseDownSelction(event);
+                    } else {
+                        this.inventories[i].mouseDown(event, this.mouseItem)
+                    }
                     break;
                 }
             }

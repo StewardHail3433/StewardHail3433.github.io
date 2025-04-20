@@ -110,7 +110,7 @@ export class UIHandler {
                 Constants.COMMAND_SYSTEM.outputArgsError("/debug (hide || show)");
             }
         });
-        this.uiInventories = new UIInventories(canvas);
+        this.uiInventories = new UIInventories(canvas, player);
         this.uiInventories.addInventory(player.getInventoryUI());
         this.uiInventories.addInventory(player.getHotbarUI());
     }

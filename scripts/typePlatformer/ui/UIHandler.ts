@@ -142,7 +142,7 @@ export class UIHandler {
             }
         });
 
-        this.uiInventories = new UIInventories(canvas);
+        this.uiInventories = new UIInventories(canvas, player);
         this.uiInventories.addInventory(player.getInventoryUI())
         this.uiInventories.addInventory(player.getHotbarUI())
     }

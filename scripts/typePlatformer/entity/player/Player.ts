@@ -20,7 +20,7 @@ export class Player extends Entity {
     private img: HTMLImageElement;
 
     private inventory: Inventory =  new Inventory(14);
-    private hotbar: Inventory =  new Inventory(7);
+    private hotbar: Inventory =  new Inventory(7, "hotbar");
 
 
     private hotbarUi: UIInventory;
@@ -386,5 +386,9 @@ export class Player extends Entity {
 
     public setImage(img: HTMLImageElement) {
         this.img = img;
+    }
+
+    public isInventoryOpen(): boolean {
+        return !this.invUi.ishidden()
     }
 }

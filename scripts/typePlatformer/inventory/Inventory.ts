@@ -5,16 +5,25 @@ export class Inventory {
     private size: number;
     private inventory: Slot[] = [];
     private selectedSlotIndex: number = 0;
+    private type = "inventory";
 
-    constructor(size: number) {
+    constructor(size: number, type?: string) {
         this.size = size;
         for(let i = 0; i < this.size; i++) {
             this.inventory.push(new Slot(Items.EMPTY, 0));
+        }
+
+        if(type) {
+            this.type = type;
         }
     }
 
     public getSize(): number {
         return this.size;
+    }
+
+    public getType(): string {
+        return this.type;
     }
 
     public setSelecteSlot(index: number) {

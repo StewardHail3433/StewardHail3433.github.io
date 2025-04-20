@@ -12,7 +12,7 @@ export class Player extends Entity {
         this.touchMode = false;
         this.frame = 0;
         this.inventory = new Inventory(14);
-        this.hotbar = new Inventory(7);
+        this.hotbar = new Inventory(7, "hotbar");
         this.movementButtons = [new UIComponentButton(document.getElementById("gameCanvas"), { x: 10, y: 270, width: 40, height: 40 }, { red: 255, green: 255, blue: 255 }, false, "<-", undefined, 15, "center", { red: 200, green: 200, blue: 200 }, undefined, this.hitboxComponent.getColor(), undefined, () => {
                 this.keys[this.controls.left] = false;
             }, () => {
@@ -373,5 +373,8 @@ export class Player extends Entity {
     }
     setImage(img) {
         this.img = img;
+    }
+    isInventoryOpen() {
+        return !this.invUi.ishidden();
     }
 }

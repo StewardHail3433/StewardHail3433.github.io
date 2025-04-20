@@ -105,6 +105,17 @@ export class UIInventory {
         }
         this.mouseItem = mouseItem;
     }
+    mouseDownSelction(event) {
+        const rect = this.canvas.getBoundingClientRect();
+        let x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2); // - offest
+        let y = event.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
+        for (let i = 0; i < this.inventory.getSize(); i++) {
+            if (isInside({ x, y }, Object.assign(Object.assign({}, this.slotPlacement[i]), { width: Constants.TILE_SIZE, height: Constants.TILE_SIZE }), this.scale)) {
+                this.inventory.setSelecteSlot(i);
+                break;
+            }
+        }
+    }
     mouseMove(event) {
         const rect = this.canvas.getBoundingClientRect();
         let x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2); // - offest
@@ -178,9 +189,10 @@ export class UIInventory {
                 }
             }
         }
-        this.inventory.getSelecteSlotIndex();
-        ctx.strokeStyle = "yellow";
-        ctx.strokeRect((this.inventory.getSelecteSlotIndex() % this.placement.col) * Constants.TILE_SIZE + (this.inventory.getSelecteSlotIndex() % this.placement.col) * 2 + ctx.lineWidth, Math.floor(this.inventory.getSelecteSlotIndex() % this.placement.row) * Constants.TILE_SIZE + Math.floor(this.inventory.getSelecteSlotIndex() % this.placement.row) * 2 + ctx.lineWidth, Constants.TILE_SIZE + 2, Constants.TILE_SIZE + 2);
+        if (this.inventory.getType() == "hotbar") {
+            ctx.strokeStyle = "yellow";
+            ctx.strokeRect((this.inventory.getSelecteSlotIndex() % this.placement.col) * Constants.TILE_SIZE + (this.inventory.getSelecteSlotIndex() % this.placement.col) * 2 + ctx.lineWidth, Math.floor(this.inventory.getSelecteSlotIndex() % this.placement.row) * Constants.TILE_SIZE + Math.floor(this.inventory.getSelecteSlotIndex() % this.placement.row) * 2 + ctx.lineWidth, Constants.TILE_SIZE + 2, Constants.TILE_SIZE + 2);
+        }
         this.discription.render(ctx);
     }
     renderMouseItem(ctx) {
