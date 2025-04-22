@@ -49,56 +49,63 @@ export class UIComponentButton extends UIComponentLabel {
         this.shouldOnTrue = false;
         this.shouldOnFalse = true
         
-        document.addEventListener("mousedown", (event) => this.handleMouseDown(event));
-        document.addEventListener("mousemove", (event) => this.handleMouseMove(event));
-        document.addEventListener("mouseup", (event) => this.handleMouseUp(event));
+        // document.addEventListener("mousedown", (event) => this.handleMouseDown(event));
+        // document.addEventListener("mousemove", (event) => this.handleMouseMove(event));
+        // document.addEventListener("mouseup", (event) => this.handleMouseUp(event));
         document.addEventListener("touchstart", (event) => this.handleTouchStart(event));
         document.addEventListener("touchmove", (event) => this.handleTouchMove(event));
         document.addEventListener("touchend", (event) => this.handleTouchEnd(event));
     }
 
-    private handleMouseDown(event: MouseEvent) {
-        event.preventDefault();
-        const rect = this.canvas.getBoundingClientRect(); 
-        let x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2);// - offest
-        let y = event.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
-        var boxx: number = this.hitbox.x; 
-        var boxy: number = this.hitbox.y;
-        if(this.parentComponent && !this.parentComponent.isHidden()) {
-            boxx += this.parentComponent.getHitbox().x;
-            boxy += this.parentComponent.getHitbox().y;
-        }
-        if(isInside({x, y}, {...this.hitbox, x: boxx, y: boxy}, this.scale)) {
+    private handleMouseDown() {
+        if(Constants.INPUT_HANDLER.isMouseDown()) {
+            var boxx: number = this.hitbox.x; 
+            var boxy: number = this.hitbox.y;
+            if(this.parentComponent && !this.parentComponent.isHidden()) {
+                boxx += this.parentComponent.getHitbox().x;
+                boxy += this.parentComponent.getHitbox().y;
+            }
+            if(isInside(Constants.INPUT_HANDLER.getMousePosition(), {...this.hitbox, x: boxx, y: boxy}, this.scale)) {
                 if(!this.click) {
                     this.shouldOnTrue = true;
                 }
                 this.click = true;
-                this.color = this.clickColor
+                this.color = this.clickColor;
             }
+        }
     }
-    private handleMouseMove(event: MouseEvent) {
-        const rect = this.canvas.getBoundingClientRect(); 
-        let x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2);
-        let y = event.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
+    private handleMouseMove() {
         var boxx: number = this.hitbox.x; 
         var boxy: number = this.hitbox.y;
         if(this.parentComponent && !this.parentComponent.isHidden()) {
             boxx += this.parentComponent.getHitbox().x;
             boxy += this.parentComponent.getHitbox().y;
         }
-        if(isInside({x, y}, {...this.hitbox, x: boxx, y: boxy}, this.scale)) {
+        if(isInside(Constants.INPUT_HANDLER.getMousePosition(), {...this.hitbox, x: boxx, y: boxy}, this.scale)) {
+            if(!Constants.INPUT_HANDLER.isMouseDown()) {
                 this.color = this.hoverColor;
             } else {
-                this.color = this.defaultColor;
+                this.color = this.clickColor;
             }
+        } else {
+            if(this.click && this.activeTouches.size === 0) {
+                this.color = this.defaultColor;
+                this.click = false;
+                this.shouldOnTrue = false;
+                this.shouldOnFalse = true;
+            }
+            this.color = this.defaultColor;
+        }
     }
 
-    private handleMouseUp(event: MouseEvent) {
-        if(this.click && this.activeTouches.size === 0) {
-            this.color = this.defaultColor;
-            this.click = false;
-            this.shouldOnTrue = false;
-            this.shouldOnFalse = true;
+    private handleMouseUp() {
+        if(!Constants.INPUT_HANDLER.isMouseDown()) {
+            if(this.click && this.activeTouches.size === 0) {
+                this.color = this.defaultColor;
+                this.click = false;
+                this.shouldOnTrue = false;
+                this.shouldOnFalse = true;
+            }
         }
     }
 
@@ -176,6 +183,10 @@ export class UIComponentButton extends UIComponentLabel {
     } 
 
     public update(text: string = this.text) {
+        this.handleMouseDown();
+        this.handleMouseMove();
+        this.handleMouseUp();
+
         super.update(text);
 
         this.click = this.activeTouches.size > 0 || this.click;

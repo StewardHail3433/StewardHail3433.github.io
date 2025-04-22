@@ -1,7 +1,9 @@
+import { Camera } from "../../../camera/Camera.js";
 import { Player } from "../../../entity/player/Player.js";
 import { Inventory } from "../../../inventory/Inventory.js";
 import { isInside } from "../../../utils/Collisions.js";
 import { Constants } from "../../../utils/Constants.js";
+import { WorldHandler } from "../../../world/WorldHandler.js";
 import { UIInventory } from "./UIInventory.js";
 
 export class UIInventories {
@@ -10,50 +12,55 @@ export class UIInventories {
     private canvas: HTMLCanvasElement;
     private scale: number = 1.0;
     private player: Player;
+    private drop = false;
+    private worldH: WorldHandler;
+    private camera: Camera;
 
     constructor(
         canvas: HTMLCanvasElement,
-        player: Player
+        player: Player,
+        camera: Camera,
+        worldH: WorldHandler
     ) {
         this.canvas = canvas;
         this.player = player;
+        this.camera = camera;
         this.inventories = [];
-        document.addEventListener("mousedown", this.mouseDown.bind(this));
-        document.addEventListener("mousemove", this.mouseMove.bind(this));
+        this.worldH =worldH;
+        document.addEventListener("keydown", (event) => {
+            if(event.key === "q") {
+                this.drop = true;
+            }
+        });
     }
 
-    private mouseDown(event: MouseEvent)  {
-            const rect = this.canvas.getBoundingClientRect(); 
-            let x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2);// - offest
-            let y = event.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
+    private mouseDown()  {
     
+        if(Constants.INPUT_HANDLER.isMouseDown() && Constants.INPUT_HANDLER.wasJustClicked() ) {
             for(let i = 0; i < this.inventories.length; i++) {
-                if(isInside({x, y}, {...this.inventories[i].getPlacementBox()}, this.scale) && !this.inventories[i].ishidden()) { 
+                if(isInside(Constants.INPUT_HANDLER.getMousePosition(), {...this.inventories[i].getPlacementBox()}, this.scale) && !this.inventories[i].ishidden()) { 
                     if(this.inventories[i].getInventory().getType() == "hotbar" && !this.player.isInventoryOpen()) {
-                        this.inventories[i].mouseDownSelction(event);
+                        this.inventories[i].mouseDownSelction();
                     } else {
-                        this.inventories[i].mouseDown(event, this.mouseItem)
+                        this.inventories[i].mouseDown(this.mouseItem)
                     }
-                    break;
+                    return;
                 }
             }
         }
+    }
 
-    private mouseMove(event: MouseEvent) {
-        const rect = this.canvas.getBoundingClientRect(); 
-        let x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2);// - offest
-        let y = event.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
+    private mouseMove() {
         if(this.mouseItem.index != -1) {
-            this.mouseItem.x = (x - Constants.TILE_SIZE/2)/this.scale;
-            this.mouseItem.y = (y - Constants.TILE_SIZE/2)/this.scale;
+            this.mouseItem.x = (Constants.INPUT_HANDLER.getMousePosition().x - Constants.TILE_SIZE/2)/this.scale;
+            this.mouseItem.y = (Constants.INPUT_HANDLER.getMousePosition().y - Constants.TILE_SIZE/2)/this.scale;
         }
 
         for(let i = 0; i < this.inventories.length; i++) {
             if(this.inventories[i].getInventory() == this.mouseItem.inv) { 
-                this.inventories[i].mouseMove(event);
+                this.inventories[i].mouseMove();
             }
         }
-        
     }
 
     public addInventory(inv: UIInventory) {
@@ -71,6 +78,8 @@ export class UIInventories {
     }
 
     public update() {
+        this.mouseDown();
+        this.mouseMove()
         for(let i = 0; i < this.inventories.length; i++) {
             if(this.inventories[i].ishidden() && this.mouseItem.inv == this.inventories[i].getInventory() && this.mouseItem.holdingItem) {
                 this.mouseItem.index = -1;
@@ -79,6 +88,30 @@ export class UIInventories {
                 break;
             }
         }
+
+        if(this.drop && this.mouseItem.holdingItem) {
+            this.worldH.dropItem(this.mouseItem.inv.getSlot(this.mouseItem.index), {x:Constants.INPUT_HANDLER.getMousePosition().x/this.scale + this.camera.getView().x, y:Constants.INPUT_HANDLER.getMousePosition().y/this.scale+ this.camera.getView().y} );
+
+            this.drop = false;
+            this.mouseItem.holdingItem = false;
+            this.mouseItem.index = -1;
+        } else if (this.drop) {
+            for(let i = 0; i < this.inventories.length; i++) {
+                if(this.inventories[i].getInventory().getType() == "hotbar") {
+                    if(!this.inventories[i].getInventory().getSelecteSlot().isEmpty()) {
+                        this.worldH.dropItem(this.inventories[i].getInventory().getSelecteSlot(), {x:Constants.INPUT_HANDLER.getMousePosition().x/this.scale + this.camera.getView().x, y:Constants.INPUT_HANDLER.getMousePosition().y/this.scale+ this.camera.getView().y} );
+                    }
+                    break;
+                }
+            }
+            this.drop = false;
+        }
+
+        
+    }
+
+    public updateScale(scale: number) {
+        this.scale = scale;
     }
     
 }

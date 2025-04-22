@@ -10,10 +10,10 @@ import { Items } from "../../item/Items.js";
 import { Constants } from "../../utils/Constants.js";
 import { ImageLoader } from "../../utils/ImageLoader.js";
 import { Entity } from "../Entity.js";
+import { Slot } from "../../inventory/Slot.js";
 
 export class Player extends Entity {
     private name: string;
-    private keys: { [key: string]: boolean } = {}
     private controls: any;
     private touchMode = false;
     private frame = 0;
@@ -27,21 +27,21 @@ export class Player extends Entity {
     private invUi: UIInventory;
 
     private movementButtons = [new UIComponentButton((document.getElementById("gameCanvas") as HTMLCanvasElement), {x:10, y:270, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "<-", undefined, 15, "center", {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
-        this.keys[this.controls.left] = false;
+        Constants.INPUT_HANDLER.getKeys()[this.controls.left] = false;
     }, () => {
-        this.keys[this.controls.left] = true;
+        Constants.INPUT_HANDLER.getKeys()[this.controls.left] = true;
     }), new UIComponentButton((document.getElementById("gameCanvas") as HTMLCanvasElement), {x:55, y:270, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "v", undefined, 15, "center", {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
-        this.keys[this.controls.down] = false;
+        Constants.INPUT_HANDLER.getKeys()[this.controls.down] = false;
     }, () => {
-        this.keys[this.controls.down] = true;
+        Constants.INPUT_HANDLER.getKeys()[this.controls.down] = true;
     }), new UIComponentButton((document.getElementById("gameCanvas") as HTMLCanvasElement), {x:100, y:270, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "->", undefined, 15, "center", {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
-        this.keys[this.controls.right] = false;
+        Constants.INPUT_HANDLER.getKeys()[this.controls.right] = false;
     },() => {
-        this.keys[this.controls.right] = true;
+        Constants.INPUT_HANDLER.getKeys()[this.controls.right] = true;
     }), new UIComponentButton((document.getElementById("gameCanvas") as HTMLCanvasElement), {x:55, y:225, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "^", undefined, 15, "center", {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
-        this.keys[this.controls.up] = false;
+        Constants.INPUT_HANDLER.getKeys()[this.controls.up] = false;
     }, () => {
-        this.keys[this.controls.up] = true;
+        Constants.INPUT_HANDLER.getKeys()[this.controls.up] = true;
     })]
 
     private isArrows = false;
@@ -66,8 +66,6 @@ export class Player extends Entity {
 
         this.hotbar.setSelecteSlot(0);
 
-        document.addEventListener("keydown", (event) => this.keys[event.key] = true);
-        document.addEventListener("keyup", (event) => this.keys[event.key] = false);
         this.setToTouch();
 
         this.img = ImageLoader.getImages()[1];
@@ -83,68 +81,9 @@ export class Player extends Entity {
         });
 
         Constants.COMMAND_SYSTEM.addCommand("give", (args:string[]) => {
+            let slot = new Slot(Items.getItemById(args[1]), parseInt(args[2]));
             if(args[0] == "self") {
-                const item = Items.getItemById(args[1]);
-                let amount = 0;
-                let emptyIndex = -1;
-                if(item.getId() != "empty") {
-                    console.log(item.getId())
-                    for(let i = 0; i < this.inventory.getSize(); i++) {
-                        if(this.inventory.getSlot(i).isEmpty() && emptyIndex == -1) emptyIndex = i;
-                        if(this.inventory.getSlot(i).getItem().getId() == item.getId()) {
-                            console.log("AWsd");
-                            if(amount === 0) {
-                                if(parseInt(args[2]) > 0) {
-                                    amount = this.inventory.getSlot(i).addItems(parseInt(args[2]));
-                                } else {
-                                    return;
-                                }
-                                if(amount === 0) {
-                                    return;
-                                }
-                            } else {
-                                amount = this.inventory.getSlot(i).addItems(amount);
-                                if(amount === 0) {
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                    
-                    if(emptyIndex != -1) {
-                        for(let i = emptyIndex; i < this.inventory.getSize(); i++) {
-                            if(this.inventory.getSlot(i).isEmpty()) {
-                                if(amount === 0) {
-                                    if(parseInt(args[2]) > 0) {
-                                        if(parseInt(args[2]) > item.getMaxStackAmount()) {
-                                            this.inventory.getSlot(i).setItem(item, item.getMaxStackAmount());
-                                            amount = parseInt(args[2]) - item.getMaxStackAmount();
-                                        } else {
-                                            this.inventory.getSlot(i).setItem(item, parseInt(args[2]));
-                                            amount = 0;
-                                        }
-                                    } else {
-                                        return;
-                                    }
-                                    if(amount === 0) {
-                                        return;
-                                    }
-                                } else {
-                                    if(amount > item.getMaxStackAmount()) {
-                                        this.inventory.getSlot(i).setItem(item, item.getMaxStackAmount());
-                                        amount = amount - item.getMaxStackAmount();
-                                    } else {
-                                        this.inventory.getSlot(i).setItem(item, amount);
-                                        amount = 0;
-                                    }
-                                    if(amount === 0) {
-                                        return;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                slot = Inventory.transferItems(this.hotbar, slot);
             }
         });
 
@@ -175,52 +114,52 @@ export class Player extends Entity {
 
     public update(dt: number): void {
         this.velocity = {x:0, y:0};
-        if (this.keys[this.controls.up]) {
+        if (Constants.INPUT_HANDLER.getKeys()[this.controls.up]) {
             this.direction = "up";
             this.velocity.y = -this.speed;
         } 
-        if (this.keys[this.controls.down]) {
+        if (Constants.INPUT_HANDLER.getKeys()[this.controls.down]) {
             this.direction = "down";
             this.velocity.y = this.speed;
         }
-        if (this.keys[this.controls.left]) {
+        if (Constants.INPUT_HANDLER.getKeys()[this.controls.left]) {
             this.direction = "left";
             this.velocity.x = -this.speed;
         }
-        if (this.keys[this.controls.right]) {
+        if (Constants.INPUT_HANDLER.getKeys()[this.controls.right]) {
             this.direction = "right";
             this.velocity.x = this.speed;
         }
-        if(this.keys[this.controls.debug]) {
+        if(Constants.INPUT_HANDLER.getKeys()[this.controls.debug]) {
             this.hitboxComponent.setHitbox({
                 ...this.hitboxComponent.getHitbox(), //copy existing values
                 x: 200
             });
         }
 
-        if(this.keys["1"]) {
+        if(Constants.INPUT_HANDLER.getKeys()["1"]) {
             this.hotbar.setSelecteSlot(0);
-        } else if(this.keys["2"]) {
+        } else if(Constants.INPUT_HANDLER.getKeys()["2"]) {
             this.hotbar.setSelecteSlot(1);
-        } else if(this.keys["3"]) {
+        } else if(Constants.INPUT_HANDLER.getKeys()["3"]) {
             this.hotbar.setSelecteSlot(2);
-        } else if(this.keys["4"]) {
+        } else if(Constants.INPUT_HANDLER.getKeys()["4"]) {
             this.hotbar.setSelecteSlot(3);
-        } else if(this.keys["5"]) {
+        } else if(Constants.INPUT_HANDLER.getKeys()["5"]) {
             this.hotbar.setSelecteSlot(4);
-        } else if(this.keys["6"]) {
+        } else if(Constants.INPUT_HANDLER.getKeys()["6"]) {
             this.hotbar.setSelecteSlot(5);
-        } else if(this.keys["7"]) {
+        } else if(Constants.INPUT_HANDLER.getKeys()["7"]) {
             this.hotbar.setSelecteSlot(6);
         }
 
-        if(this.keys["e"]) {
+        if(Constants.INPUT_HANDLER.getKeys()["e"]) {
             if(this.invUi.ishidden()) {
                 this.invUi.show();
             } else {
                 this.invUi.hide();
             }
-            this.keys["e"] = false;
+            Constants.INPUT_HANDLER.getKeys()["e"] = false;
         }
 
         if(this.touchMode) {
@@ -234,7 +173,7 @@ export class Player extends Entity {
         }
         this.frame += 1;
 
-        if(this.keys["p"]) {
+        if(Constants.INPUT_HANDLER.getKeys()["p"]) {
             if(this.isArrows) {
                 this.setControls();
                 this.isArrows = false;
@@ -242,7 +181,7 @@ export class Player extends Entity {
                 this.setControls({...this.controls, up: "ArrowUp", down: "ArrowDown", left: "ArrowLeft", right: "ArrowRight"});
                 this.isArrows = true;
             }
-            this.keys["p"] = false;
+            Constants.INPUT_HANDLER.getKeys()["p"] = false;
         }
 
         super.update(dt);
@@ -269,12 +208,8 @@ export class Player extends Entity {
 
     public setToKeyboard() {
         this.touchMode = false;
-        document.addEventListener("keydown", (event) => this.keys[event.key] = true);
-        document.addEventListener("keyup", (event) => this.keys[event.key] = false);
     }
     public setToTouch() {
-        document.removeEventListener("keydown", () =>{});
-        document.removeEventListener("keyup", () =>{});
         this.touchMode = true;
     }
 

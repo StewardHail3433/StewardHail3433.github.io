@@ -14,7 +14,7 @@ class Game {
         this.socket = null;
         this.lastTime = 0;
         this.isFullscreen = false;
-        this.canvas = document.getElementById("gameCanvas");
+        this.canvas = document.getElementById(Constants.CANVAS_ID);
         this.ctx = this.canvas.getContext("2d");
         this.canvas.width = Constants.CANVAS_WIDTH * window.devicePixelRatio * 3.25;
         this.canvas.height = Constants.CANVAS_HEIGHT * window.devicePixelRatio * 3.25;
@@ -28,8 +28,8 @@ class Game {
         }));
         this.camera = new Camera({ x: 100, y: 100, width: Constants.CANVAS_WIDTH, height: Constants.CANVAS_HEIGHT, zoom: 1.0 });
         this.camera.trackEntity(this.player);
-        this.uiHandler = new UIHandler(this.canvas, this.player, this.camera);
         this.worldHandler = new WorldHandler();
+        this.uiHandler = new UIHandler(this.canvas, this.player, this.camera, this.worldHandler);
         this.setupEventListeners();
         requestAnimationFrame(this.gameLoop.bind(this));
         // Resize on window load and when resized
@@ -107,6 +107,7 @@ class Game {
             this.canvas.style.left = `${(screenWidth - baseWidth * scale) / 2}px`;
             this.canvas.style.top = `${(screenHeight - baseHeight * scale) / 2}px`;
             this.uiHandler.updatePositions(scale);
+            Constants.INPUT_HANDLER.updateScale(scale);
         }
         else {
             this.canvas.style.position = "static";
@@ -115,6 +116,7 @@ class Game {
             this.canvas.style.left = `${(screenWidth - baseWidth) / 2}px`;
             this.canvas.style.top = `${(screenHeight - baseHeight) / 2}px`;
             this.uiHandler.updatePositions(1);
+            Constants.INPUT_HANDLER.updateScale(1);
         }
     }
     setupEventListeners() {
@@ -240,12 +242,15 @@ class Game {
             this.worldHandler.updateServer(this.camera, this.socket);
         }
         else {
-            this.worldHandler.update(this.camera);
+            this.worldHandler.update(this.camera, this.player, dt);
         }
         if (this.player.isMoving() && this.isMultiplayer && this.socket) {
             this.socket.emit("updatePlayer", this.player.serialize());
         }
         this.uiHandler.update();
+        if (Constants.INPUT_HANDLER.wasJustClicked()) {
+            Constants.INPUT_HANDLER.setJustClicked(false);
+        }
     }
     render() {
         this.ctx.clearRect(0, 0, Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
@@ -255,8 +260,10 @@ class Game {
         this.ctx.clearRect(0, 0, Constants.CANVAS_WIDTH / this.camera.getView().zoom, Constants.CANVAS_HEIGHT / this.camera.getView().zoom);
         this.worldHandler.renderBackground(this.ctx, this.camera);
         this.worldHandler.renderLayer(0, this.ctx, this.camera);
+        this.worldHandler.renderDropItems(this.ctx, this.camera);
         this.player.render(this.ctx);
         this.worldHandler.renderLayer(1, this.ctx, this.camera);
+        this.worldHandler.renderMouse(this.ctx, this.camera);
         if (this.isMultiplayer) {
             for (const id in this.players) {
                 this.players[id].render(this.ctx);

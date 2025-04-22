@@ -28,10 +28,10 @@ export class UIComponentTextbox extends UIComponentLabel{
         this.placeholder = placeHolder
         this.text = "";
         this.boxFocus = false;
-        this.handleMouseDown = this.handleMouseDown.bind(this); // bind this class to the methods
+        // this.handleMouseDown = this.handleMouseDown.bind(this); // bind this class to the methods
         this.handleTouchStart = this.handleTouchStart.bind(this)
         this.handleKeyDown = this.handleKeyDown.bind(this);
-        document.addEventListener("mousedown", this.handleMouseDown);
+        // document.addEventListener("mousedown", this.handleMouseDown);
         document.addEventListener("touchstart", this.handleTouchStart);
         this.onSubmit = onSubmit;
     }
@@ -56,25 +56,23 @@ export class UIComponentTextbox extends UIComponentLabel{
         }
     }
 
-    private handleMouseDown(event: MouseEvent) {
-        event.preventDefault();
-        const rect = this.canvas.getBoundingClientRect(); 
-        let x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2);
-        let y = event.clientY - rect.top- ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
-        var boxx: number = this.hitbox.x; 
-        var boxy: number = this.hitbox.y;
-        if(this.parentComponent && !this.parentComponent.isHidden()) {
-            boxx += this.parentComponent.getHitbox().x;
-            boxy += this.parentComponent.getHitbox().y;
-        }
-        if(isInside({x, y}, {...this.hitbox, x: boxx, y: boxy}, this.scale)) {
-            this.startTextElement();
-        } else {
-            this.boxFocus = false;
-            if (!this.text.trim()) {
-                this.text = this.placeholder;
+    private handleMouseDown() {
+        if(Constants.INPUT_HANDLER.isMouseDown()) {
+            var boxx: number = this.hitbox.x; 
+            var boxy: number = this.hitbox.y;
+            if(this.parentComponent && !this.parentComponent.isHidden()) {
+                boxx += this.parentComponent.getHitbox().x;
+                boxy += this.parentComponent.getHitbox().y;
             }
-            this.removeTextElement();
+            if(isInside(Constants.INPUT_HANDLER.getMousePosition(), {...this.hitbox, x: boxx, y: boxy}, this.scale)) {
+                this.startTextElement();
+            } else {
+                this.boxFocus = false;
+                if (!this.text.trim()) {
+                    this.text = this.placeholder;
+                }
+                this.removeTextElement();
+            }
         }
     }
 
@@ -152,7 +150,8 @@ export class UIComponentTextbox extends UIComponentLabel{
         this.inputElement.autocomplete = "off";
         this.inputElement.placeholder = this.placeholder;
         this.inputElement.value = this.text; 
-        this.inputElement.id = "textboxCanvas"
+        this.inputElement.id = "textboxCanvas";
+        this.inputElement.focus();
         document.getElementById("gameDiv")?.appendChild(this.inputElement);
         
         this.inputElement.focus();
@@ -175,6 +174,11 @@ export class UIComponentTextbox extends UIComponentLabel{
             document.getElementById("gameDiv")?.removeChild(this.inputElement);
             this.inputElement = undefined;
         }
+    }
+
+    public update(text?: string): void {
+        super.update(text);
+        this.handleMouseDown();
     }
 
 }

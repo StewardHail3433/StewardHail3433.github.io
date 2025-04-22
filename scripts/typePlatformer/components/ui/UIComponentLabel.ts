@@ -15,7 +15,8 @@ export class UIComponentLabel extends UIComponent {
         textColor: {red: number; green: number; blue: number; alpha?: number} = { red: 0, green: 0, blue: 0, alpha: 1.0 }, 
         fontSize: number = 8,
         textAlign: CanvasTextAlign = "left",
-        lockTextHeight = false) {
+        lockTextHeight = false) 
+    {
         super(hitbox, color, hidden);
         this.text = text;
         this.textColor = textColor;

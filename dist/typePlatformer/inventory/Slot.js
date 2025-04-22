@@ -9,12 +9,13 @@ export class Slot {
             else {
                 this.count = 1;
             }
+            this.empty = false;
         }
         else {
             this.item = Items.EMPTY;
             this.count = 0;
+            this.empty = true;
         }
-        this.empty = true;
     }
     setItem(item, count) {
         this.item = item;

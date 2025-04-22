@@ -1,11 +1,17 @@
 import { HitboxComponent } from "../components/HitboxComponent.js";
+import { DroppedSlot } from "../inventory/DroppedSlot.js";
+import { Inventory } from "../inventory/Inventory.js";
+import { Slot } from "../inventory/Slot.js";
+import { Items } from "../item/Items.js";
 import { containBox } from "../utils/Collisions.js";
 import { Constants } from "../utils/Constants.js";
+import { ImageLoader } from "../utils/ImageLoader.js";
 import { Tile } from "./Tile.js";
 export class WorldHandler {
     constructor() {
         this.img = new Image();
         this.showChunks = false;
+        this.droppedItems = [];
         this.worldMap = new Map();
         this.img.src = "./resources/typePlatformer/images/tiles/background/grass.png";
         Constants.COMMAND_SYSTEM.addCommand("chunkOutline", (args) => {
@@ -24,6 +30,7 @@ export class WorldHandler {
         Constants.COMMAND_SYSTEM.addCommand("worldReset", (args) => {
             this.worldMap = new Map();
         });
+        this.droppedItems.push(new DroppedSlot(new HitboxComponent({ x: 0, y: 0, width: Constants.TILE_SIZE / 2, height: Constants.TILE_SIZE / 2 }), new Slot(Items.PICKAXE, 1)));
     }
     renderBackground(ctx, camera) {
         ctx.drawImage(this.img, camera.getView().x - ((camera.getView().x + camera.getView().width / 2) % (Constants.TILE_SIZE * 2)) - 32, camera.getView().y - ((camera.getView().y + camera.getView().height / 2) % (Constants.TILE_SIZE * 2)) - 32);
@@ -51,7 +58,22 @@ export class WorldHandler {
             }
         }
     }
-    update(camera) {
+    renderDropItems(ctx, camera) {
+        for (let i = 0; i < this.droppedItems.length; i++) {
+            if (containBox(camera.getView(), this.droppedItems[i].getHitboxComponent().getHitbox())) {
+                this.droppedItems[i].render(ctx);
+            }
+        }
+    }
+    renderMouse(ctx, camera) {
+        ImageLoader.getImages().forEach(img => {
+            var _a;
+            if (img.src.substring((_a = img.src.match("resources")) === null || _a === void 0 ? void 0 : _a.index) === "resources/typePlatformer/images/tiles/mouseSelction.png") {
+                ctx.drawImage(img, Constants.INPUT_HANDLER.getMouseWorldPosition(camera).x * Constants.TILE_SIZE - 1, Constants.INPUT_HANDLER.getMouseWorldPosition(camera).y * Constants.TILE_SIZE - 1);
+            }
+        });
+    }
+    update(camera, player, dt) {
         let x = Math.floor((camera.getView().x + camera.getView().width / 2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
         let y = Math.floor((camera.getView().y + camera.getView().height / 2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
         let cx = x - Constants.RENDER_DISTANCE + 1;
@@ -61,6 +83,21 @@ export class WorldHandler {
                 if (!this.worldMap.has(i + ", " + j)) {
                     this.generateChunk(i, j, 1);
                 }
+            }
+        }
+        for (let i = 0; i < this.droppedItems.length; i++) {
+            let slot = this.droppedItems[i].getSlot();
+            if (containBox(player.getHitboxComponent().getHitbox(), this.droppedItems[i].getHitboxComponent().getHitbox())) {
+                const playerHotBar = player.getHotbarUI().getInventory();
+                const playerInv = player.getInventoryUI().getInventory();
+                slot = Inventory.transferItems(playerHotBar, slot);
+                if (slot.getItemCount() != 0) {
+                    slot = Inventory.transferItems(playerInv, slot);
+                }
+                this.droppedItems[i].setSlot(slot);
+            }
+            if (slot.getItemCount() != 0) {
+                this.droppedItems[i].update(dt, { x: player.getHitboxComponent().getHitbox().x + player.getHitboxComponent().getHitbox().width / 2, y: player.getHitboxComponent().getHitbox().y + player.getHitboxComponent().getHitbox().height / 2 });
             }
         }
     }
@@ -137,6 +174,10 @@ export class WorldHandler {
         chunks.forEach((value, key) => {
             this.worldMap.set(key, value);
         });
+    }
+    dropItem(itemSlot, position) {
+        this.droppedItems.push(new DroppedSlot(new HitboxComponent(Object.assign(Object.assign({}, position), { width: Constants.TILE_SIZE / 1.5, height: Constants.TILE_SIZE / 1.5 })), new Slot(itemSlot.getItem(), itemSlot.getItemCount())));
+        itemSlot.removeItem();
     }
     saveWorld() {
     }

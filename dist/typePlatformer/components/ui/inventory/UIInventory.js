@@ -6,7 +6,7 @@ export class UIInventory {
     constructor(canvas, inventory, placement, color = { red: 128, green: 0, blue: 128, alpha: 1.0 }, hidden) {
         this.scale = 1.0;
         this.slotPlacement = [];
-        this.mouseItem = { inv: new Inventory(0), index: -1, x: 0, y: 0 };
+        this.mouseItem = { inv: new Inventory(0), index: -1, x: 0, y: 0, holdingItem: false };
         this.canvas = canvas;
         this.inventory = inventory;
         this.placement = placement;
@@ -40,26 +40,26 @@ export class UIInventory {
         // document.addEventListener("mousemove", this.mouseMove.bind(this));
         // document.addEventListener("mouseup", this.mouseUp.bind(this));
     }
-    mouseDown(event, mouseItem) {
-        const rect = this.canvas.getBoundingClientRect();
-        let x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2); // - offest
-        let y = event.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
+    mouseDown(mouseItem) {
         for (let i = 0; i < this.inventory.getSize(); i++) {
             if (mouseItem.holdingItem == false) {
-                if (!this.inventory.getSlot(i).isEmpty() && isInside({ x, y }, Object.assign(Object.assign({}, this.slotPlacement[i]), { width: Constants.TILE_SIZE, height: Constants.TILE_SIZE }), this.scale)) {
+                // if(!this.inventory.getSlot(i).isEmpty()) console.log(Constants.INPUT_HANDLER.getMousePosition(), this.slotPlacement[i])
+                if (!this.inventory.getSlot(i).isEmpty() && isInside(Constants.INPUT_HANDLER.getMousePosition(), Object.assign(Object.assign({}, this.slotPlacement[i]), { width: Constants.TILE_SIZE, height: Constants.TILE_SIZE }), this.scale)) {
                     mouseItem.index = i;
-                    mouseItem.x = (x - Constants.TILE_SIZE / 2) / this.scale;
-                    mouseItem.y = (y - Constants.TILE_SIZE / 2) / this.scale;
+                    mouseItem.x = (Constants.INPUT_HANDLER.getMousePosition().x - Constants.TILE_SIZE / 2) / this.scale;
+                    mouseItem.y = (Constants.INPUT_HANDLER.getMousePosition().y - Constants.TILE_SIZE / 2) / this.scale;
                     mouseItem.inv = this.inventory;
                     mouseItem.holdingItem = true;
+                    this.holdingItem = true;
                     this.discription.hide();
                 }
             }
             else {
-                if (isInside({ x, y }, Object.assign(Object.assign({}, this.slotPlacement[i]), { width: Constants.TILE_SIZE, height: Constants.TILE_SIZE }), this.scale)) {
+                if (isInside(Constants.INPUT_HANDLER.getMousePosition(), Object.assign(Object.assign({}, this.slotPlacement[i]), { width: Constants.TILE_SIZE, height: Constants.TILE_SIZE }), this.scale)) {
                     if (i == mouseItem.index && this.mouseItem.inv == this.inventory) {
                         mouseItem.index = -1;
                         mouseItem.holdingItem = false;
+                        this.holdingItem = false;
                         mouseItem.inv = this.inventory;
                     }
                     else if (this.inventory.getSlot(i).isEmpty()) {
@@ -67,6 +67,7 @@ export class UIInventory {
                         mouseItem.inv.getSlot(mouseItem.index).removeItem();
                         mouseItem.index = -1;
                         mouseItem.holdingItem = false;
+                        this.holdingItem = false;
                         mouseItem.inv = this.inventory;
                     }
                     else if (this.inventory.getSlot(i).getItem().getId() == mouseItem.inv.getSlot(mouseItem.index).getItem().getId()) {
@@ -81,6 +82,7 @@ export class UIInventory {
                                 mouseItem.inv.getSlot(mouseItem.index).removeItem();
                                 mouseItem.index = -1;
                                 mouseItem.holdingItem = false;
+                                this.holdingItem = false;
                                 mouseItem.inv = this.inventory;
                                 break;
                             }
@@ -105,25 +107,19 @@ export class UIInventory {
         }
         this.mouseItem = mouseItem;
     }
-    mouseDownSelction(event) {
-        const rect = this.canvas.getBoundingClientRect();
-        let x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2); // - offest
-        let y = event.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
+    mouseDownSelction() {
         for (let i = 0; i < this.inventory.getSize(); i++) {
-            if (isInside({ x, y }, Object.assign(Object.assign({}, this.slotPlacement[i]), { width: Constants.TILE_SIZE, height: Constants.TILE_SIZE }), this.scale)) {
+            if (isInside(Constants.INPUT_HANDLER.getMousePosition(), Object.assign(Object.assign({}, this.slotPlacement[i]), { width: Constants.TILE_SIZE, height: Constants.TILE_SIZE }), this.scale)) {
                 this.inventory.setSelecteSlot(i);
                 break;
             }
         }
     }
-    mouseMove(event) {
-        const rect = this.canvas.getBoundingClientRect();
-        let x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2); // - offest
-        let y = event.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
+    mouseMove() {
         if (this.mouseItem.index == -1) {
             for (let i = 0; i < this.inventory.getSize(); i++) {
-                if (!this.inventory.getSlot(i).isEmpty() && isInside({ x, y }, Object.assign(Object.assign({}, this.slotPlacement[i]), { width: Constants.TILE_SIZE, height: Constants.TILE_SIZE }), this.scale)) {
-                    this.discription.setHitbox(Object.assign(Object.assign({}, this.discription.getHitbox()), { x: x / this.scale, y: y / this.scale }));
+                if (!this.inventory.getSlot(i).isEmpty() && isInside(Constants.INPUT_HANDLER.getMousePosition(), Object.assign(Object.assign({}, this.slotPlacement[i]), { width: Constants.TILE_SIZE, height: Constants.TILE_SIZE }), this.scale)) {
+                    this.discription.setHitbox(Object.assign(Object.assign({}, this.discription.getHitbox()), { x: Constants.INPUT_HANDLER.getMousePosition().x / this.scale, y: Constants.INPUT_HANDLER.getMousePosition().y / this.scale }));
                     this.discription.update(this.inventory.getSlot(i).getItem().getDiscription());
                     this.discription.show();
                     break;
@@ -134,44 +130,18 @@ export class UIInventory {
             }
         }
     }
-    mouseUp(event) {
-        const rect = this.canvas.getBoundingClientRect();
-        let x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2); // - offest
-        let y = event.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
-        if (this.mouseItem.index != -1) {
-            for (let i = 0; i < this.inventory.getSize(); i++) {
-                if ((this.inventory.getSlot(i).isEmpty() || this.inventory.getSlot(i).getItem().getId() == this.inventory.getSlot(this.mouseItem.index).getItem().getId()) && isInside({ x, y }, Object.assign(Object.assign({}, this.slotPlacement[i]), { width: Constants.TILE_SIZE, height: Constants.TILE_SIZE }), this.scale) && i != this.mouseItem.index) {
-                    let amount = 0;
-                    if (this.inventory.getSlot(i).isEmpty()) {
-                        this.inventory.getSlot(i).setItem(this.inventory.getSlot(this.mouseItem.index).getItem(), this.inventory.getSlot(this.mouseItem.index).getItemCount());
-                    }
-                    else {
-                        amount = this.inventory.getSlot(i).addItems(this.inventory.getSlot(this.mouseItem.index).getItemCount());
-                    }
-                    if (amount > 0) {
-                        this.inventory.getSlot(this.mouseItem.index).setItem(this.inventory.getSlot(this.mouseItem.index).getItem(), amount);
-                    }
-                    else {
-                        this.inventory.getSlot(this.mouseItem.index).removeItem();
-                    }
-                    this.mouseItem.index = -1;
-                    return;
-                }
-            }
-            this.mouseItem.index = -1;
-        }
-    }
     render(ctx) {
         if (this.hidden) {
             return;
         }
         const textSpacing = 2;
         const fontSize = 10;
+        ctx.imageSmoothingEnabled = false;
         for (let i = 0; i < this.inventory.getSize(); i++) {
             ctx.fillStyle = "rgba(" + this.color.red + ", " + this.color.green + ", " + this.color.blue + ", " + this.color.alpha + ")";
             ctx.fillRect(this.slotPlacement[i].x, this.slotPlacement[i].y, Constants.TILE_SIZE, Constants.TILE_SIZE);
             if (!this.inventory.getSlot(i).isEmpty()) {
-                if (this.mouseItem.index != i && this.mouseItem.inv == this.inventory) {
+                if (this.mouseItem.index != i) {
                     if (this.inventory.getSlot(i).getItem().getImage()) {
                         ctx.drawImage(this.inventory.getSlot(i).getItem().getImage(), this.slotPlacement[i].x, this.slotPlacement[i].y);
                     }
@@ -198,6 +168,7 @@ export class UIInventory {
     renderMouseItem(ctx) {
         const textSpacing = 2;
         const fontSize = 10;
+        ctx.imageSmoothingEnabled = false;
         if (this.mouseItem.index != -1 && this.mouseItem.inv == this.inventory) {
             if (this.inventory.getSlot(this.mouseItem.index).getItem().getImage()) {
                 ctx.drawImage(this.inventory.getSlot(this.mouseItem.index).getItem().getImage(), this.mouseItem.x, this.mouseItem.y);
@@ -217,6 +188,7 @@ export class UIInventory {
     }
     updatePosition(scale) {
         this.scale = scale;
+        console.log(scale);
         this.discription.updatePosition(scale);
     }
     getPlacementBox() {

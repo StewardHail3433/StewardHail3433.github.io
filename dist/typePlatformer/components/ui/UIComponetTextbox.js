@@ -8,10 +8,10 @@ export class UIComponentTextbox extends UIComponentLabel {
         this.placeholder = placeHolder;
         this.text = "";
         this.boxFocus = false;
-        this.handleMouseDown = this.handleMouseDown.bind(this); // bind this class to the methods
+        // this.handleMouseDown = this.handleMouseDown.bind(this); // bind this class to the methods
         this.handleTouchStart = this.handleTouchStart.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
-        document.addEventListener("mousedown", this.handleMouseDown);
+        // document.addEventListener("mousedown", this.handleMouseDown);
         document.addEventListener("touchstart", this.handleTouchStart);
         this.onSubmit = onSubmit;
     }
@@ -31,26 +31,24 @@ export class UIComponentTextbox extends UIComponentLabel {
             this.inputElement.style.height = this.hitbox.height * this.scale + "px";
         }
     }
-    handleMouseDown(event) {
-        event.preventDefault();
-        const rect = this.canvas.getBoundingClientRect();
-        let x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2);
-        let y = event.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
-        var boxx = this.hitbox.x;
-        var boxy = this.hitbox.y;
-        if (this.parentComponent && !this.parentComponent.isHidden()) {
-            boxx += this.parentComponent.getHitbox().x;
-            boxy += this.parentComponent.getHitbox().y;
-        }
-        if (isInside({ x, y }, Object.assign(Object.assign({}, this.hitbox), { x: boxx, y: boxy }), this.scale)) {
-            this.startTextElement();
-        }
-        else {
-            this.boxFocus = false;
-            if (!this.text.trim()) {
-                this.text = this.placeholder;
+    handleMouseDown() {
+        if (Constants.INPUT_HANDLER.isMouseDown()) {
+            var boxx = this.hitbox.x;
+            var boxy = this.hitbox.y;
+            if (this.parentComponent && !this.parentComponent.isHidden()) {
+                boxx += this.parentComponent.getHitbox().x;
+                boxy += this.parentComponent.getHitbox().y;
             }
-            this.removeTextElement();
+            if (isInside(Constants.INPUT_HANDLER.getMousePosition(), Object.assign(Object.assign({}, this.hitbox), { x: boxx, y: boxy }), this.scale)) {
+                this.startTextElement();
+            }
+            else {
+                this.boxFocus = false;
+                if (!this.text.trim()) {
+                    this.text = this.placeholder;
+                }
+                this.removeTextElement();
+            }
         }
     }
     handleTouchStart(event) {
@@ -121,6 +119,7 @@ export class UIComponentTextbox extends UIComponentLabel {
         this.inputElement.placeholder = this.placeholder;
         this.inputElement.value = this.text;
         this.inputElement.id = "textboxCanvas";
+        this.inputElement.focus();
         (_a = document.getElementById("gameDiv")) === null || _a === void 0 ? void 0 : _a.appendChild(this.inputElement);
         this.inputElement.focus();
         this.boxFocus = true;
@@ -140,5 +139,9 @@ export class UIComponentTextbox extends UIComponentLabel {
             (_a = document.getElementById("gameDiv")) === null || _a === void 0 ? void 0 : _a.removeChild(this.inputElement);
             this.inputElement = undefined;
         }
+    }
+    update(text) {
+        super.update(text);
+        this.handleMouseDown();
     }
 }

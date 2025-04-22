@@ -7,7 +7,7 @@ import { Constants } from "../utils/Constants.js";
 import { ImageLoader } from "../utils/ImageLoader.js";
 import { UIChatHandler } from "./UIChatHandler.js";
 export class UIHandler {
-    constructor(canvas, player, camera) {
+    constructor(canvas, player, camera, worldH) {
         this.keys = {};
         this.keysToggled = { "F3": false };
         this.characterIndex = 1;
@@ -106,15 +106,15 @@ export class UIHandler {
                 this.keysToggled["F3"] = false;
             }
             else {
-                console.log("IDK");
                 Constants.COMMAND_SYSTEM.outputArgsError("/debug (hide || show)");
             }
         });
-        this.uiInventories = new UIInventories(canvas, player);
+        this.uiInventories = new UIInventories(canvas, player, camera, worldH);
         this.uiInventories.addInventory(player.getInventoryUI());
         this.uiInventories.addInventory(player.getHotbarUI());
     }
     render(ctx) {
+        this.uiInventories.render(ctx);
         this.debug.render(ctx);
         this.debugInfo.render(ctx);
         this.debugTeleportToCenterButton.render(ctx);
@@ -132,7 +132,6 @@ export class UIHandler {
         this.characterChooserLabel.render(ctx);
         this.characterChooserLeftButton.render(ctx);
         this.characterChooserRightButton.render(ctx);
-        this.uiInventories.render(ctx);
     }
     update() {
         var _a, _b, _c;
@@ -217,6 +216,7 @@ export class UIHandler {
     updatePositions(scale) {
         this.player.getInventoryUI().updatePosition(scale);
         this.player.getHotbarUI().updatePosition(scale);
+        this.uiInventories.updateScale(scale);
         this.debug.updatePosition(scale);
         this.debugInfo.updatePosition(scale);
         this.debugTeleportToCenterButton.updatePosition(scale);

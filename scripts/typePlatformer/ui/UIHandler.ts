@@ -7,6 +7,7 @@ import { UIComponentLabel } from "../components/ui/UIComponentLabel.js";
 import { Player } from "../entity/player/Player.js";
 import { Constants } from "../utils/Constants.js";
 import { ImageLoader } from "../utils/ImageLoader.js";
+import { WorldHandler } from "../world/WorldHandler.js";
 import { UIChatHandler } from "./UIChatHandler.js";
 
 export class UIHandler {
@@ -30,7 +31,7 @@ export class UIHandler {
     private characterIndex: number = 1;
     private uiInventories: UIInventories;
 
-    constructor(canvas: HTMLCanvasElement, player: Player, camera: Camera) {
+    constructor(canvas: HTMLCanvasElement, player: Player, camera: Camera, worldH: WorldHandler) {
         this.debug = new UIComponent({
             x: 0, y: 0, width: Constants.CANVAS_WIDTH / 5, height: Constants.CANVAS_HEIGHT
         }, {red: 255, green: 0, blue: 0, alpha: 0.5}, true);
@@ -137,18 +138,17 @@ export class UIHandler {
             } else if(args[0] === "hide") {
                 this.keysToggled["F3"] = false;
             } else {
-                console.log("IDK")
                 Constants.COMMAND_SYSTEM.outputArgsError("/debug (hide || show)");
             }
         });
 
-        this.uiInventories = new UIInventories(canvas, player);
+        this.uiInventories = new UIInventories(canvas, player, camera, worldH);
         this.uiInventories.addInventory(player.getInventoryUI())
         this.uiInventories.addInventory(player.getHotbarUI())
     }
 
     public render(ctx: CanvasRenderingContext2D) {
-        
+        this.uiInventories.render(ctx);
         this.debug.render(ctx);
         this.debugInfo.render(ctx);
         this.debugTeleportToCenterButton.render(ctx);
@@ -166,7 +166,7 @@ export class UIHandler {
         this.characterChooserLabel.render(ctx);
         this.characterChooserLeftButton.render(ctx);
         this.characterChooserRightButton.render(ctx);
-        this.uiInventories.render(ctx);
+        
 
 
     }
@@ -261,6 +261,7 @@ export class UIHandler {
     public updatePositions(scale: number) {
         this.player.getInventoryUI().updatePosition(scale);
         this.player.getHotbarUI().updatePosition(scale);
+        this.uiInventories.updateScale(scale);
         this.debug.updatePosition(scale);
         this.debugInfo.updatePosition(scale);
         this.debugTeleportToCenterButton.updatePosition(scale);

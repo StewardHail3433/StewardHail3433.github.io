@@ -11,7 +11,6 @@ export class CommandSystem {
         let cmdPieces = cmd.split(" ");
         if (cmdPieces[0]) {
             if (this.commands.has(cmdPieces[0])) {
-                console.log(cmdPieces.slice(1));
                 this.commands.get(cmdPieces[0])(cmdPieces.slice(1));
                 return;
             }
