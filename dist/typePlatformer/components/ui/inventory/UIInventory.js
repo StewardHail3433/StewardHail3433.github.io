@@ -36,9 +36,6 @@ export class UIInventory {
         }
         this.holdingItem = false;
         this.mouseItem.inv = inventory;
-        // document.addEventListener("mousedown", this.mouseDown.bind(this));
-        // document.addEventListener("mousemove", this.mouseMove.bind(this));
-        // document.addEventListener("mouseup", this.mouseUp.bind(this));
     }
     mouseDown(mouseItem) {
         for (let i = 0; i < this.inventory.getSize(); i++) {

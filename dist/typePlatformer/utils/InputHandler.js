@@ -75,4 +75,7 @@ export class InputHandler {
     setJustClicked(bool) {
         this.justClicked = bool;
     }
+    setToggle(key, value) {
+        this.keysToggled[key] = value;
+    }
 }

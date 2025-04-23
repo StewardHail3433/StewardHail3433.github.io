@@ -49,9 +49,6 @@ export class UIComponentButton extends UIComponentLabel {
         this.shouldOnTrue = false;
         this.shouldOnFalse = true
         
-        // document.addEventListener("mousedown", (event) => this.handleMouseDown(event));
-        // document.addEventListener("mousemove", (event) => this.handleMouseMove(event));
-        // document.addEventListener("mouseup", (event) => this.handleMouseUp(event));
         document.addEventListener("touchstart", (event) => this.handleTouchStart(event));
         document.addEventListener("touchmove", (event) => this.handleTouchMove(event));
         document.addEventListener("touchend", (event) => this.handleTouchEnd(event));

@@ -55,10 +55,6 @@ export class UIInventory {
         }
         this.holdingItem = false;
         this.mouseItem.inv = inventory;
-
-        // document.addEventListener("mousedown", this.mouseDown.bind(this));
-        // document.addEventListener("mousemove", this.mouseMove.bind(this));
-        // document.addEventListener("mouseup", this.mouseUp.bind(this));
     }
 
     public mouseDown(mouseItem: {inv: Inventory, index: number, x: number, y: number, holdingItem: boolean})  {

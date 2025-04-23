@@ -97,5 +97,9 @@ export class InputHandler {
     public setJustClicked(bool: boolean) {
         this.justClicked = bool;
     }
+
+    public setToggle(key: string, value: boolean) {
+        this.keysToggled[key] =value
+    }
     
 }

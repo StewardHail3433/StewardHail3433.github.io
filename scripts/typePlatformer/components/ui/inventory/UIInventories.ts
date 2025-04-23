@@ -26,12 +26,7 @@ export class UIInventories {
         this.player = player;
         this.camera = camera;
         this.inventories = [];
-        this.worldH =worldH;
-        document.addEventListener("keydown", (event) => {
-            if(event.key === "q") {
-                this.drop = true;
-            }
-        });
+        this.worldH = worldH;
     }
 
     private mouseDown()  {
@@ -78,6 +73,10 @@ export class UIInventories {
     }
 
     public update() {
+        if(Constants.INPUT_HANDLER.getKeys()["q"]) {
+            this.drop = true;
+            Constants.INPUT_HANDLER.getKeys()["q"] = false;
+        }
         this.mouseDown();
         this.mouseMove()
         for(let i = 0; i < this.inventories.length; i++) {

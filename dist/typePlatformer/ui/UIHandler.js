@@ -8,8 +8,6 @@ import { ImageLoader } from "../utils/ImageLoader.js";
 import { UIChatHandler } from "./UIChatHandler.js";
 export class UIHandler {
     constructor(canvas, player, camera, worldH) {
-        this.keys = {};
-        this.keysToggled = { "F3": false };
         this.characterIndex = 1;
         this.debug = new UIComponent({
             x: 0, y: 0, width: Constants.CANVAS_WIDTH / 5, height: Constants.CANVAS_HEIGHT
@@ -96,14 +94,12 @@ export class UIHandler {
         this.characterChooserLabel.setParentComponent(this.characterChooserComponent);
         this.characterChooserLeftButton.setParentComponent(this.characterChooserComponent);
         this.characterChooserRightButton.setParentComponent(this.characterChooserComponent);
-        document.addEventListener("keydown", (event) => this.handleKeyDown(event));
-        document.addEventListener("keyup", (event) => this.handleKeyUp(event));
         Constants.COMMAND_SYSTEM.addCommand("debug", (args) => {
             if (args[0] === "show") {
-                this.keysToggled["F3"] = true;
+                Constants.INPUT_HANDLER.setToggle("F3", true);
             }
             else if (args[0] === "hide") {
-                this.keysToggled["F3"] = false;
+                Constants.INPUT_HANDLER.setToggle("F3", false);
             }
             else {
                 Constants.COMMAND_SYSTEM.outputArgsError("/debug (hide || show)");
@@ -147,7 +143,7 @@ export class UIHandler {
         this.uiChatHandler.update();
         this.characterChooserLeftButton.update();
         this.characterChooserRightButton.update();
-        if (this.keysToggled["F3"]) {
+        if (Constants.INPUT_HANDLER.getKeyToggled()["F3"]) {
             this.debug.show();
             this.debugInfo.show();
             this.debugTeleportToCenterButton.show();
@@ -165,13 +161,13 @@ export class UIHandler {
             this.debugSpeedUp.hide();
             this.debugSpeedDown.hide();
         }
-        if (this.keysToggled["/"]) {
+        if (Constants.INPUT_HANDLER.getKeyToggled()["/"]) {
             this.uiChatHandler.hide();
         }
         else {
             this.uiChatHandler.show();
         }
-        if (this.keysToggled["m"]) {
+        if (Constants.INPUT_HANDLER.getKeyToggled()["m"]) {
             this.characterChooserComponent.show();
             this.characterChooserLabel.show();
             this.characterChooserLeftButton.show();
@@ -183,7 +179,7 @@ export class UIHandler {
             this.characterChooserLeftButton.hide();
             this.characterChooserRightButton.hide();
         }
-        if (this.keysToggled["l"]) {
+        if (Constants.INPUT_HANDLER.getKeyToggled()["l"]) {
             this.player.setToKeyboard();
         }
         else {
@@ -195,20 +191,6 @@ export class UIHandler {
             }
         }
         this.uiInventories.update();
-    }
-    handleKeyDown(event) {
-        event.preventDefault();
-        if (!(event.key in this.keysToggled)) {
-            this.keysToggled[event.key] = false;
-        }
-        if (!this.keys[event.key]) {
-            this.keysToggled[event.key] = !this.keysToggled[event.key];
-        }
-        this.keys[event.key] = true;
-    }
-    handleKeyUp(event) {
-        event.preventDefault();
-        this.keys[event.key] = false;
     }
     getChatHandler() {
         return this.uiChatHandler;

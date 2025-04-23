@@ -8,10 +8,8 @@ export class UIComponentTextbox extends UIComponentLabel {
         this.placeholder = placeHolder;
         this.text = "";
         this.boxFocus = false;
-        // this.handleMouseDown = this.handleMouseDown.bind(this); // bind this class to the methods
         this.handleTouchStart = this.handleTouchStart.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
-        // document.addEventListener("mousedown", this.handleMouseDown);
         document.addEventListener("touchstart", this.handleTouchStart);
         this.onSubmit = onSubmit;
     }

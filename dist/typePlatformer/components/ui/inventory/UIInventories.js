@@ -11,11 +11,6 @@ export class UIInventories {
         this.camera = camera;
         this.inventories = [];
         this.worldH = worldH;
-        document.addEventListener("keydown", (event) => {
-            if (event.key === "q") {
-                this.drop = true;
-            }
-        });
     }
     mouseDown() {
         if (Constants.INPUT_HANDLER.isMouseDown() && Constants.INPUT_HANDLER.wasJustClicked()) {
@@ -55,6 +50,10 @@ export class UIInventories {
         }
     }
     update() {
+        if (Constants.INPUT_HANDLER.getKeys()["q"]) {
+            this.drop = true;
+            Constants.INPUT_HANDLER.getKeys()["q"] = false;
+        }
         this.mouseDown();
         this.mouseMove();
         for (let i = 0; i < this.inventories.length; i++) {
