@@ -6,7 +6,8 @@ import { Items } from "../item/Items.js";
 import { containBox } from "../utils/Collisions.js";
 import { Constants } from "../utils/Constants.js";
 import { ImageLoader } from "../utils/ImageLoader.js";
-import { Tile } from "./Tile.js";
+import { Tiles } from "./Tiles.js";
+import { WorldTile } from "./WorldTile.js";
 export class WorldHandler {
     constructor() {
         this.img = new Image();
@@ -119,20 +120,29 @@ export class WorldHandler {
         }
     }
     generateChunk(chunkX, chunkY, seed) {
-        const chunk = [];
+        var _a, _b;
+        let chunk = [];
+        let leavesPos = [];
         for (let i = 0; i < Constants.CHUNK_SIZE; i++) {
             const row = [];
             for (let j = 0; j < Constants.CHUNK_SIZE; j++) {
                 let worldX = (chunkX * Constants.CHUNK_SIZE + i) * Constants.TILE_SIZE;
                 let worldY = (chunkY * Constants.CHUNK_SIZE + j) * Constants.TILE_SIZE;
                 if (Math.floor(Math.random() * 4) > 0) {
-                    row.push(new Tile([{ index: 0 }, { index: 0 }], new HitboxComponent({ x: worldX, y: worldY, width: Constants.TILE_SIZE, height: Constants.TILE_SIZE }, { red: 0, green: 0, blue: 0, alpha: 0.0 })));
+                    row.push(new WorldTile([{ tile: Tiles.EMPTY }, { tile: Tiles.EMPTY }], new HitboxComponent({ x: worldX, y: worldY, width: Constants.TILE_SIZE, height: Constants.TILE_SIZE }, { red: 0, green: 0, blue: 0, alpha: 0.0 })));
                 }
                 else {
-                    row.push(new Tile([{ index: Math.floor(Math.random() * 6) }, { index: 0 }], new HitboxComponent({ x: worldX, y: worldY, width: Constants.TILE_SIZE, height: Constants.TILE_SIZE }, { red: 0, green: 0, blue: 0, alpha: 0.0 })));
+                    let treemaybe = Math.floor(Math.random() * 7);
+                    row.push(new WorldTile([{ tile: Tiles.getTileByNumberId(treemaybe) }, { tile: Tiles.EMPTY }], new HitboxComponent({ x: worldX, y: worldY, width: Constants.TILE_SIZE, height: Constants.TILE_SIZE }, { red: 0, green: 0, blue: 0, alpha: 0.0 })));
+                    if (treemaybe == 6) {
+                        leavesPos.push({ x: (worldX / Constants.TILE_SIZE - chunkX * Constants.CHUNK_SIZE), y: (worldY / Constants.TILE_SIZE - chunkY * Constants.CHUNK_SIZE) - 1 });
+                    }
                 }
             }
             chunk.push(row);
+        }
+        for (let i = 0; i < leavesPos.length; i++) {
+            (_b = (_a = chunk.at(leavesPos[i].x)) === null || _a === void 0 ? void 0 : _a.at(leavesPos[i].y)) === null || _b === void 0 ? void 0 : _b.setLayer(1, 2);
         }
         this.worldMap.set(chunkX + ", " + chunkY, chunk);
         return chunk;
@@ -157,17 +167,19 @@ export class WorldHandler {
     }
     getVisibleChunks(camera) {
         const visibleChunks = {};
-        let x = Math.floor((camera.getView().x + camera.getView().width / 2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
-        let y = Math.floor((camera.getView().y + camera.getView().height / 2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
-        let cx = x - Constants.RENDER_DISTANCE + 1;
-        let cy = y - Constants.RENDER_DISTANCE + 1;
-        for (let i = cx; i < x + Constants.RENDER_DISTANCE; i++) {
-            for (let j = cy; j < y + Constants.RENDER_DISTANCE; j++) {
-                if (this.worldMap.has(i + ", " + j)) {
-                    visibleChunks[i + ", " + j] = this.worldMap.get(i + ", " + j).map(row => row.map(tile => tile.serialize()));
-                }
-            }
-        }
+        // let x = Math.floor((camera.getView().x+camera.getView().width/2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
+        // let y = Math.floor((camera.getView().y+camera.getView().height/2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
+        // let cx = x - Constants.RENDER_DISTANCE+1;
+        // let cy = y - Constants.RENDER_DISTANCE+1;
+        // for (let i = cx; i < x + Constants.RENDER_DISTANCE; i++) {
+        //     for (let j = cy; j < y + Constants.RENDER_DISTANCE; j++) {
+        //         if (this.worldMap.has(i+", "+j)) {
+        //             visibleChunks[i+", "+j] = this.worldMap.get(i+", "+j)!.map(row =>
+        //                 row.map(tile => tile.serialize())
+        //             );
+        //         }
+        //     }
+        // }
         return visibleChunks;
     }
     loadChunksFromServer(chunks) {

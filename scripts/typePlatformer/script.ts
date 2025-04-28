@@ -10,6 +10,7 @@ import { Constants } from "./utils/Constants.js";
 import { WorldHandler } from "./world/WorldHandler.js";
 import { Tile } from "./world/Tile.js";
 import { ImageLoader } from "./utils/ImageLoader.js";
+import { CollisionHandler } from "./utils/CollisionHandler.js";
 
 declare const io: any;
 class Game {
@@ -22,6 +23,7 @@ class Game {
     private uiHandler: UIHandler;
     private camera: Camera;
     private worldHandler: WorldHandler;
+    private collisionHandler: CollisionHandler;
 
     private players: Record<string, Entity> = {};
     private isMultiplayer: boolean = false;
@@ -44,7 +46,7 @@ class Game {
         this.warningDiv = document.getElementById("test") as HTMLElement;
         
         this.player = new Player("TIm", new HealthComponent(100, 100), new HitboxComponent({
-            x: 100, y: 100, width: 16, height: 16,
+            x: 100, y: 100, width: 8, height: 8,
         }));
         this.camera = new Camera({ x: 100, y: 100, width: Constants.CANVAS_WIDTH, height: Constants.CANVAS_HEIGHT, zoom: 1.0});
         this.camera.trackEntity(this.player);
@@ -54,6 +56,7 @@ class Game {
         this.setupEventListeners();
         requestAnimationFrame(this.gameLoop.bind(this));
 
+        this.collisionHandler = new CollisionHandler();
         
         // Resize on window load and when resized
         this.resizeCanvasBound = this.resizeCanvas.bind(this);
@@ -224,40 +227,40 @@ class Game {
             });
 
             this.socket.on("initNewWorld", (data: any) => {
-                const deserializedChunks = new Map<string, Tile[][]>();
+                // const deserializedChunks = new Map<string, Tile[][]>();
             
-                for (const key in data) {
-                    const tileMatrix = data[key];
+                // for (const key in data) {
+                //     const tileMatrix = data[key];
             
-                    if (Array.isArray(tileMatrix)) {
-                        const chunk: Tile[][] = tileMatrix.map((row: any[]) =>
-                            row.map((tileData: any) => Tile.deserialize(tileData))
-                        );
-                        deserializedChunks.set(key, chunk);
-                    }
-                }
+                //     if (Array.isArray(tileMatrix)) {
+                //         const chunk: Tile[][] = tileMatrix.map((row: any[]) =>
+                //             row.map((tileData: any) => Tile.deserialize(tileData))
+                //         );
+                //         deserializedChunks.set(key, chunk);
+                //     }
+                // }
             
-                this.worldHandler.loadChunksFromServer(deserializedChunks);
+                // this.worldHandler.loadChunksFromServer(deserializedChunks);
             });
             
 
             this.socket.on("loadChunks", (data: any) => {
 
                 // so from my understanding the data was record in server and then a json object to send and then cnoverted to map here and this stop the crashing because the JSON.stringify can do the record with eaiser tha map so no crashing so server end
-                const deserializedChunks = new Map<string, Tile[][]>();
+                // const deserializedChunks = new Map<string, Tile[][]>();
             
-                for (const key in data) {
-                    const tileMatrix = data[key];
+                // for (const key in data) {
+                //     const tileMatrix = data[key];
             
-                    if (Array.isArray(tileMatrix)) {
-                        const chunk: Tile[][] = tileMatrix.map((row: any[]) =>
-                            row.map((tileData: any) => Tile.deserialize(tileData))
-                        );
-                        deserializedChunks.set(key, chunk);
-                    }
-                }
+                //     if (Array.isArray(tileMatrix)) {
+                //         const chunk: Tile[][] = tileMatrix.map((row: any[]) =>
+                //             row.map((tileData: any) => Tile.deserialize(tileData))
+                //         );
+                //         deserializedChunks.set(key, chunk);
+                //     }
+                // }
             
-                this.worldHandler.loadChunksFromServer(deserializedChunks);
+                // this.worldHandler.loadChunksFromServer(deserializedChunks);
             });
 
             
@@ -299,6 +302,10 @@ class Game {
 
     private update(dt:number) {
         this.player.update(dt);
+
+
+        this.collisionHandler.update([this.player], this.worldHandler.getWorldMap());
+
         this.camera.update();
         
         if(this.isMultiplayer && this.socket) {

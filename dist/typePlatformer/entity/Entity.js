@@ -34,6 +34,9 @@ export class Entity {
     setSpeed(speed) {
         this.speed = speed;
     }
+    getVelocity() {
+        return this.velocity;
+    }
     // Convert to plain object for sending via WebSocket
     serialize() {
         return {

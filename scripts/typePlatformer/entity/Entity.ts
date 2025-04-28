@@ -53,6 +53,10 @@ export class Entity {
         this.speed = speed;
     }
 
+    public getVelocity() {
+        return this.velocity;
+    }
+
     // Convert to plain object for sending via WebSocket
     public serialize() {
         return {

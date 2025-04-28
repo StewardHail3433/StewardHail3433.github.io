@@ -18,6 +18,8 @@ export class ImageLoader {
 _a = ImageLoader;
 ImageLoader.images = [
     _a.createImage("resources/typePlatformer/images/tiles/fields.png"),
+    _a.createImage("resources/typePlatformer/images/tiles/tree_leaves.png"),
+    _a.createImage("resources/typePlatformer/images/tiles/tree_stump.png"),
     _a.createImage("resources/typePlatformer/images/entity/player/playerSheet.png"),
     _a.createImage("resources/typePlatformer/images/entity/player/playerSheet3.png"),
     _a.createImage("resources/typePlatformer/images/items/stick.png"),

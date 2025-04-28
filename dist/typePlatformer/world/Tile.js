@@ -1,38 +1,28 @@
 import { ImageLoader } from "../utils/ImageLoader.js";
-import { HitboxComponent } from "../components/HitboxComponent.js";
 import { Constants } from "../utils/Constants.js";
 export class Tile {
-    constructor(layers, hitboxComponent = new HitboxComponent({ x: 0, y: 0, width: 0, height: 0 }, { red: 0, green: 0, blue: 0, alpha: 0.0 })) {
-        this.layers = new Array(10);
-        this.layers = layers;
-        this.hitboxComponent = hitboxComponent;
+    constructor(id, numberID) {
+        this.id = id;
+        this.numberID = numberID;
     }
-    setLayer(layer, indexTile) {
-        this.layers[layer].index = indexTile;
+    getNumberID() {
+        return this.numberID;
     }
-    getLayers() {
-        return Object.assign({}, this.layers);
+    getId() {
+        return this.numberID;
     }
-    getHitboxComponent() {
-        return this.hitboxComponent;
-    }
-    render(ctx, layer) {
-        if (this.layers[layer].index != 0) {
-            let spriteSheetMapX = (this.layers[layer].index % 3) * Constants.TILE_SIZE;
-            let spriteSheetMapY = Math.floor(this.layers[layer].index / 3) * Constants.TILE_SIZE;
-            ctx.imageSmoothingEnabled = false;
-            ctx.drawImage(ImageLoader.getImages()[0], spriteSheetMapX, spriteSheetMapY, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, Constants.TILE_SIZE, Constants.TILE_SIZE);
+    render(ctx, hitboxComponent) {
+        if (this.numberID === 6) {
+            ctx.drawImage(ImageLoader.getImages()[2], 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, hitboxComponent.getHitbox().x, hitboxComponent.getHitbox().y, Constants.TILE_SIZE, Constants.TILE_SIZE);
         }
-    }
-    serialize() {
-        return {
-            layers: this.layers.map(layer => ({ index: layer.index })),
-            hitboxComponent: this.hitboxComponent.serialize(),
-        };
-    }
-    static deserialize(data) {
-        const layers = data.layers.map((layerData) => ({ index: layerData.index }));
-        const hitboxComponent = HitboxComponent.deserialize(data.hitboxComponent);
-        return new Tile(layers, hitboxComponent);
+        else if (this.numberID === 7) {
+            ctx.drawImage(ImageLoader.getImages()[1], 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, hitboxComponent.getHitbox().x, hitboxComponent.getHitbox().y, Constants.TILE_SIZE, Constants.TILE_SIZE);
+        }
+        else {
+            let spriteSheetMapX = (this.numberID % 3) * Constants.TILE_SIZE;
+            let spriteSheetMapY = Math.floor(this.numberID / 3) * Constants.TILE_SIZE;
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(ImageLoader.getImages()[0], spriteSheetMapX, spriteSheetMapY, Constants.TILE_SIZE, Constants.TILE_SIZE, hitboxComponent.getHitbox().x, hitboxComponent.getHitbox().y, Constants.TILE_SIZE, Constants.TILE_SIZE);
+        }
     }
 }
