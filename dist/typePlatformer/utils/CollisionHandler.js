@@ -20,27 +20,13 @@ export class CollisionHandler {
                                     else if (entities[i].getVelocity().x < 0) {
                                         entities[i].getHitboxComponent().setHitbox(Object.assign(Object.assign({}, entities[i].getHitboxComponent().getHitbox()), { x: chunk[tx][ty].getHitboxComponent().getHitbox().x + Constants.TILE_SIZE }));
                                     }
-                                    // switch(entities[i].getDirection()) {
-                                    //     case "up":
-                                    //         entities[i].getHitboxComponent().setHitbox({...entities[i].getHitboxComponent().getHitbox(), y: chunk[tx][ty].getHitboxComponent().getHitbox().y + Constants.TILE_SIZE});
-                                    //         break;
-                                    //     case "down":
-                                    //         entities[i].getHitboxComponent().setHitbox({...entities[i].getHitboxComponent().getHitbox(), y: chunk[tx][ty].getHitboxComponent().getHitbox().y - entities[i].getHitboxComponent().getHitbox().height});
-                                    //         break;
-                                    //     case "left":
-                                    //         entities[i].getHitboxComponent().setHitbox({...entities[i].getHitboxComponent().getHitbox(), x: chunk[tx][ty].getHitboxComponent().getHitbox().x + Constants.TILE_SIZE});
-                                    //         break;
-                                    //     case "right":
-                                    //         entities[i].getHitboxComponent().setHitbox({...entities[i].getHitboxComponent().getHitbox(), x: chunk[tx][ty].getHitboxComponent().getHitbox().x -  entities[i].getHitboxComponent().getHitbox().width});
-                                    //         break;
-                                    // }
                                 }
                             }
                         }
                     }
                 }
             }
-            if (entities[i].getVelocity().y !== 0) {
+            if (entities[i].getVelocity().y != 0) {
                 for (let [key, chunk] of chunks) {
                     let x = parseInt(key.substring(0, key.indexOf(", "))) * Constants.TILE_SIZE * Constants.CHUNK_SIZE;
                     let y = parseInt(key.substring(key.indexOf(", ") + 2)) * Constants.TILE_SIZE * Constants.CHUNK_SIZE;
@@ -54,20 +40,6 @@ export class CollisionHandler {
                                     else if (entities[i].getVelocity().y > 0) {
                                         entities[i].getHitboxComponent().setHitbox(Object.assign(Object.assign({}, entities[i].getHitboxComponent().getHitbox()), { y: chunk[tx][ty].getHitboxComponent().getHitbox().y - entities[i].getHitboxComponent().getHitbox().height }));
                                     }
-                                    // switch(entities[i].getDirection()) {
-                                    //     case "up":
-                                    //         entities[i].getHitboxComponent().setHitbox({...entities[i].getHitboxComponent().getHitbox(), y: chunk[tx][ty].getHitboxComponent().getHitbox().y + Constants.TILE_SIZE});
-                                    //         break;
-                                    //     case "down":
-                                    //         entities[i].getHitboxComponent().setHitbox({...entities[i].getHitboxComponent().getHitbox(), y: chunk[tx][ty].getHitboxComponent().getHitbox().y - entities[i].getHitboxComponent().getHitbox().height});
-                                    //         break;
-                                    //     case "left":
-                                    //         entities[i].getHitboxComponent().setHitbox({...entities[i].getHitboxComponent().getHitbox(), x: chunk[tx][ty].getHitboxComponent().getHitbox().x + Constants.TILE_SIZE});
-                                    //         break;
-                                    //     case "right":
-                                    //         entities[i].getHitboxComponent().setHitbox({...entities[i].getHitboxComponent().getHitbox(), x: chunk[tx][ty].getHitboxComponent().getHitbox().x -  entities[i].getHitboxComponent().getHitbox().width});
-                                    //         break;
-                                    // }
                                 }
                             }
                         }
