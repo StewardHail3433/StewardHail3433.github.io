@@ -8,6 +8,7 @@ export class Entity {
     protected velocity = { x: 0, y: 0 };
     protected speed: number = 120;
     protected direction: string = "down";
+    protected layer = 0;
 
 
     constructor(healthComponent: HealthComponent, hitboxComponent: HitboxComponent) {
@@ -55,6 +56,10 @@ export class Entity {
 
     public getVelocity() {
         return this.velocity;
+    }
+
+    public getLayer(): number {
+        return this.layer
     }
 
     // Convert to plain object for sending via WebSocket

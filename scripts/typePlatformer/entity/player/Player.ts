@@ -92,6 +92,10 @@ export class Player extends Entity {
                 this.inventory.clear();
             }
         });
+
+        Constants.COMMAND_SYSTEM.addCommand("layer", (args:string[]) => {
+            this.layer = parseInt(args[0]);    
+        })
     }
 
     public setControls(controls: {

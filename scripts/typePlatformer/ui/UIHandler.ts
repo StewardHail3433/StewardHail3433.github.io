@@ -162,7 +162,7 @@ export class UIHandler {
     }
 
     public update() {
-        (this.debugInfo as UIComponentLabel).update("Player coord: (" + (this.player.getHitboxComponent().getHitbox().x)?.toFixed(0) + ", " + (this.player?.getHitboxComponent().getHitbox().y)?.toFixed(0) + ")\nPlayer Direction: " + this.player.getDirection() + "\nCamera zoom" + this.camera.getView().zoom + "\nPlayer speed: " + this.player.getSpeed());
+        (this.debugInfo as UIComponentLabel).update("Player coord: (" + (this.player.getHitboxComponent().getHitbox().x)?.toFixed(0) + ", " + (this.player?.getHitboxComponent().getHitbox().y)?.toFixed(0) + ")\nPlayer Direction: " + this.player.getDirection() + "\nCamera zoom" + this.camera.getView().zoom + "\nPlayer speed: " + this.player.getSpeed() + "\nPlayer Layer: " + this.player.getLayer());
         (this.debugTeleportToCenterButton as UIComponentButton).setOnTrue(() => {
             this.player.getHitboxComponent().setHitbox({
                 ...this.player.getHitboxComponent().getHitbox(),
