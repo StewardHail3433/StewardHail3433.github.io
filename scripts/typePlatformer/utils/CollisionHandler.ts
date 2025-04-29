@@ -14,7 +14,7 @@ export class CollisionHandler {
 
     public update(entities: Entity[], chunks: Map<string, WorldTile[][]>) {
         for(let i = 0; i < entities.length; i++) {
-            if(!playerCollisions && entities[i].prototype instanceof Player) continue;
+            if(!playerCollisions && entities[i] instanceof Player) continue;
             if (entities[i].getVelocity().x != 0) {
                 for(let [key, chunk] of chunks) {
                     let x = parseInt(key.substring(0, key.indexOf(", ")))* Constants.TILE_SIZE * Constants.CHUNK_SIZE;
