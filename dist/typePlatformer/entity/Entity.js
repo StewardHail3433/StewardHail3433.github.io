@@ -5,6 +5,7 @@ export class Entity {
         this.velocity = { x: 0, y: 0 };
         this.speed = 120;
         this.direction = "down";
+        this.layer = 0;
         this.healthComponent = healthComponent;
         this.hitboxComponent = hitboxComponent;
     }
@@ -36,6 +37,9 @@ export class Entity {
     }
     getVelocity() {
         return this.velocity;
+    }
+    getLayer() {
+        return this.layer;
     }
     // Convert to plain object for sending via WebSocket
     serialize() {

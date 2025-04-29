@@ -269,10 +269,14 @@ class Game {
         this.ctx.translate(-this.camera.getView().x, -this.camera.getView().y);
         this.ctx.clearRect(0, 0, Constants.CANVAS_WIDTH / this.camera.getView().zoom, Constants.CANVAS_HEIGHT / this.camera.getView().zoom);
         this.worldHandler.renderBackground(this.ctx, this.camera);
-        this.worldHandler.renderLayer(0, this.ctx, this.camera);
+        for (let i = 0; i < this.player.getLayer() + 1; i++) {
+            this.worldHandler.renderLayer(i, this.ctx, this.camera);
+        }
         this.worldHandler.renderDropItems(this.ctx, this.camera);
         this.player.render(this.ctx);
-        this.worldHandler.renderLayer(1, this.ctx, this.camera);
+        for (let i = this.player.getLayer() + 1; i < 2; i++) {
+            this.worldHandler.renderLayer(i, this.ctx, this.camera);
+        }
         this.worldHandler.renderMouse(this.ctx, this.camera);
         if (this.isMultiplayer) {
             for (const id in this.players) {

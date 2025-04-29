@@ -131,7 +131,7 @@ export class UIHandler {
     }
     update() {
         var _a, _b, _c;
-        this.debugInfo.update("Player coord: (" + ((_a = (this.player.getHitboxComponent().getHitbox().x)) === null || _a === void 0 ? void 0 : _a.toFixed(0)) + ", " + ((_c = ((_b = this.player) === null || _b === void 0 ? void 0 : _b.getHitboxComponent().getHitbox().y)) === null || _c === void 0 ? void 0 : _c.toFixed(0)) + ")\nPlayer Direction: " + this.player.getDirection() + "\nCamera zoom" + this.camera.getView().zoom + "\nPlayer speed: " + this.player.getSpeed());
+        this.debugInfo.update("Player coord: (" + ((_a = (this.player.getHitboxComponent().getHitbox().x)) === null || _a === void 0 ? void 0 : _a.toFixed(0)) + ", " + ((_c = ((_b = this.player) === null || _b === void 0 ? void 0 : _b.getHitboxComponent().getHitbox().y)) === null || _c === void 0 ? void 0 : _c.toFixed(0)) + ")\nPlayer Direction: " + this.player.getDirection() + "\nCamera zoom" + this.camera.getView().zoom + "\nPlayer speed: " + this.player.getSpeed() + "\nPlayer Layer: " + this.player.getLayer());
         this.debugTeleportToCenterButton.setOnTrue(() => {
             this.player.getHitboxComponent().setHitbox(Object.assign(Object.assign({}, this.player.getHitboxComponent().getHitbox()), { x: 480 / 2, y: 320 / 2 }));
         });

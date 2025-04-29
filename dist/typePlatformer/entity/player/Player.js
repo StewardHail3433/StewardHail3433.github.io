@@ -64,6 +64,9 @@ export class Player extends Entity {
                 this.inventory.clear();
             }
         });
+        Constants.COMMAND_SYSTEM.addCommand("layer", (args) => {
+            this.layer = parseInt(args[0]);
+        });
     }
     setControls(controls = {
         up: 'w',
