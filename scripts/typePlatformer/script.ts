@@ -61,7 +61,7 @@ class Game {
         // Resize on window load and when resized
         this.resizeCanvasBound = this.resizeCanvas.bind(this);
         window.addEventListener("resize", this.resizeCanvasBound);
-        document.addEventListener("keydown", (event) => {if(event.key === "?"){event.preventDefault();this.toggleFullScreen()}});
+        document.addEventListener("keydown", (event) => {if(event.key === "?"){event.preventDefault();this.toggleFullScreen()} if(event.key === "c") {this.collisionHandler.setPlayerCollisions(false)} if(event.key === "C") {this.collisionHandler.setPlayerCollisions(true)}});
         document.getElementById("fullscreenButton")!.addEventListener("click", () => {this.toggleFullScreen()});
 
     }
