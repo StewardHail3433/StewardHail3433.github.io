@@ -39,6 +39,10 @@ class Game {
         document.addEventListener("keydown", (event) => { if (event.key === "?") {
             event.preventDefault();
             this.toggleFullScreen();
+        } if (event.key === "c") {
+            this.collisionHandler.setPlayerCollisions(false);
+        } if (event.key === "C") {
+            this.collisionHandler.setPlayerCollisions(true);
         } });
         document.getElementById("fullscreenButton").addEventListener("click", () => { this.toggleFullScreen(); });
     }
