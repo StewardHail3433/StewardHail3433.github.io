@@ -1,4 +1,3 @@
-import { Player } from "../entity/player/Player.js";
 import { Tiles } from "../world/Tiles.js";
 import { containBox } from "./Collisions.js";
 import { Constants } from "./Constants.js";
@@ -8,8 +7,8 @@ export class CollisionHandler {
     }
     update(entities, chunks) {
         for (let i = 0; i < entities.length; i++) {
-            if (!this.playerCollisions && entities[i] instanceof Player)
-                continue;
+            if (!this.playerCollisions)
+                continue; //&& entities[i] instanceof Player) {continue};
             if (entities[i].getVelocity().x != 0) {
                 for (let [key, chunk] of chunks) {
                     let x = parseInt(key.substring(0, key.indexOf(", "))) * Constants.TILE_SIZE * Constants.CHUNK_SIZE;
