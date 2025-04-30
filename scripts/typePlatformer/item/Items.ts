@@ -1,4 +1,5 @@
 import { Item } from "./Item.js";
+import { Tile } from "../world/Tile.js";
 
 export class Items {
     public static readonly EMPTY:Item = new Item("empty", "empty");
@@ -23,5 +24,10 @@ export class Items {
                 this.items[value.getId()] = value;
             }
         }
+    }
+
+    public static registerTileItem(tile: Tile): Item {
+        this.items[tile.getId()] = new Item(tile.getId(), tile.getName(), "THIS IS A BLOCK");
+        return this.items[tile.getId()];
     }
 }

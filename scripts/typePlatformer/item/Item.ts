@@ -6,7 +6,7 @@ export class Item {
     private discription:string;
     private maxStackAmount: number = 12;
     private img: HTMLImageElement | undefined;
-    constructor(id:string, name: string, discription:string = "This is an item(I think)") {
+    constructor(id: string, name: string, discription:string = "This is an item(I think)") {
         this.id = id;
         this.name = name;
         this.discription = discription;
