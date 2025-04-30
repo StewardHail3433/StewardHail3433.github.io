@@ -7,6 +7,10 @@ export class Items {
         }
         return this.EMPTY; // this.EMPTY;
     }
+    static registerTileItem(tile) {
+        this.items[tile.getId()] = new Item(tile.getId(), tile.getName(), "THIS IS A BLOCK");
+        return this.items[tile.getId()];
+    }
 }
 _a = Items;
 Items.EMPTY = new Item("empty", "empty");

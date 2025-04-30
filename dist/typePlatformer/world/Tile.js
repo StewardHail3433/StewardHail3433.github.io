@@ -1,15 +1,21 @@
 import { ImageLoader } from "../utils/ImageLoader.js";
 import { Constants } from "../utils/Constants.js";
+import { Items } from "../item/Items.js";
 export class Tile {
-    constructor(id, numberID) {
+    constructor(id, numberID, name = "TILEHE") {
         this.id = id;
         this.numberID = numberID;
+        this.name = name;
+        this.item = Items.registerTileItem(this);
     }
     getNumberID() {
         return this.numberID;
     }
     getId() {
-        return this.numberID;
+        return this.id;
+    }
+    getName() {
+        return this.name;
     }
     render(ctx, hitboxComponent) {
         if (this.numberID === 6) {
@@ -24,5 +30,7 @@ export class Tile {
             ctx.imageSmoothingEnabled = false;
             ctx.drawImage(ImageLoader.getImages()[0], spriteSheetMapX, spriteSheetMapY, Constants.TILE_SIZE, Constants.TILE_SIZE, hitboxComponent.getHitbox().x, hitboxComponent.getHitbox().y, Constants.TILE_SIZE, Constants.TILE_SIZE);
         }
+    }
+    static blockItem() {
     }
 }
