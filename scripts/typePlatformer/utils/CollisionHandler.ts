@@ -42,7 +42,7 @@ export class CollisionHandler {
                     if(containBox(entities[i].getHitboxComponent().getHitbox(), {x,y,width: Constants.TILE_SIZE * Constants.CHUNK_SIZE, height: Constants.TILE_SIZE * Constants.CHUNK_SIZE})) {
                         for(let tx = 0; tx < Constants.CHUNK_SIZE; tx++) {
                             for(let ty = 0; ty < Constants.CHUNK_SIZE; ty++) {
-                                if(containBox(entities[i].getHitboxComponent().getHitbox(), chunk[tx][ty].getHitboxComponent().getHitbox()) && chunk[tx][ty].getLayers()[0].tile != Tiles.EMPTY) {
+                                if(containBox(entities[i].getHitboxComponent().getHitbox(), chunk[tx][ty].getHitboxComponent().getHitbox()) && chunk[tx][ty].getLayers()[entities[i].getLayer()].tile != Tiles.EMPTY) {
                                     if(entities[i].getVelocity().y < 0) {
                                         entities[i].getHitboxComponent().setHitbox({...entities[i].getHitboxComponent().getHitbox(), y: chunk[tx][ty].getHitboxComponent().getHitbox().y + Constants.TILE_SIZE});
                                     } else if(entities[i].getVelocity().y > 0) {

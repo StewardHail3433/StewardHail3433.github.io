@@ -90,6 +90,7 @@ export class Player extends Entity {
         Constants.COMMAND_SYSTEM.addCommand("clear", (args:string[]) => {
             if(args[0] == "self") {
                 this.inventory.clear();
+                this.hotbar.clear();
             }
         });
 
@@ -102,16 +103,12 @@ export class Player extends Entity {
         up: string,
         down: string,
         left: string,
-        right: string,
-        jump: string,
-        debug: string
+        right: string
     } ={
         up: 'w',
         down: 's',
         left: 'a',
-        right: 'd',
-        jump: ' ',
-        debug: 't',
+        right: 'd'
     }) {
         this.controls = controls;
     }
@@ -133,12 +130,6 @@ export class Player extends Entity {
         if (Constants.INPUT_HANDLER.getKeys()[this.controls.right]) {
             this.direction = "right";
             this.velocity.x = this.speed;
-        }
-        if(Constants.INPUT_HANDLER.getKeys()[this.controls.debug]) {
-            this.hitboxComponent.setHitbox({
-                ...this.hitboxComponent.getHitbox(), //copy existing values
-                x: 200
-            });
         }
 
         if(Constants.INPUT_HANDLER.getKeys()["1"]) {
