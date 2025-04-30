@@ -62,6 +62,7 @@ export class Player extends Entity {
         Constants.COMMAND_SYSTEM.addCommand("clear", (args) => {
             if (args[0] == "self") {
                 this.inventory.clear();
+                this.hotbar.clear();
             }
         });
         Constants.COMMAND_SYSTEM.addCommand("layer", (args) => {
@@ -72,9 +73,7 @@ export class Player extends Entity {
         up: 'w',
         down: 's',
         left: 'a',
-        right: 'd',
-        jump: ' ',
-        debug: 't',
+        right: 'd'
     }) {
         this.controls = controls;
     }
@@ -95,9 +94,6 @@ export class Player extends Entity {
         if (Constants.INPUT_HANDLER.getKeys()[this.controls.right]) {
             this.direction = "right";
             this.velocity.x = this.speed;
-        }
-        if (Constants.INPUT_HANDLER.getKeys()[this.controls.debug]) {
-            this.hitboxComponent.setHitbox(Object.assign(Object.assign({}, this.hitboxComponent.getHitbox()), { x: 200 }));
         }
         if (Constants.INPUT_HANDLER.getKeys()["1"]) {
             this.hotbar.setSelecteSlot(0);
