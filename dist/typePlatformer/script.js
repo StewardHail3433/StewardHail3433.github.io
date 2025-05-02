@@ -14,6 +14,7 @@ class Game {
         this.socket = null;
         this.lastTime = 0;
         this.isFullscreen = false;
+        this.fullscreenhtml = [];
         this.canvas = document.getElementById(Constants.CANVAS_ID);
         this.ctx = this.canvas.getContext("2d");
         this.canvas.width = Constants.CANVAS_WIDTH * window.devicePixelRatio * 3.25;
@@ -26,16 +27,13 @@ class Game {
         this.player = new Player("TIm", new HealthComponent(100, 100), new HitboxComponent({
             x: 100, y: 100, width: 8, height: 8,
         }));
-        this.camera = new Camera({ x: 100, y: 100, width: Constants.CANVAS_WIDTH, height: Constants.CANVAS_HEIGHT, zoom: 1.0 });
+        this.camera = new Camera({ x: 100, y: 100, width: Constants.CANVAS_WIDTH, height: Constants.CANVAS_HEIGHT, zoom: 1.35 }, "main");
         this.camera.trackEntity(this.player);
         this.worldHandler = new WorldHandler();
         this.uiHandler = new UIHandler(this.canvas, this.player, this.camera, this.worldHandler);
         this.setupEventListeners();
         requestAnimationFrame(this.gameLoop.bind(this));
         this.collisionHandler = new CollisionHandler();
-        // Resize on window load and when resized
-        this.resizeCanvasBound = this.resizeCanvas.bind(this);
-        window.addEventListener("resize", this.resizeCanvasBound);
         document.addEventListener("keydown", (event) => { if (event.key === "?") {
             event.preventDefault();
             this.toggleFullScreen();
@@ -45,84 +43,28 @@ class Game {
             this.collisionHandler.setPlayerCollisions(true);
         } });
         document.getElementById("fullscreenButton").addEventListener("click", () => { this.toggleFullScreen(); });
+        Constants.COMMAND_SYSTEM.addCommand("fullscreen", () => this.toggleFullScreen());
     }
     toggleFullScreen() {
         if (!this.isFullscreen) {
-            //https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullscreen
-            //https://www.w3schools.com/howto/howto_js_fullscreen.asp
-            if (document.getElementById("gameDiv").requestFullscreen) {
-                document.getElementById("gameDiv").requestFullscreen().catch(err => {
-                    console.error(`Error attempting fullscreen: ${err.message}`);
-                    return;
-                }).then(() => {
-                    window.removeEventListener("resize", this.resizeCanvasBound);
-                    this.dofullscreen();
-                });
+            for (let i = 0; i < document.getElementsByClassName("hideFull").length; i++) {
+                this.fullscreenhtml.push(document.getElementsByClassName("hideFull")[i].innerHTML);
+                document.getElementsByClassName("hideFull")[i].innerHTML = "";
             }
-            else if (document.getElementById("gameDiv").webkitRequestFullscreen) { /* Safari */
-                document.getElementById("gameDiv").webkitRequestFullscreen();
-                this.dofullscreen();
-            }
-            else if (document.getElementById("gameDiv").msRequestFullscreen) { /* IE11 */
-                document.getElementById("gameDiv").msRequestFullscreen();
-                this.dofullscreen();
-            }
+            this.canvas.style.width = screen.availWidth + "px";
+            this.canvas.style.height = screen.availHeight + "px";
+            this.canvas.style.margin = "0px 0px 0px 0px";
+            this.canvas.style.padding = "0px 0px 0px 0px";
         }
         else {
-            this.isFullscreen = false;
-            this.canvas.style = "overflow: hidden;";
-            this.resizeCanvasBound = this.resizeCanvas.bind(this);
-            window.addEventListener("resize", this.resizeCanvasBound);
-            document.exitFullscreen();
+            this.canvas.style.width = Constants.CANVAS_WIDTH + "px";
+            this.canvas.style.height = Constants.CANVAS_HEIGHT + "px";
+            for (let i = 0; i < this.fullscreenhtml.length; i++) {
+                document.getElementsByClassName("hideFull")[i].innerHTML = this.fullscreenhtml[i];
+            }
+            this.fullscreenhtml = [];
         }
-    }
-    dofullscreen() {
-        window.removeEventListener("resize", this.resizeCanvasBound);
-        this.isFullscreen = true;
-        this.resizeCanvasBound();
-    }
-    resizeCanvas() {
-        // AI I want to redo and learn more
-        const dpr = window.devicePixelRatio * 3.25;
-        const container = document.getElementById("gameDiv");
-        let scale = 1.0;
-        const screenWidth = window.innerWidth;
-        const screenHeight = window.innerHeight;
-        const baseWidth = Constants.CANVAS_WIDTH;
-        const baseHeight = Constants.CANVAS_HEIGHT;
-        const canvasAspect = baseWidth / baseHeight;
-        const screenAspect = screenWidth / screenHeight;
-        if (screenAspect > canvasAspect) {
-            scale = screenHeight / baseHeight;
-        }
-        else {
-            scale = screenWidth / baseWidth;
-        }
-        // Set the physical canvas size (taking DPR into account)
-        this.canvas.width = baseWidth * dpr;
-        this.canvas.height = baseHeight * dpr;
-        // Apply appropriate styles
-        this.canvas.style.width = `${baseWidth * scale}px`;
-        this.canvas.style.height = `${baseHeight * scale}px`;
-        // Rescale the drawing context
-        this.ctx.scale(dpr, dpr);
-        // Handle fullscreen scaling
-        if (this.isFullscreen) {
-            this.canvas.style.position = "absolute";
-            this.canvas.style.left = `${(screenWidth - baseWidth * scale) / 2}px`;
-            this.canvas.style.top = `${(screenHeight - baseHeight * scale) / 2}px`;
-            this.uiHandler.updatePositions(scale);
-            Constants.INPUT_HANDLER.updateScale(scale);
-        }
-        else {
-            this.canvas.style.position = "static";
-            this.canvas.style.width = (Constants.CANVAS_WIDTH) + "px";
-            this.canvas.style.height = (Constants.CANVAS_HEIGHT) + "px";
-            this.canvas.style.left = `${(screenWidth - baseWidth) / 2}px`;
-            this.canvas.style.top = `${(screenHeight - baseHeight) / 2}px`;
-            this.uiHandler.updatePositions(1);
-            Constants.INPUT_HANDLER.updateScale(1);
-        }
+        this.isFullscreen = !this.isFullscreen;
     }
     setupEventListeners() {
         this.multiplayerEvents();
@@ -245,8 +187,8 @@ class Game {
         requestAnimationFrame(this.gameLoop.bind(this));
     }
     update(dt) {
-        this.player.update(dt);
-        this.collisionHandler.update([this.player], this.worldHandler.getWorldMap());
+        this.player.update();
+        this.collisionHandler.update([this.player], this.worldHandler.getWorldMap(), dt);
         this.camera.update();
         if (this.isMultiplayer && this.socket) {
             this.worldHandler.updateServer(this.camera, this.socket);

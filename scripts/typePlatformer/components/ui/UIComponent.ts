@@ -3,7 +3,6 @@ import { HitboxComponent } from "../HitboxComponent.js";
 export class UIComponent extends HitboxComponent {
     protected hidden: boolean;
     protected parentComponent?: UIComponent;
-    protected scale = 1.0;
     
     constructor(hitbox: {x: number; y: number; width: number; height: number}, color: {red: number; green: number; blue: number; alpha?: number} = { red: 255, green: 0, blue: 255, alpha: 1.0}, hidden: boolean) {
         super(hitbox, color);
@@ -44,9 +43,4 @@ export class UIComponent extends HitboxComponent {
     public setParentComponent(parentComponent: UIComponent) {
         this.parentComponent = parentComponent;
     }
-
-    public updatePosition(scale: number) {
-        this.scale = scale
-    }
-    
 }

@@ -17,7 +17,8 @@ export class WorldHandler {
     private worldMap: Map<string, WorldTile[][]>;
     private img = new Image();
     private showChunks = false;
-    private droppedItems: DroppedSlot[] = []
+    private droppedItems: DroppedSlot[] = [];
+    private heldItem: Item = Items.EMPTY;
     
     constructor() {
         this.worldMap = new Map<string, WorldTile[][]>();
@@ -80,9 +81,16 @@ export class WorldHandler {
     public renderMouse(ctx: CanvasRenderingContext2D, camera: Camera) {
         ImageLoader.getImages().forEach(img => {
             if(img.src.substring(img.src.match("resources")?.index!) === "resources/typePlatformer/images/tiles/mouseSelction.png") {
-                ctx.drawImage(img, Constants.INPUT_HANDLER.getMouseWorldPosition(camera).x * Constants.TILE_SIZE - 1, Constants.INPUT_HANDLER.getMouseWorldPosition(camera).y * Constants.TILE_SIZE - 1)
+                ctx.drawImage(img, Constants.INPUT_HANDLER.getMouseWorldPosition(camera).x  * Constants.TILE_SIZE - 1, Constants.INPUT_HANDLER.getMouseWorldPosition(camera).y * Constants.TILE_SIZE - 1)
             }
         })
+        if(this.heldItem != Items.EMPTY) {
+            if(this.heldItem.getImage()) {
+                ctx.globalAlpha = 0.5;
+                ctx.drawImage(this.heldItem.getImage()!, Constants.INPUT_HANDLER.getMouseWorldPosition(camera).x  * Constants.TILE_SIZE, Constants.INPUT_HANDLER.getMouseWorldPosition(camera).y * Constants.TILE_SIZE)
+                ctx.globalAlpha = 1.0;
+            }
+        }
     }
 
     public update(camera: Camera, player: Player, dt: number) {
@@ -222,10 +230,14 @@ export class WorldHandler {
         });
     }
 
-    dropItem(itemSlot: Slot, position: {x: number, y: number}) {
+    public dropItem(itemSlot: Slot, position: {x: number, y: number}) {
         this.droppedItems.push(new DroppedSlot(new HitboxComponent({...position, width:Constants.TILE_SIZE/1.5, height:Constants.TILE_SIZE/1.5}), new Slot(itemSlot.getItem(), itemSlot.getItemCount())))
         
         itemSlot.removeItem();
+    }
+
+    public setHeldItem(item: Item) {
+        this.heldItem = item;
     }
 
     public saveWorld() {

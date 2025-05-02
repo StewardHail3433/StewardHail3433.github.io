@@ -16,21 +16,18 @@ export class Entity {
         this.hitboxComponent = hitboxComponent;
     }
 
-    public update(dt: number) {
-        let hitbox = this.hitboxComponent.getHitbox();
+    public update() {
         let dist = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y); 
 
         if (dist > 0) {
             // normalize for dia
             this.velocity.x = Math.abs(this.velocity.x) * (this.velocity.x / dist);
             this.velocity.y = Math.abs(this.velocity.y) * (this.velocity.y / dist);
-
-            this.hitboxComponent.setHitbox({
-                ...hitbox,
-                x: hitbox.x + this.velocity.x * dt,
-                y: hitbox.y + this.velocity.y * dt
-            });
+        } else {
+            this.velocity.x = 0;
+            this.velocity.y = 0;
         }
+
     }
 
     public render(ctx: CanvasRenderingContext2D) {
@@ -54,8 +51,12 @@ export class Entity {
         this.speed = speed;
     }
 
-    public getVelocity() {
+    public getVelocity(): {x: number, y:number} {
         return this.velocity;
+    }
+
+    public setVelocity(vel: {x: number, y:number}) {
+        this.velocity = vel;
     }
 
     public getLayer(): number {

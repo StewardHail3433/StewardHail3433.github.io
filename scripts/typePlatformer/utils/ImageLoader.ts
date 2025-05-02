@@ -11,7 +11,10 @@ export class ImageLoader {
         this.createImage("resources/typePlatformer/images/entity/player/playerSheet2.png"),
         this.createImage("resources/typePlatformer/images/entity/player/duckMan.png"),
         this.createImage("resources/typePlatformer/images/entity/player/theVoid.png"),
-        this.createImage("resources/typePlatformer/images/tiles/mouseSelction.png")];
+        this.createImage("resources/typePlatformer/images/tiles/mouseSelction.png"),
+        this.createImage("resources/typePlatformer/images/items/tree_leaves.png"),
+        this.createImage("resources/typePlatformer/images/items/tree_stump.png")];
+
 
     static getImages(): HTMLImageElement[]  {
         return this.images;

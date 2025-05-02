@@ -12,6 +12,7 @@ export class Item {
                 this.img = img;
             }
         });
+        console.log(src);
     }
     getDiscription() {
         return this.discription;

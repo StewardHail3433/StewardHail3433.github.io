@@ -85,11 +85,6 @@ export class UIChatHandler {
         this.readMessage();
     }
     ;
-    updatePositions(scale) {
-        this.chatComponent.updatePosition(scale);
-        this.chatbox.updatePosition(scale);
-        this.textbox.updatePosition(scale);
-    }
     addMessage(text) {
         this.chatbox.update(this.chatbox.getText() + "\nYOU: " + text);
         this.sendMessage(text);

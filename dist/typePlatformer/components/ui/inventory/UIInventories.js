@@ -1,10 +1,10 @@
 import { Inventory } from "../../../inventory/Inventory.js";
+import { Items } from "../../../item/Items.js";
 import { isInside } from "../../../utils/Collisions.js";
 import { Constants } from "../../../utils/Constants.js";
 export class UIInventories {
     constructor(canvas, player, camera, worldH) {
         this.mouseItem = { inv: new Inventory(0), index: -1, x: 0, y: 0, holdingItem: false };
-        this.scale = 1.0;
         this.drop = false;
         this.canvas = canvas;
         this.player = player;
@@ -15,7 +15,7 @@ export class UIInventories {
     mouseDown() {
         if (Constants.INPUT_HANDLER.isMouseDown() && Constants.INPUT_HANDLER.wasJustClicked()) {
             for (let i = 0; i < this.inventories.length; i++) {
-                if (isInside(Constants.INPUT_HANDLER.getMousePosition(), Object.assign({}, this.inventories[i].getPlacementBox()), this.scale) && !this.inventories[i].ishidden()) {
+                if (isInside(Constants.INPUT_HANDLER.getMousePosition(), Object.assign({}, this.inventories[i].getPlacementBox())) && !this.inventories[i].ishidden()) {
                     if (this.inventories[i].getInventory().getType() == "hotbar" && !this.player.isInventoryOpen()) {
                         this.inventories[i].mouseDownSelction();
                     }
@@ -29,8 +29,8 @@ export class UIInventories {
     }
     mouseMove() {
         if (this.mouseItem.index != -1) {
-            this.mouseItem.x = (Constants.INPUT_HANDLER.getMousePosition().x - Constants.TILE_SIZE / 2) / this.scale;
-            this.mouseItem.y = (Constants.INPUT_HANDLER.getMousePosition().y - Constants.TILE_SIZE / 2) / this.scale;
+            this.mouseItem.x = (Constants.INPUT_HANDLER.getMousePosition().x - Constants.TILE_SIZE / 2);
+            this.mouseItem.y = (Constants.INPUT_HANDLER.getMousePosition().y - Constants.TILE_SIZE / 2);
         }
         for (let i = 0; i < this.inventories.length; i++) {
             if (this.inventories[i].getInventory() == this.mouseItem.inv) {
@@ -65,7 +65,7 @@ export class UIInventories {
             }
         }
         if (this.drop && this.mouseItem.holdingItem) {
-            this.worldH.dropItem(this.mouseItem.inv.getSlot(this.mouseItem.index), { x: Constants.INPUT_HANDLER.getMousePosition().x / this.scale + this.camera.getView().x, y: Constants.INPUT_HANDLER.getMousePosition().y / this.scale + this.camera.getView().y });
+            this.worldH.dropItem(this.mouseItem.inv.getSlot(this.mouseItem.index), { x: (Constants.INPUT_HANDLER.getMousePosition().x / this.camera.getView().zoom + this.camera.getView().x), y: (Constants.INPUT_HANDLER.getMousePosition().y / this.camera.getView().zoom + this.camera.getView().y) });
             this.drop = false;
             this.mouseItem.holdingItem = false;
             this.mouseItem.index = -1;
@@ -74,15 +74,18 @@ export class UIInventories {
             for (let i = 0; i < this.inventories.length; i++) {
                 if (this.inventories[i].getInventory().getType() == "hotbar") {
                     if (!this.inventories[i].getInventory().getSelecteSlot().isEmpty()) {
-                        this.worldH.dropItem(this.inventories[i].getInventory().getSelecteSlot(), { x: Constants.INPUT_HANDLER.getMousePosition().x / this.scale + this.camera.getView().x, y: Constants.INPUT_HANDLER.getMousePosition().y / this.scale + this.camera.getView().y });
+                        this.worldH.dropItem(this.inventories[i].getInventory().getSelecteSlot(), { x: (Constants.INPUT_HANDLER.getMousePosition().x / this.camera.getView().zoom + this.camera.getView().x), y: (Constants.INPUT_HANDLER.getMousePosition().y / this.camera.getView().zoom + this.camera.getView().y) });
                     }
                     break;
                 }
             }
             this.drop = false;
         }
-    }
-    updateScale(scale) {
-        this.scale = scale;
+        if (this.mouseItem.holdingItem) {
+            this.worldH.setHeldItem(this.mouseItem.inv.getSlot(this.mouseItem.index).getItem());
+        }
+        else {
+            this.worldH.setHeldItem(Items.EMPTY);
+        }
     }
 }

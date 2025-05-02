@@ -2,7 +2,6 @@ import { HitboxComponent } from "../HitboxComponent.js";
 export class UIComponent extends HitboxComponent {
     constructor(hitbox, color = { red: 255, green: 0, blue: 255, alpha: 1.0 }, hidden) {
         super(hitbox, color);
-        this.scale = 1.0;
         this.hidden = hidden;
     }
     render(ctx) {
@@ -36,8 +35,5 @@ export class UIComponent extends HitboxComponent {
     }
     setParentComponent(parentComponent) {
         this.parentComponent = parentComponent;
-    }
-    updatePosition(scale) {
-        this.scale = scale;
     }
 }

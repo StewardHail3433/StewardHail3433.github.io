@@ -28,5 +28,7 @@ ImageLoader.images = [
     _a.createImage("resources/typePlatformer/images/entity/player/playerSheet2.png"),
     _a.createImage("resources/typePlatformer/images/entity/player/duckMan.png"),
     _a.createImage("resources/typePlatformer/images/entity/player/theVoid.png"),
-    _a.createImage("resources/typePlatformer/images/tiles/mouseSelction.png")
+    _a.createImage("resources/typePlatformer/images/tiles/mouseSelction.png"),
+    _a.createImage("resources/typePlatformer/images/items/tree_leaves.png"),
+    _a.createImage("resources/typePlatformer/images/items/tree_stump.png")
 ];

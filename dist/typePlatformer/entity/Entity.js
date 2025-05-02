@@ -9,14 +9,16 @@ export class Entity {
         this.healthComponent = healthComponent;
         this.hitboxComponent = hitboxComponent;
     }
-    update(dt) {
-        let hitbox = this.hitboxComponent.getHitbox();
+    update() {
         let dist = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
         if (dist > 0) {
             // normalize for dia
             this.velocity.x = Math.abs(this.velocity.x) * (this.velocity.x / dist);
             this.velocity.y = Math.abs(this.velocity.y) * (this.velocity.y / dist);
-            this.hitboxComponent.setHitbox(Object.assign(Object.assign({}, hitbox), { x: hitbox.x + this.velocity.x * dt, y: hitbox.y + this.velocity.y * dt }));
+        }
+        else {
+            this.velocity.x = 0;
+            this.velocity.y = 0;
         }
     }
     render(ctx) {
@@ -37,6 +39,9 @@ export class Entity {
     }
     getVelocity() {
         return this.velocity;
+    }
+    setVelocity(vel) {
+        this.velocity = vel;
     }
     getLayer() {
         return this.layer;

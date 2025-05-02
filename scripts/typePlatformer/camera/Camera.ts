@@ -1,10 +1,19 @@
-import { Entity } from "../entity/Entity";
+import { Entity } from "../entity/Entity.js";
+import { Constants } from "../utils/Constants.js";
 
 export class Camera {
     private view: {x: number; y: number; width: number; height: number; zoom: number};
     private currentTrackEntity?: Entity
-    constructor(view: {x: number; y: number; width: number; height: number; zoom: number}) {
+    private id: string;
+    constructor(view: {x: number; y: number; width: number; height: number; zoom: number}, id: string) {
         this.view = view;
+        this.id = id;
+
+        Constants.COMMAND_SYSTEM.addCommand("zoom", (args: string[]) => {
+            if(args[0] == this.id) {
+                this.view.zoom = parseFloat(args[1]);
+            }
+        })
     }
 
     update() {

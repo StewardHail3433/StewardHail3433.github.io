@@ -34,26 +34,6 @@ export class UIComponentTextbox extends UIComponentLabel{
         this.onSubmit = onSubmit;
     }
 
-
-    public updatePosition(scale: number): void {
-        super.updatePosition(scale);
-        if(this.inputElement) {
-            var x: number = this.hitbox.x; 
-            var y: number = this.hitbox.y;
-            if(this.parentComponent) {
-                x += this.parentComponent.getHitbox().x;
-                y += this.parentComponent.getHitbox().y;
-            }
-
-            const rect = this.canvas.getBoundingClientRect();
-            this.inputElement.style.left = rect.left + x * this.scale + ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2)+ "px";
-            this.inputElement.style.top = rect.top + y * this.scale + ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2) + "px";
-        
-            this.inputElement.style.width = this.hitbox.width * this.scale + "px";
-            this.inputElement.style.height = this.hitbox.height * this.scale + "px";
-        }
-    }
-
     private handleMouseDown() {
         if(Constants.INPUT_HANDLER.isMouseDown()) {
             var boxx: number = this.hitbox.x; 
@@ -62,7 +42,7 @@ export class UIComponentTextbox extends UIComponentLabel{
                 boxx += this.parentComponent.getHitbox().x;
                 boxy += this.parentComponent.getHitbox().y;
             }
-            if(isInside(Constants.INPUT_HANDLER.getMousePosition(), {...this.hitbox, x: boxx, y: boxy}, this.scale)) {
+            if(isInside(Constants.INPUT_HANDLER.getMousePosition(), {...this.hitbox, x: boxx, y: boxy})) {
                 this.startTextElement();
             } else {
                 this.boxFocus = false;
@@ -77,8 +57,8 @@ export class UIComponentTextbox extends UIComponentLabel{
     private handleTouchStart(event: TouchEvent) {
         event.preventDefault();
         const rect = this.canvas.getBoundingClientRect(); 
-        let x = event.touches[0].clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2);
-        let y = event.touches[0].clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
+        let x = event.touches[0].clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH) / 2);
+        let y = event.touches[0].clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT) / 2);
         var boxx: number = this.hitbox.x; 
         var boxy: number = this.hitbox.y;
         if(this.parentComponent && !this.parentComponent.isHidden()) {
@@ -133,13 +113,13 @@ export class UIComponentTextbox extends UIComponentLabel{
         }
 
         const rect = this.canvas.getBoundingClientRect();
-        this.inputElement.style.left = rect.left + x * this.scale + ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2)+ "px";
-        this.inputElement.style.top = rect.top + y * this.scale + ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2)+ "px";
+        this.inputElement.style.left = rect.left + x + ((rect.width - Constants.CANVAS_WIDTH) / 2)+ "px";
+        this.inputElement.style.top = rect.top + y + ((rect.height - Constants.CANVAS_HEIGHT) / 2)+ "px";
     
-        this.inputElement.style.width = this.hitbox.width * this.scale + "px";
-        this.inputElement.style.height = this.hitbox.height  * this.scale + "px";
+        this.inputElement.style.width = this.hitbox.width + "px";
+        this.inputElement.style.height = this.hitbox.height  + "px";
 
-        this.inputElement.style.fontSize = this.fontSize * this.scale + "px";
+        this.inputElement.style.fontSize = this.fontSize + "px";
     
         this.inputElement.style.zIndex = "1000";
         this.inputElement.style.opacity = "1.0"; // bugged right now so show showing

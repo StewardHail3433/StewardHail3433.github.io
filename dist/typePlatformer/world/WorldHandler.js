@@ -13,6 +13,7 @@ export class WorldHandler {
         this.img = new Image();
         this.showChunks = false;
         this.droppedItems = [];
+        this.heldItem = Items.EMPTY;
         this.worldMap = new Map();
         this.img.src = "./resources/typePlatformer/images/tiles/background/grass.png";
         Constants.COMMAND_SYSTEM.addCommand("chunkOutline", (args) => {
@@ -73,6 +74,13 @@ export class WorldHandler {
                 ctx.drawImage(img, Constants.INPUT_HANDLER.getMouseWorldPosition(camera).x * Constants.TILE_SIZE - 1, Constants.INPUT_HANDLER.getMouseWorldPosition(camera).y * Constants.TILE_SIZE - 1);
             }
         });
+        if (this.heldItem != Items.EMPTY) {
+            if (this.heldItem.getImage()) {
+                ctx.globalAlpha = 0.5;
+                ctx.drawImage(this.heldItem.getImage(), Constants.INPUT_HANDLER.getMouseWorldPosition(camera).x * Constants.TILE_SIZE, Constants.INPUT_HANDLER.getMouseWorldPosition(camera).y * Constants.TILE_SIZE);
+                ctx.globalAlpha = 1.0;
+            }
+        }
     }
     update(camera, player, dt) {
         let x = Math.floor((camera.getView().x + camera.getView().width / 2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
@@ -190,6 +198,9 @@ export class WorldHandler {
     dropItem(itemSlot, position) {
         this.droppedItems.push(new DroppedSlot(new HitboxComponent(Object.assign(Object.assign({}, position), { width: Constants.TILE_SIZE / 1.5, height: Constants.TILE_SIZE / 1.5 })), new Slot(itemSlot.getItem(), itemSlot.getItemCount())));
         itemSlot.removeItem();
+    }
+    setHeldItem(item) {
+        this.heldItem = item;
     }
     saveWorld() {
     }

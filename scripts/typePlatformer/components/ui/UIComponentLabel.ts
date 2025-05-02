@@ -102,8 +102,4 @@ export class UIComponentLabel extends UIComponent {
     public getText(): string {
         return this.text;
     }
-
-    public updatePosition(scale: number) {
-        super.updatePosition(scale)
-    }
 }

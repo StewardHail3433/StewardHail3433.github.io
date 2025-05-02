@@ -13,19 +13,19 @@ export class Player extends Entity {
         this.frame = 0;
         this.inventory = new Inventory(14);
         this.hotbar = new Inventory(7, "hotbar");
-        this.movementButtons = [new UIComponentButton(document.getElementById("gameCanvas"), { x: 10, y: 270, width: 40, height: 40 }, { red: 255, green: 255, blue: 255 }, false, "<-", undefined, 15, "center", { red: 200, green: 200, blue: 200 }, undefined, this.hitboxComponent.getColor(), undefined, () => {
+        this.movementButtons = [new UIComponentButton(document.getElementById(Constants.CANVAS_ID), { x: 10, y: 270, width: 40, height: 40 }, { red: 255, green: 255, blue: 255 }, false, "<-", undefined, 15, "center", { red: 200, green: 200, blue: 200 }, undefined, this.hitboxComponent.getColor(), undefined, () => {
                 Constants.INPUT_HANDLER.getKeys()[this.controls.left] = false;
             }, () => {
                 Constants.INPUT_HANDLER.getKeys()[this.controls.left] = true;
-            }), new UIComponentButton(document.getElementById("gameCanvas"), { x: 55, y: 270, width: 40, height: 40 }, { red: 255, green: 255, blue: 255 }, false, "v", undefined, 15, "center", { red: 200, green: 200, blue: 200 }, undefined, this.hitboxComponent.getColor(), undefined, () => {
+            }), new UIComponentButton(document.getElementById(Constants.CANVAS_ID), { x: 55, y: 270, width: 40, height: 40 }, { red: 255, green: 255, blue: 255 }, false, "v", undefined, 15, "center", { red: 200, green: 200, blue: 200 }, undefined, this.hitboxComponent.getColor(), undefined, () => {
                 Constants.INPUT_HANDLER.getKeys()[this.controls.down] = false;
             }, () => {
                 Constants.INPUT_HANDLER.getKeys()[this.controls.down] = true;
-            }), new UIComponentButton(document.getElementById("gameCanvas"), { x: 100, y: 270, width: 40, height: 40 }, { red: 255, green: 255, blue: 255 }, false, "->", undefined, 15, "center", { red: 200, green: 200, blue: 200 }, undefined, this.hitboxComponent.getColor(), undefined, () => {
+            }), new UIComponentButton(document.getElementById(Constants.CANVAS_ID), { x: 100, y: 270, width: 40, height: 40 }, { red: 255, green: 255, blue: 255 }, false, "->", undefined, 15, "center", { red: 200, green: 200, blue: 200 }, undefined, this.hitboxComponent.getColor(), undefined, () => {
                 Constants.INPUT_HANDLER.getKeys()[this.controls.right] = false;
             }, () => {
                 Constants.INPUT_HANDLER.getKeys()[this.controls.right] = true;
-            }), new UIComponentButton(document.getElementById("gameCanvas"), { x: 55, y: 225, width: 40, height: 40 }, { red: 255, green: 255, blue: 255 }, false, "^", undefined, 15, "center", { red: 200, green: 200, blue: 200 }, undefined, this.hitboxComponent.getColor(), undefined, () => {
+            }), new UIComponentButton(document.getElementById(Constants.CANVAS_ID), { x: 55, y: 225, width: 40, height: 40 }, { red: 255, green: 255, blue: 255 }, false, "^", undefined, 15, "center", { red: 200, green: 200, blue: 200 }, undefined, this.hitboxComponent.getColor(), undefined, () => {
                 Constants.INPUT_HANDLER.getKeys()[this.controls.up] = false;
             }, () => {
                 Constants.INPUT_HANDLER.getKeys()[this.controls.up] = true;
@@ -42,11 +42,11 @@ export class Player extends Entity {
         // this.inventory.getSlot(8).setItem(Items.STICK);
         this.inventory.getSlot(10).setItem(Items.STICK, 1);
         // this.inventory.getSlot(12).setItem(Items.SWORD);
-        this.hotbarUi = new UIInventory(document.getElementById("gameCanvas"), this.hotbar, { x: 0, y: 0, row: 1, col: 7 }, { red: 128, green: 128, blue: 128, alpha: 1.0 }, false);
-        this.invUi = new UIInventory(document.getElementById("gameCanvas"), this.inventory, { x: 0, y: 18, row: 2, col: 7 }, undefined, false);
+        this.hotbarUi = new UIInventory(document.getElementById(Constants.CANVAS_ID), this.hotbar, { x: 0, y: 0, row: 1, col: 7 }, { red: 128, green: 128, blue: 128, alpha: 1.0 }, false);
+        this.invUi = new UIInventory(document.getElementById(Constants.CANVAS_ID), this.inventory, { x: 0, y: 18, row: 2, col: 7 }, undefined, false);
         this.hotbar.setSelecteSlot(0);
         this.setToTouch();
-        this.img = ImageLoader.getImages()[1];
+        this.img = ImageLoader.getImages()[4];
         Constants.COMMAND_SYSTEM.addCommand("tp", (args) => {
             this.hitboxComponent.setHitbox(Object.assign(Object.assign({}, hitboxComponent.getHitbox()), { x: parseFloat(args[0]), y: parseFloat(args[1]) }));
         });
@@ -77,7 +77,7 @@ export class Player extends Entity {
     }) {
         this.controls = controls;
     }
-    update(dt) {
+    update() {
         this.velocity = { x: 0, y: 0 };
         if (Constants.INPUT_HANDLER.getKeys()[this.controls.up]) {
             this.direction = "up";
@@ -147,7 +147,7 @@ export class Player extends Entity {
             }
             Constants.INPUT_HANDLER.getKeys()["p"] = false;
         }
-        super.update(dt);
+        super.update();
     }
     getControls() {
         return Object.assign({}, this.controls);

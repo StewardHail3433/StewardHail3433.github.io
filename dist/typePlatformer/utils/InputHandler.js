@@ -5,9 +5,7 @@ export class InputHandler {
         this.keysToggled = { "F3": false };
         this.mousePos = { x: 0, y: 0 };
         this.mouseDown = false;
-        this.scale = 1.0;
         this.justClicked = false;
-        this.scale = 1.0;
         this.canvas = document.getElementById(Constants.CANVAS_ID);
         document.addEventListener("keydown", (event) => this.handleKeyDown(event));
         document.addEventListener("keyup", (event) => this.handleKeyUp(event));
@@ -31,20 +29,21 @@ export class InputHandler {
     }
     handleMouseDown(event) {
         const rect = this.canvas.getBoundingClientRect();
-        this.mousePos.x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2);
-        this.mousePos.y = event.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
+        this.mousePos.x = (event.clientX - rect.left) * (Constants.CANVAS_WIDTH / rect.width);
+        this.mousePos.y = (event.clientY - rect.top) * (Constants.CANVAS_HEIGHT / rect.height);
         this.mouseDown = true;
         this.setJustClicked(true);
     }
     handleMouseMove(event) {
         const rect = this.canvas.getBoundingClientRect();
-        this.mousePos.x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2);
-        this.mousePos.y = event.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
+        console.log(parseFloat(this.canvas.style.width), rect.width);
+        this.mousePos.x = (event.clientX - rect.left) * (Constants.CANVAS_WIDTH / rect.width);
+        this.mousePos.y = (event.clientY - rect.top) * (Constants.CANVAS_HEIGHT / rect.height);
     }
     handleMouseUp(event) {
         const rect = this.canvas.getBoundingClientRect();
-        this.mousePos.x = event.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH * this.scale) / 2);
-        this.mousePos.y = event.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT * this.scale) / 2);
+        this.mousePos.x = (event.clientX - rect.left) * (Constants.CANVAS_WIDTH / rect.width);
+        this.mousePos.y = (event.clientY - rect.top) * (Constants.CANVAS_HEIGHT / rect.height);
         this.mouseDown = false;
     }
     getKeys() {
@@ -58,16 +57,13 @@ export class InputHandler {
     }
     getMouseWorldPosition(camera) {
         let worldpos = {
-            x: Math.floor((camera.getView().x * this.scale + this.mousePos.x) / (Constants.TILE_SIZE * this.scale)),
-            y: Math.floor((camera.getView().y * this.scale + this.mousePos.y) / (Constants.TILE_SIZE * this.scale)),
+            x: Math.floor((camera.getView().x + this.mousePos.x / camera.getView().zoom) / (Constants.TILE_SIZE)),
+            y: Math.floor((camera.getView().y + this.mousePos.y / camera.getView().zoom) / (Constants.TILE_SIZE)),
         };
         return worldpos;
     }
     isMouseDown() {
         return this.mouseDown;
-    }
-    updateScale(scale) {
-        this.scale = scale;
     }
     wasJustClicked() {
         return this.justClicked;
