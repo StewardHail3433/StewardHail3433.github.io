@@ -84,8 +84,8 @@ export class UIComponentButton extends UIComponentLabel {
         for (var i = 0; i < changedTouches.length; i++) {
             let touch = changedTouches[i];
             const rect = this.canvas.getBoundingClientRect();
-            let x = touch.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH) / 2);
-            let y = touch.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT) / 2);
+            let x = (touch.clientX - rect.left) * (Constants.CANVAS_WIDTH / rect.width);
+            let y = (touch.clientY - rect.left) * (Constants.CANVAS_WIDTH / rect.width);
             if (x >= 0 && y >= 0 && y <= Constants.CANVAS_HEIGHT && x <= Constants.CANVAS_WIDTH) {
                 event.preventDefault();
                 if (isInside({ x, y }, Object.assign(Object.assign({}, this.hitbox), { x: boxx, y: boxy }))) {
@@ -110,8 +110,8 @@ export class UIComponentButton extends UIComponentLabel {
         }
         for (var i = 0; i < changedTouches.length; i++) {
             let touch = changedTouches[i];
-            let x = touch.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH) / 2);
-            let y = touch.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT) / 2);
+            let x = (touch.clientX - rect.left) * (Constants.CANVAS_WIDTH / rect.width);
+            let y = (touch.clientY - rect.left) * (Constants.CANVAS_WIDTH / rect.width);
             if (x >= 0 && y >= 0 && y <= Constants.CANVAS_HEIGHT && x <= Constants.CANVAS_WIDTH) {
                 event.preventDefault();
                 if (isInside({ x, y }, Object.assign(Object.assign({}, this.hitbox), { x: boxx, y: boxy }))) {
@@ -128,8 +128,8 @@ export class UIComponentButton extends UIComponentLabel {
         var changedTouches = event.changedTouches;
         for (var i = 0; i < changedTouches.length; i++) {
             let touch = changedTouches[i];
-            let x = touch.clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH) / 2);
-            let y = touch.clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT) / 2);
+            let x = (touch.clientX - rect.left) * (Constants.CANVAS_WIDTH / rect.width);
+            let y = (touch.clientY - rect.left) * (Constants.CANVAS_WIDTH / rect.width);
             if (x >= 0 && y >= 0 && y <= Constants.CANVAS_HEIGHT && x <= Constants.CANVAS_WIDTH) {
                 event.preventDefault();
             }

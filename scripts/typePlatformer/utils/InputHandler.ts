@@ -48,8 +48,7 @@ export class InputHandler {
     }
 
     private handleMouseMove(event: MouseEvent) {
-        const rect = this.canvas.getBoundingClientRect(); 
-        console.log(parseFloat(this.canvas.style.width) , rect.width)
+        const rect = this.canvas.getBoundingClientRect();
         this.mousePos.x = (event.clientX - rect.left) * (Constants.CANVAS_WIDTH / rect.width);
         this.mousePos.y = (event.clientY - rect.top) * (Constants.CANVAS_HEIGHT / rect.height);
     }

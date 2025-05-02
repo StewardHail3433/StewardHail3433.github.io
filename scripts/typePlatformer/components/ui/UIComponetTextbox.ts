@@ -57,8 +57,8 @@ export class UIComponentTextbox extends UIComponentLabel{
     private handleTouchStart(event: TouchEvent) {
         event.preventDefault();
         const rect = this.canvas.getBoundingClientRect(); 
-        let x = event.touches[0].clientX - rect.left - ((rect.width - Constants.CANVAS_WIDTH) / 2);
-        let y = event.touches[0].clientY - rect.top - ((rect.height - Constants.CANVAS_HEIGHT) / 2);
+        let x = (event.touches[0].clientX - rect.left) * (Constants.CANVAS_WIDTH / rect.width);
+        let y = (event.touches[0].clientY - rect.left) * (Constants.CANVAS_WIDTH / rect.width);
         var boxx: number = this.hitbox.x; 
         var boxy: number = this.hitbox.y;
         if(this.parentComponent && !this.parentComponent.isHidden()) {
