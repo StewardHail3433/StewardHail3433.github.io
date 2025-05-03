@@ -59,7 +59,6 @@ export class UIInventory {
     public mouseDown(mouseItem: {inv: Inventory, index: number, x: number, y: number, holdingItem: boolean})  {
         for(let i = 0; i < this.inventory.getSize(); i++) {
             if(mouseItem.holdingItem == false) {
-                // if(!this.inventory.getSlot(i).isEmpty()) console.log(Constants.INPUT_HANDLER.getMousePosition(), this.slotPlacement[i])
                 if(!this.inventory.getSlot(i).isEmpty() && isInside(Constants.INPUT_HANDLER.getMousePosition(), {...this.slotPlacement[i], width: Constants.TILE_SIZE, height: Constants.TILE_SIZE})) {
                     mouseItem.index = i;
                     mouseItem.x = (Constants.INPUT_HANDLER.getMousePosition().x - Constants.TILE_SIZE/2);

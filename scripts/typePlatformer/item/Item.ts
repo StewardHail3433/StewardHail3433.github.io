@@ -16,7 +16,6 @@ export class Item {
                 this.img = img;
             }
         })
-        console.log(src);
     }
 
     public getDiscription(): string {
