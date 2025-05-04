@@ -16,14 +16,18 @@ export class WorldTile {
         this.hitboxComponent = hitboxComponent;
     }
 
-    public setLayer(layer: number, indexTile: number) {
+    public setLayer(layer: number, tile?: Tile) {
         // tried but broken
         // if(this.layers[layer] == undefined) {
         //     for(let i = this.layers.length; i != layer+1; i = this.layers.length) {
         //         this.layers.push({tile: Tiles.EMPTY})
         //     }
         // }
-        this.layers[layer].tile = Tiles.TREE_LEAVES
+        if(tile) {
+            this.layers[layer].tile = tile;
+        } else {
+            this.layers[layer].tile = Tiles.TREE_LEAVES
+        }
         // getTileByNumberId(indexTile);
     }
 

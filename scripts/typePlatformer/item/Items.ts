@@ -6,6 +6,7 @@ export class Items {
     public static readonly SWORD:Item = new Item("sword", "Sword", "This is sharp\nBe careful");
     public static readonly STICK:Item = new Item("stick", "Stick", "This is a stick");
     public static readonly PICKAXE:Item = new Item("pickaxe", "Pickaxe", "Lets Mine");
+    // public static readonly WOOD:Item = new Item("wood", "Wood", "It is wood\nTry crafting");
 
     private static readonly items: Record<string, Item> = {}; // YAY I get to try a record
 
@@ -27,7 +28,7 @@ export class Items {
     }
 
     public static registerTileItem(tile: Tile): Item {
-        this.items[tile.getId()] = new Item(tile.getId(), tile.getName(), "THIS IS A BLOCK");
+        this.items[tile.getId()] = new Item(tile.getId(), tile.getName(), "THIS IS A BLOCK", true);
         return this.items[tile.getId()];
     }
 }

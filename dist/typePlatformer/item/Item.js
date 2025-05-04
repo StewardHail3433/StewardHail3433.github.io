@@ -1,10 +1,11 @@
 import { ImageLoader } from "../utils/ImageLoader.js";
 export class Item {
-    constructor(id, name, discription = "This is an item(I think)") {
+    constructor(id, name, discription = "This is an item(I think)", isBlockItem = false) {
         this.maxStackAmount = 12;
         this.id = id;
         this.name = name;
         this.discription = discription;
+        this.isBlockItem = isBlockItem;
         let src = "resources/typePlatformer/images/items/" + this.id + ".png";
         ImageLoader.getImages().forEach(img => {
             var _a;
@@ -12,7 +13,6 @@ export class Item {
                 this.img = img;
             }
         });
-        console.log(src);
     }
     getDiscription() {
         return this.discription;
@@ -25,5 +25,8 @@ export class Item {
     }
     getId() {
         return this.id;
+    }
+    isABlockItem() {
+        return this.isBlockItem;
     }
 }

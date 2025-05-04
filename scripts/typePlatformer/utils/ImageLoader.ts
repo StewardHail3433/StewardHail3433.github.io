@@ -11,9 +11,14 @@ export class ImageLoader {
         this.createImage("resources/typePlatformer/images/entity/player/playerSheet2.png"),
         this.createImage("resources/typePlatformer/images/entity/player/duckMan.png"),
         this.createImage("resources/typePlatformer/images/entity/player/theVoid.png"),
-        this.createImage("resources/typePlatformer/images/tiles/mouseSelction.png"),
+        this.createImage("resources/typePlatformer/images/misc/mouseSelction.png"),
+        this.createImage("resources/typePlatformer/images/misc/breaking.png"),
         this.createImage("resources/typePlatformer/images/items/tree_leaves.png"),
-        this.createImage("resources/typePlatformer/images/items/tree_stump.png")];
+        this.createImage("resources/typePlatformer/images/items/tree_stump.png"),
+        this.createImage("resources/typePlatformer/images/items/wood.png"),
+        this.createImage("resources/typePlatformer/images/items/rock.png"),
+        this.createImage("resources/typePlatformer/images/items/grass.png"),
+        this.createImage("resources/typePlatformer/images/tiles/wood.png")];
 
 
     static getImages(): HTMLImageElement[]  {

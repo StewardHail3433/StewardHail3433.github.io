@@ -27,6 +27,14 @@ export class Slot {
         this.count = 0;
         this.empty = true;
     }
+    removeCount(num) {
+        this.count -= num;
+        if (this.count == 0) {
+            this.item = Items.EMPTY;
+            this.count = 0;
+            this.empty = true;
+        }
+    }
     isEmpty() {
         return this.empty;
     }

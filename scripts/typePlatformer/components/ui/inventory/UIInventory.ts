@@ -237,4 +237,8 @@ export class UIInventory {
     public update(mI: {inv: Inventory,index: number, x: number, y: number, holdingItem: boolean}) {
         this.mouseItem = mI;
     }
+
+    public setInventory(inv: Inventory) {
+        this.inventory = inv;
+    }
 }
