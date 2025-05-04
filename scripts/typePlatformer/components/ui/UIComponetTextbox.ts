@@ -35,7 +35,7 @@ export class UIComponentTextbox extends UIComponentLabel{
     }
 
     private handleMouseDown() {
-        if(Constants.INPUT_HANDLER.isMouseDown()) {
+        if(Constants.INPUT_HANDLER.isLeftDown()) {
             var boxx: number = this.hitbox.x; 
             var boxy: number = this.hitbox.y;
             if(this.parentComponent && !this.parentComponent.isHidden()) {

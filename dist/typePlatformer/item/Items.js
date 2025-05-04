@@ -8,7 +8,7 @@ export class Items {
         return this.EMPTY; // this.EMPTY;
     }
     static registerTileItem(tile) {
-        this.items[tile.getId()] = new Item(tile.getId(), tile.getName(), "THIS IS A BLOCK");
+        this.items[tile.getId()] = new Item(tile.getId(), tile.getName(), "THIS IS A BLOCK", true);
         return this.items[tile.getId()];
     }
 }
@@ -17,6 +17,7 @@ Items.EMPTY = new Item("empty", "empty");
 Items.SWORD = new Item("sword", "Sword", "This is sharp\nBe careful");
 Items.STICK = new Item("stick", "Stick", "This is a stick");
 Items.PICKAXE = new Item("pickaxe", "Pickaxe", "Lets Mine");
+// public static readonly WOOD:Item = new Item("wood", "Wood", "It is wood\nTry crafting");
 Items.items = {}; // YAY I get to try a record
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyNames
 (() => {

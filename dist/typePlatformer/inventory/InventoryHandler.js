@@ -1,20 +1,19 @@
-import { Inventory } from "../../../inventory/Inventory.js";
-import { Items } from "../../../item/Items.js";
-import { isInside } from "../../../utils/Collisions.js";
-import { Constants } from "../../../utils/Constants.js";
-import { UIInventory } from "./UIInventory.js";
-export class UIInventories {
-    constructor(canvas, camera, worldH) {
+import { Inventory } from "./Inventory.js";
+import { isInside } from "../utils/Collisions.js";
+import { Constants } from "../utils/Constants.js";
+import { UIInventory } from "../components/ui/inventory/UIInventory.js";
+import { Slot } from "./Slot.js";
+export class InventoryHandler {
+    constructor(canvas) {
         this.UIInventories = [];
         this.mouseItem = { inv: new Inventory(0), index: -1, x: 0, y: 0, holdingItem: false };
         this.drop = false;
+        this.emptySlot = new Slot();
         this.canvas = canvas;
-        this.camera = camera;
         this.inventories = [];
-        this.worldH = worldH;
     }
     mouseDown() {
-        if (Constants.INPUT_HANDLER.isMouseDown() && Constants.INPUT_HANDLER.wasJustClicked()) {
+        if (Constants.INPUT_HANDLER.isLeftDown() && Constants.INPUT_HANDLER.wasJustLeftClicked()) {
             for (let i = 0; i < this.inventories.length; i++) {
                 if (isInside(Constants.INPUT_HANDLER.getMousePosition(), Object.assign({}, this.UIInventories[i].getPlacementBox())) && !this.UIInventories[i].ishidden()) {
                     if (this.inventories[i].getType() == "hotbar" && !this.isMainInventoryOpen()) {
@@ -81,10 +80,6 @@ export class UIInventories {
         }
     }
     update() {
-        if (Constants.INPUT_HANDLER.getKeys()["q"]) {
-            this.drop = true;
-            Constants.INPUT_HANDLER.getKeys()["q"] = false;
-        }
         this.mouseDown();
         this.mouseMove();
         for (let i = 0; i < this.inventories.length; i++) {
@@ -95,28 +90,9 @@ export class UIInventories {
                 break;
             }
         }
-        if (this.drop && this.mouseItem.holdingItem) {
-            this.worldH.dropItem(this.mouseItem.inv.getSlot(this.mouseItem.index), { x: (Constants.INPUT_HANDLER.getMousePosition().x / this.camera.getView().zoom + this.camera.getView().x), y: (Constants.INPUT_HANDLER.getMousePosition().y / this.camera.getView().zoom + this.camera.getView().y) });
-            this.drop = false;
-            this.mouseItem.holdingItem = false;
+        if (this.getHeldSlot().isEmpty()) {
             this.mouseItem.index = -1;
-        }
-        else if (this.drop) {
-            for (let i = 0; i < this.inventories.length; i++) {
-                if (this.inventories[i].getType() == "hotbar") {
-                    if (!this.inventories[i].getSelecteSlot().isEmpty()) {
-                        this.worldH.dropItem(this.inventories[i].getSelecteSlot(), { x: (Constants.INPUT_HANDLER.getMousePosition().x / this.camera.getView().zoom + this.camera.getView().x), y: (Constants.INPUT_HANDLER.getMousePosition().y / this.camera.getView().zoom + this.camera.getView().y) });
-                    }
-                    break;
-                }
-            }
-            this.drop = false;
-        }
-        if (this.mouseItem.holdingItem) {
-            this.worldH.setHeldItem(this.mouseItem.inv.getSlot(this.mouseItem.index).getItem());
-        }
-        else {
-            this.worldH.setHeldItem(Items.EMPTY);
+            this.mouseItem.holdingItem = false;
         }
     }
     getUIInventory(type) {
@@ -125,5 +101,24 @@ export class UIInventories {
                 return this.UIInventories[i];
             }
         }
+    }
+    shouldDrop() {
+        return this.drop;
+    }
+    setDrop(drop) {
+        this.drop = drop;
+    }
+    getHeldSlot() {
+        if (this.mouseItem.holdingItem) {
+            return this.mouseItem.inv.getSlot(this.mouseItem.index);
+        }
+        return this.emptySlot;
+    }
+    resetDroppedItem(slot) {
+        if (this.mouseItem.holdingItem) {
+            this.mouseItem.holdingItem = false;
+            this.mouseItem.index = -1;
+        }
+        this.drop = false;
     }
 }

@@ -7,6 +7,8 @@ import { UIHandler } from "./ui/UIHandler.js";
 import { Constants } from "./utils/Constants.js";
 import { WorldHandler } from "./world/WorldHandler.js";
 import { CollisionHandler } from "./utils/CollisionHandler.js";
+import { InteractionHandler } from "./utils/InteractionHandler.js";
+import { InventoryHandler } from "./inventory/InventoryHandler.js";
 class Game {
     constructor() {
         this.players = {};
@@ -34,6 +36,8 @@ class Game {
         this.setupEventListeners();
         requestAnimationFrame(this.gameLoop.bind(this));
         this.collisionHandler = new CollisionHandler();
+        this.inventoryHandler = new InventoryHandler(this.canvas);
+        this.interactionHandler = new InteractionHandler(this.player, this.worldHandler, this.camera, this.inventoryHandler);
         document.addEventListener("keydown", (event) => { if (event.key === "?") {
             event.preventDefault();
             this.toggleFullScreen();
@@ -63,6 +67,7 @@ class Game {
                 document.getElementsByClassName("hideFull")[i].innerHTML = this.fullscreenhtml[i];
             }
             this.fullscreenhtml = [];
+            document.getElementById("fullscreenButton").addEventListener("click", () => { this.toggleFullScreen(); });
         }
         this.isFullscreen = !this.isFullscreen;
     }
@@ -194,14 +199,22 @@ class Game {
             this.worldHandler.updateServer(this.camera, this.socket);
         }
         else {
-            this.worldHandler.update(this.camera, this.player, dt);
+            this.worldHandler.update(this.camera);
         }
+        this.interactionHandler.update(dt);
         if (this.player.isMoving() && this.isMultiplayer && this.socket) {
             this.socket.emit("updatePlayer", this.player.serialize());
         }
+        this.inventoryHandler.update();
         this.uiHandler.update();
-        if (Constants.INPUT_HANDLER.wasJustClicked()) {
-            Constants.INPUT_HANDLER.setJustClicked(false);
+        if (Constants.INPUT_HANDLER.wasJustLeftClicked()) {
+            Constants.INPUT_HANDLER.setJustLeftClicked(false);
+        }
+        if (Constants.INPUT_HANDLER.wasJustRightClicked()) {
+            Constants.INPUT_HANDLER.setJustRightClicked(false);
+        }
+        if (Constants.INPUT_HANDLER.wasJustMiddleClicked()) {
+            Constants.INPUT_HANDLER.setJustMiddleClicked(false);
         }
     }
     render() {
@@ -226,6 +239,7 @@ class Game {
             }
         }
         this.ctx.restore();
+        this.inventoryHandler.render(this.ctx);
         this.uiHandler.render(this.ctx);
     }
 }

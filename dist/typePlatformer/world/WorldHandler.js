@@ -1,8 +1,8 @@
 import { HitboxComponent } from "../components/HitboxComponent.js";
 import { DroppedSlot } from "../inventory/DroppedSlot.js";
-import { Inventory } from "../inventory/Inventory.js";
 import { Slot } from "../inventory/Slot.js";
 import { Items } from "../item/Items.js";
+import { DropTableHandler } from "../loottable/dropHandler.js";
 import { containBox } from "../utils/Collisions.js";
 import { Constants } from "../utils/Constants.js";
 import { ImageLoader } from "../utils/ImageLoader.js";
@@ -11,11 +11,27 @@ import { WorldTile } from "./WorldTile.js";
 export class WorldHandler {
     constructor() {
         this.img = new Image();
+        this.mouseImg = new Image();
+        this.brekaingImg = new Image();
         this.showChunks = false;
         this.droppedItems = [];
         this.heldItem = Items.EMPTY;
+        this.breakingTile = undefined;
+        this.breakTime = 0;
         this.worldMap = new Map();
         this.img.src = "./resources/typePlatformer/images/tiles/background/grass.png";
+        ImageLoader.getImages().forEach(img => {
+            var _a;
+            if (img.src.substring((_a = img.src.match("resources")) === null || _a === void 0 ? void 0 : _a.index) === "resources/typePlatformer/images/misc/mouseSelction.png") {
+                this.mouseImg = img;
+            }
+        });
+        ImageLoader.getImages().forEach(img => {
+            var _a;
+            if (img.src.substring((_a = img.src.match("resources")) === null || _a === void 0 ? void 0 : _a.index) === "resources/typePlatformer/images/misc/breaking.png") {
+                this.brekaingImg = img;
+            }
+        });
         Constants.COMMAND_SYSTEM.addCommand("chunkOutline", (args) => {
             if (args.length === 0) {
                 this.showChunks = !this.showChunks;
@@ -42,13 +58,13 @@ export class WorldHandler {
         let y = Math.floor((camera.getView().y + camera.getView().height / 2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
         let cx = x - Constants.RENDER_DISTANCE + 1;
         let cy = y - Constants.RENDER_DISTANCE + 1;
-        for (let i = cx; i < x + ((Constants.RENDER_DISTANCE)); i++) {
-            for (let j = cy; j < y + ((Constants.RENDER_DISTANCE)); j++) {
-                if (this.worldMap.has(i + ", " + j)) {
+        for (let i = cy; i < y + ((Constants.RENDER_DISTANCE)); i++) {
+            for (let j = cx; j < x + ((Constants.RENDER_DISTANCE)); j++) {
+                if (this.worldMap.has(j + ", " + i)) {
                     for (let t = 0; t < Constants.CHUNK_SIZE; t++) {
                         for (let f = 0; f < Constants.CHUNK_SIZE; f++) {
-                            if (containBox(camera.getView(), this.getChunk(i, j)[t][f].getHitboxComponent().getHitbox())) {
-                                this.getChunk(i, j)[t][f].render(ctx, layer);
+                            if (containBox(camera.getView(), this.getChunk(j, i)[t][f].getHitboxComponent().getHitbox())) {
+                                this.getChunk(j, i)[t][f].render(ctx, layer);
                             }
                         }
                     }
@@ -68,47 +84,51 @@ export class WorldHandler {
         }
     }
     renderMouse(ctx, camera) {
-        ImageLoader.getImages().forEach(img => {
-            var _a;
-            if (img.src.substring((_a = img.src.match("resources")) === null || _a === void 0 ? void 0 : _a.index) === "resources/typePlatformer/images/tiles/mouseSelction.png") {
-                ctx.drawImage(img, Constants.INPUT_HANDLER.getMouseWorldPosition(camera).x * Constants.TILE_SIZE - 1, Constants.INPUT_HANDLER.getMouseWorldPosition(camera).y * Constants.TILE_SIZE - 1);
-            }
-        });
+        if (this.mouseImg) {
+            ctx.drawImage(this.mouseImg, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).x * Constants.TILE_SIZE - 1, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).y * Constants.TILE_SIZE - 1);
+        }
         if (this.heldItem != Items.EMPTY) {
             if (this.heldItem.getImage()) {
                 ctx.globalAlpha = 0.5;
-                ctx.drawImage(this.heldItem.getImage(), Constants.INPUT_HANDLER.getMouseWorldPosition(camera).x * Constants.TILE_SIZE, Constants.INPUT_HANDLER.getMouseWorldPosition(camera).y * Constants.TILE_SIZE);
+                ctx.drawImage(this.heldItem.getImage(), Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).x * Constants.TILE_SIZE, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).y * Constants.TILE_SIZE);
                 ctx.globalAlpha = 1.0;
             }
         }
+        if (this.breakingTile) {
+            if (this.brekaingImg) {
+                if (this.breakTime % 50 < 10) {
+                    ctx.drawImage(this.brekaingImg, 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).x * Constants.TILE_SIZE - 1, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).y * Constants.TILE_SIZE - 1, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                }
+                else if (this.breakTime % 50 < 20) {
+                    ctx.drawImage(this.brekaingImg, Constants.TILE_SIZE, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).x * Constants.TILE_SIZE - 1, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).y * Constants.TILE_SIZE - 1, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                }
+                else if (this.breakTime % 50 < 30) {
+                    ctx.drawImage(this.brekaingImg, Constants.TILE_SIZE * 2, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).x * Constants.TILE_SIZE - 1, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).y * Constants.TILE_SIZE - 1, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                }
+                else if (this.breakTime % 50 < 40) {
+                    ctx.drawImage(this.brekaingImg, Constants.TILE_SIZE * 3, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).x * Constants.TILE_SIZE - 1, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).y * Constants.TILE_SIZE - 1, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                }
+                else if (this.breakTime % 50 < 50) {
+                    ctx.drawImage(this.brekaingImg, Constants.TILE_SIZE * 4, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).x * Constants.TILE_SIZE - 1, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).y * Constants.TILE_SIZE - 1, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                }
+            }
+        }
     }
-    update(camera, player, dt) {
+    update(camera) {
         let x = Math.floor((camera.getView().x + camera.getView().width / 2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
         let y = Math.floor((camera.getView().y + camera.getView().height / 2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
         let cx = x - Constants.RENDER_DISTANCE + 1;
         let cy = y - Constants.RENDER_DISTANCE + 1;
-        for (let i = cx; i < x + ((Constants.RENDER_DISTANCE)); i++) {
-            for (let j = cy; j < y + ((Constants.RENDER_DISTANCE)); j++) {
-                if (!this.worldMap.has(i + ", " + j)) {
-                    this.generateChunk(i, j, 1);
+        for (let i = cy; i < y + ((Constants.RENDER_DISTANCE)); i++) {
+            for (let j = cx; j < x + ((Constants.RENDER_DISTANCE)); j++) {
+                if (!this.worldMap.has(j + ", " + i)) {
+                    this.generateChunk(j, i, 1);
                 }
             }
         }
-        for (let i = 0; i < this.droppedItems.length; i++) {
-            let slot = this.droppedItems[i].getSlot();
-            if (containBox(player.getHitboxComponent().getHitbox(), this.droppedItems[i].getHitboxComponent().getHitbox())) {
-                const playerHotBar = player.getHotbarUI().getInventory();
-                const playerInv = player.getInventoryUI().getInventory();
-                slot = Inventory.transferItems(playerHotBar, slot);
-                if (slot.getItemCount() != 0) {
-                    slot = Inventory.transferItems(playerInv, slot);
-                }
-                this.droppedItems[i].setSlot(slot);
-            }
-            if (slot.getItemCount() != 0) {
-                this.droppedItems[i].update(dt, { x: player.getHitboxComponent().getHitbox().x + player.getHitboxComponent().getHitbox().width / 2, y: player.getHitboxComponent().getHitbox().y + player.getHitboxComponent().getHitbox().height / 2 });
-            }
-        }
+    }
+    getDroppedItems() {
+        return this.droppedItems;
     }
     updateServer(camera, socket) {
         if (socket) {
@@ -117,9 +137,9 @@ export class WorldHandler {
             let y = Math.floor((camera.getView().y + camera.getView().height / 2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
             let cx = x - Constants.RENDER_DISTANCE + 1;
             let cy = y - Constants.RENDER_DISTANCE + 1;
-            top: for (let i = cx; i < x + ((Constants.RENDER_DISTANCE)); i++) {
-                for (let j = cy; j < y + ((Constants.RENDER_DISTANCE)); j++) {
-                    if (!this.worldMap.has(i + ", " + j)) {
+            top: for (let i = cy; i < y + ((Constants.RENDER_DISTANCE)); i++) {
+                for (let j = cx; j < x + ((Constants.RENDER_DISTANCE)); j++) {
+                    if (!this.worldMap.has(j + ", " + i)) {
                         socket.emit("loadChunk", camera.getView());
                         break top;
                     }
@@ -134,8 +154,8 @@ export class WorldHandler {
         for (let i = 0; i < Constants.CHUNK_SIZE; i++) {
             const row = [];
             for (let j = 0; j < Constants.CHUNK_SIZE; j++) {
-                let worldX = (chunkX * Constants.CHUNK_SIZE + i) * Constants.TILE_SIZE;
-                let worldY = (chunkY * Constants.CHUNK_SIZE + j) * Constants.TILE_SIZE;
+                let worldX = (chunkX * Constants.CHUNK_SIZE + j) * Constants.TILE_SIZE;
+                let worldY = (chunkY * Constants.CHUNK_SIZE + i) * Constants.TILE_SIZE;
                 if (Math.floor(Math.random() * 4) > 0) {
                     row.push(new WorldTile([{ tile: Tiles.EMPTY }, { tile: Tiles.EMPTY }], new HitboxComponent({ x: worldX, y: worldY, width: Constants.TILE_SIZE, height: Constants.TILE_SIZE }, { red: 0, green: 0, blue: 0, alpha: 0.0 })));
                 }
@@ -150,7 +170,7 @@ export class WorldHandler {
             chunk.push(row);
         }
         for (let i = 0; i < leavesPos.length; i++) {
-            (_b = (_a = chunk.at(leavesPos[i].x)) === null || _a === void 0 ? void 0 : _a.at(leavesPos[i].y)) === null || _b === void 0 ? void 0 : _b.setLayer(1, 2);
+            (_b = (_a = chunk.at(leavesPos[i].y)) === null || _a === void 0 ? void 0 : _a.at(leavesPos[i].x)) === null || _b === void 0 ? void 0 : _b.setLayer(1, Tiles.TREE_LEAVES);
         }
         this.worldMap.set(chunkX + ", " + chunkY, chunk);
         return chunk;
@@ -173,23 +193,6 @@ export class WorldHandler {
     hideChunksOutlines() {
         this.showChunks = false;
     }
-    getVisibleChunks(camera) {
-        const visibleChunks = {};
-        // let x = Math.floor((camera.getView().x+camera.getView().width/2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
-        // let y = Math.floor((camera.getView().y+camera.getView().height/2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
-        // let cx = x - Constants.RENDER_DISTANCE+1;
-        // let cy = y - Constants.RENDER_DISTANCE+1;
-        // for (let i = cx; i < x + Constants.RENDER_DISTANCE; i++) {
-        //     for (let j = cy; j < y + Constants.RENDER_DISTANCE; j++) {
-        //         if (this.worldMap.has(i+", "+j)) {
-        //             visibleChunks[i+", "+j] = this.worldMap.get(i+", "+j)!.map(row =>
-        //                 row.map(tile => tile.serialize())
-        //             );
-        //         }
-        //     }
-        // }
-        return visibleChunks;
-    }
     loadChunksFromServer(chunks) {
         chunks.forEach((value, key) => {
             this.worldMap.set(key, value);
@@ -201,6 +204,43 @@ export class WorldHandler {
     }
     setHeldItem(item) {
         this.heldItem = item;
+    }
+    getWorldTile(pos) {
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder#description
+        const mod = (n, d) => {
+            return ((n % d) + d) % d;
+        };
+        return this.getChunk(Math.floor(pos.x / Constants.CHUNK_SIZE), Math.floor(pos.y / Constants.CHUNK_SIZE))[mod(pos.y, Constants.CHUNK_SIZE)][mod(pos.x, Constants.CHUNK_SIZE)];
+    }
+    setBreakingTile(worldTile) {
+        this.breakingTile = worldTile;
+    }
+    updateBreakTime() {
+        this.breakTime++;
+    }
+    getBreakTime() {
+        return this.breakTime;
+    }
+    clearBreakingTile() {
+        this.breakingTile = undefined;
+        this.breakTime = 0;
+    }
+    getBreakingTile() {
+        return this.breakingTile;
+    }
+    breakTile(layer) {
+        var _a;
+        if (this.breakingTile) {
+            const item = DropTableHandler.getTileDrop(this.breakingTile.getLayers()[layer].tile);
+            if (item != Items.EMPTY) {
+                this.dropItem(new Slot(item, 1), this.breakingTile.getHitboxComponent().getHitbox());
+            }
+            else {
+                this.dropItem(new Slot(this.breakingTile.getLayers()[layer].tile.getItem(), 1), this.breakingTile.getHitboxComponent().getHitbox());
+            }
+            (_a = this.breakingTile) === null || _a === void 0 ? void 0 : _a.setLayer(layer, Tiles.EMPTY);
+            this.clearBreakingTile();
+        }
     }
     saveWorld() {
     }

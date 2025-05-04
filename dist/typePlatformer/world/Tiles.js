@@ -9,6 +9,12 @@ export class Tiles {
         }
         return this.EMPTY; // this.EMPTY;
     }
+    static getTileById(id) {
+        if (this.tiles[id]) {
+            return this.tiles[id];
+        }
+        return this.EMPTY; // this.EMPTY;
+    }
 }
 _a = Tiles;
 Tiles.EMPTY = new Tile("empty", 0);
@@ -19,6 +25,7 @@ Tiles.TREE = new Tile("tree", 4);
 Tiles.DEAD_TREE = new Tile("deadtree", 5);
 Tiles.TREE_STUMP = new Tile("tree_stump", 6);
 Tiles.TREE_LEAVES = new Tile("tree_leaves", 7);
+Tiles.WOOD = new Tile("wood", 8, "Wood", { breakTime: 25 });
 Tiles.tiles = {}; // YAY I get to try a record
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyNames
 (() => {

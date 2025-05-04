@@ -1,4 +1,3 @@
-import { UIInventory } from "../../components/ui/inventory/UIInventory.js";
 import { UIComponentButton } from "../../components/ui/UIComponentButton.js";
 import { Inventory } from "../../inventory/Inventory.js";
 import { Items } from "../../item/Items.js";
@@ -9,9 +8,20 @@ import { Slot } from "../../inventory/Slot.js";
 export class Player extends Entity {
     constructor(name, healthComponent, hitboxComponent) {
         super(healthComponent, hitboxComponent);
+        this.controls = {
+            up: 'w',
+            down: 's',
+            left: 'a',
+            right: 'd',
+            inventory: 'e',
+            break: "MLeft",
+            place: "MRight",
+            drop: "q"
+        };
         this.touchMode = false;
         this.frame = 0;
-        this.inventory = new Inventory(14);
+        this.isBreaking = false;
+        this.inventory = new Inventory(14, "mainInventory");
         this.hotbar = new Inventory(7, "hotbar");
         this.movementButtons = [new UIComponentButton(document.getElementById(Constants.CANVAS_ID), { x: 10, y: 270, width: 40, height: 40 }, { red: 255, green: 255, blue: 255 }, false, "<-", undefined, 15, "center", { red: 200, green: 200, blue: 200 }, undefined, this.hitboxComponent.getColor(), undefined, () => {
                 Constants.INPUT_HANDLER.getKeys()[this.controls.left] = false;
@@ -41,9 +51,7 @@ export class Player extends Entity {
         // this.inventory.getSlot(6).setItem(Items.STICK);
         // this.inventory.getSlot(8).setItem(Items.STICK);
         this.inventory.getSlot(10).setItem(Items.STICK, 1);
-        // this.inventory.getSlot(12).setItem(Items.SWORD);
-        this.hotbarUi = new UIInventory(document.getElementById(Constants.CANVAS_ID), this.hotbar, { x: 0, y: 0, row: 1, col: 7 }, { red: 128, green: 128, blue: 128, alpha: 1.0 }, false);
-        this.invUi = new UIInventory(document.getElementById(Constants.CANVAS_ID), this.inventory, { x: 0, y: 18, row: 2, col: 7 }, undefined, false);
+        this.inventory.getSlot(12).setItem(Items.SWORD, 1);
         this.hotbar.setSelecteSlot(0);
         this.setToTouch();
         this.img = ImageLoader.getImages()[4];
@@ -68,63 +76,72 @@ export class Player extends Entity {
         Constants.COMMAND_SYSTEM.addCommand("layer", (args) => {
             this.layer = parseInt(args[0]);
         });
+        Constants.COMMAND_SYSTEM.addCommand("setControl", (args) => {
+            // https://stackoverflow.com/questions/58960077/how-to-check-if-a-strongly-typed-object-contains-a-given-key-in-typescript-witho
+            if (args[0] in this.controls) {
+                this.controls[args[0]] = args[1];
+            }
+        });
     }
     setControls(controls = {
         up: 'w',
         down: 's',
         left: 'a',
-        right: 'd'
+        right: 'd',
+        inventory: 'e',
+        break: "MLeft",
+        place: "MRight",
+        drop: "q"
     }) {
         this.controls = controls;
     }
     update() {
         this.velocity = { x: 0, y: 0 };
-        if (Constants.INPUT_HANDLER.getKeys()[this.controls.up]) {
+        if (Constants.INPUT_HANDLER.checkControl(this.controls.up)) {
             this.direction = "up";
             this.velocity.y = -this.speed;
         }
-        if (Constants.INPUT_HANDLER.getKeys()[this.controls.down]) {
+        if (Constants.INPUT_HANDLER.checkControl(this.controls.down)) {
             this.direction = "down";
             this.velocity.y = this.speed;
         }
-        if (Constants.INPUT_HANDLER.getKeys()[this.controls.left]) {
+        if (Constants.INPUT_HANDLER.checkControl(this.controls.left)) {
             this.direction = "left";
             this.velocity.x = -this.speed;
         }
-        if (Constants.INPUT_HANDLER.getKeys()[this.controls.right]) {
+        if (Constants.INPUT_HANDLER.checkControl(this.controls.right)) {
             this.direction = "right";
             this.velocity.x = this.speed;
         }
-        if (Constants.INPUT_HANDLER.getKeys()["1"]) {
+        if (Constants.INPUT_HANDLER.checkControl("1")) {
             this.hotbar.setSelecteSlot(0);
         }
-        else if (Constants.INPUT_HANDLER.getKeys()["2"]) {
+        else if (Constants.INPUT_HANDLER.checkControl("2")) {
             this.hotbar.setSelecteSlot(1);
         }
-        else if (Constants.INPUT_HANDLER.getKeys()["3"]) {
+        else if (Constants.INPUT_HANDLER.checkControl("3")) {
             this.hotbar.setSelecteSlot(2);
         }
-        else if (Constants.INPUT_HANDLER.getKeys()["4"]) {
+        else if (Constants.INPUT_HANDLER.checkControl("4")) {
             this.hotbar.setSelecteSlot(3);
         }
-        else if (Constants.INPUT_HANDLER.getKeys()["5"]) {
+        else if (Constants.INPUT_HANDLER.checkControl("5")) {
             this.hotbar.setSelecteSlot(4);
         }
-        else if (Constants.INPUT_HANDLER.getKeys()["6"]) {
+        else if (Constants.INPUT_HANDLER.checkControl("6")) {
             this.hotbar.setSelecteSlot(5);
         }
-        else if (Constants.INPUT_HANDLER.getKeys()["7"]) {
+        else if (Constants.INPUT_HANDLER.checkControl("7")) {
             this.hotbar.setSelecteSlot(6);
         }
-        if (Constants.INPUT_HANDLER.getKeys()["e"]) {
-            if (this.invUi.ishidden()) {
-                this.invUi.show();
-            }
-            else {
-                this.invUi.hide();
-            }
-            Constants.INPUT_HANDLER.getKeys()["e"] = false;
-        }
+        // if(Constants.INPUT_HANDLER.checkControl("e")) {
+        //     if(this.invUi.ishidden()) {
+        //         this.invUi.show();
+        //     } else {
+        //         this.invUi.hide();
+        //     }
+        //     Constants.INPUT_HANDLER.checkControl("e"] = false;
+        // }
         if (this.touchMode) {
             for (var button of this.movementButtons) {
                 button.show();
@@ -136,7 +153,7 @@ export class Player extends Entity {
             }
         }
         this.frame += 1;
-        if (Constants.INPUT_HANDLER.getKeys()["p"]) {
+        if (Constants.INPUT_HANDLER.checkControl("p")) {
             if (this.isArrows) {
                 this.setControls();
                 this.isArrows = false;
@@ -145,7 +162,7 @@ export class Player extends Entity {
                 this.setControls(Object.assign(Object.assign({}, this.controls), { up: "ArrowUp", down: "ArrowDown", left: "ArrowLeft", right: "ArrowRight" }));
                 this.isArrows = true;
             }
-            Constants.INPUT_HANDLER.getKeys()["p"] = false;
+            Constants.INPUT_HANDLER.setKey("p", false);
         }
         super.update();
     }
@@ -295,16 +312,19 @@ export class Player extends Entity {
             super.render(ctx);
         }
     }
-    getHotbarUI() {
-        return this.hotbarUi;
-    }
-    getInventoryUI() {
-        return this.invUi;
-    }
     setImage(img) {
         this.img = img;
     }
-    isInventoryOpen() {
-        return !this.invUi.ishidden();
+    getHotbarInventory() {
+        return this.hotbar;
+    }
+    getMainInventory() {
+        return this.inventory;
+    }
+    getBreaking() {
+        return this.isBreaking;
+    }
+    setBreaking(bool) {
+        this.isBreaking = bool;
     }
 }

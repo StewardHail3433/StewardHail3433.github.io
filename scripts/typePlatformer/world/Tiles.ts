@@ -9,6 +9,7 @@ export class Tiles {
     public static readonly DEAD_TREE:Tile = new Tile("deadtree", 5);
     public static readonly TREE_STUMP:Tile = new Tile("tree_stump", 6);
     public static readonly TREE_LEAVES:Tile = new Tile("tree_leaves", 7);
+    public static readonly WOOD:Tile = new Tile("wood", 8, "Wood", {breakTime: 25});
 
     private static readonly tiles: Record<string, Tile> = {}; // YAY I get to try a record
 
@@ -20,6 +21,14 @@ export class Tiles {
         }
         return this.EMPTY// this.EMPTY;
     }
+
+    public static getTileById(id: string): Tile {
+        if(this.tiles[id]) {
+            return this.tiles[id];
+        }
+        return this.EMPTY// this.EMPTY;
+    }
+    
 
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyNames
     static {
