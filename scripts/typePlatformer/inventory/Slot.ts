@@ -35,15 +35,6 @@ export class Slot {
         this.empty = true;
     }
 
-    public removeCount(num: number) {
-        this.count -= num;
-        if(this.count == 0) {
-            this.item = Items.EMPTY;
-            this.count = 0;
-            this.empty = true;
-        }
-    }
-
     public isEmpty() {
         return this.empty;
     }

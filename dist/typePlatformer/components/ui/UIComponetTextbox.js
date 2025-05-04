@@ -14,7 +14,7 @@ export class UIComponentTextbox extends UIComponentLabel {
         this.onSubmit = onSubmit;
     }
     handleMouseDown() {
-        if (Constants.INPUT_HANDLER.isLeftDown()) {
+        if (Constants.INPUT_HANDLER.isMouseDown()) {
             var boxx = this.hitbox.x;
             var boxy = this.hitbox.y;
             if (this.parentComponent && !this.parentComponent.isHidden()) {

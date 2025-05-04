@@ -1,3 +1,4 @@
+import { UIInventories } from "../components/ui/inventory/UIInventories.js";
 import { UIComponent } from "../components/ui/UIComponent.js";
 import { UIComponentButton } from "../components/ui/UIComponentButton.js";
 import { UIComponentImage } from "../components/ui/UIComponentImage.js";
@@ -104,8 +105,12 @@ export class UIHandler {
                 Constants.COMMAND_SYSTEM.outputArgsError("/debug (hide || show)");
             }
         });
+        this.uiInventories = new UIInventories(canvas, player, camera, worldH);
+        this.uiInventories.addInventory(player.getInventoryUI());
+        this.uiInventories.addInventory(player.getHotbarUI());
     }
     render(ctx) {
+        this.uiInventories.render(ctx);
         this.debug.render(ctx);
         this.debugInfo.render(ctx);
         this.debugTeleportToCenterButton.render(ctx);
@@ -185,6 +190,7 @@ export class UIHandler {
                 button.update();
             }
         }
+        this.uiInventories.update();
     }
     getChatHandler() {
         return this.uiChatHandler;

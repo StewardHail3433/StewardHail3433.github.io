@@ -22,7 +22,7 @@ export class UIComponentButton extends UIComponentLabel {
         document.addEventListener("touchend", (event) => this.handleTouchEnd(event));
     }
     handleMouseDown() {
-        if (Constants.INPUT_HANDLER.isLeftDown()) {
+        if (Constants.INPUT_HANDLER.isMouseDown()) {
             var boxx = this.hitbox.x;
             var boxy = this.hitbox.y;
             if (this.parentComponent && !this.parentComponent.isHidden()) {
@@ -46,7 +46,7 @@ export class UIComponentButton extends UIComponentLabel {
             boxy += this.parentComponent.getHitbox().y;
         }
         if (isInside(Constants.INPUT_HANDLER.getMousePosition(), Object.assign(Object.assign({}, this.hitbox), { x: boxx, y: boxy }))) {
-            if (!Constants.INPUT_HANDLER.isLeftDown()) {
+            if (!Constants.INPUT_HANDLER.isMouseDown()) {
                 this.color = this.hoverColor;
             }
             else {
@@ -64,7 +64,7 @@ export class UIComponentButton extends UIComponentLabel {
         }
     }
     handleMouseUp() {
-        if (!Constants.INPUT_HANDLER.isLeftDown()) {
+        if (!Constants.INPUT_HANDLER.isMouseDown()) {
             if (this.click && this.activeTouches.size === 0) {
                 this.color = this.defaultColor;
                 this.click = false;

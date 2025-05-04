@@ -1,4 +1,5 @@
 import { Camera } from "../camera/Camera.js";
+import { UIInventories } from "../components/ui/inventory/UIInventories.js";
 import { UIComponent } from "../components/ui/UIComponent.js";
 import { UIComponentButton } from "../components/ui/UIComponentButton.js";
 import { UIComponentImage } from "../components/ui/UIComponentImage.js";
@@ -26,6 +27,7 @@ export class UIHandler {
     private characterChooserRightButton: UIComponentButton;
     private characterChooserLabel: UIComponentImage;
     private characterIndex: number = 1;
+    private uiInventories: UIInventories;
 
     constructor(canvas: HTMLCanvasElement, player: Player, camera: Camera, worldH: WorldHandler) {
         this.debug = new UIComponent({
@@ -133,10 +135,13 @@ export class UIHandler {
             }
         });
 
-
+        this.uiInventories = new UIInventories(canvas, player, camera, worldH);
+        this.uiInventories.addInventory(player.getInventoryUI())
+        this.uiInventories.addInventory(player.getHotbarUI())
     }
 
     public render(ctx: CanvasRenderingContext2D) {
+        this.uiInventories.render(ctx);
         this.debug.render(ctx);
         this.debugInfo.render(ctx);
         this.debugTeleportToCenterButton.render(ctx);
@@ -219,6 +224,8 @@ export class UIHandler {
                 (button as UIComponentButton).update();
             }
         }
+        
+        this.uiInventories.update();
     }
 
     public getChatHandler(): UIChatHandler {

@@ -14,23 +14,17 @@ import { Slot } from "../../inventory/Slot.js";
 
 export class Player extends Entity {
     private name: string;
-    private controls = {
-        up: 'w',
-        down: 's',
-        left: 'a',
-        right: 'd',
-        inventory: 'e',
-        break: "MLeft",
-        place: "MRight",
-        drop: "q"
-    };
+    private controls: any;
     private touchMode = false;
     private frame = 0;
     private img: HTMLImageElement;
-    private isBreaking: boolean = false;
 
-    private inventory: Inventory =  new Inventory(14, "mainInventory");
+    private inventory: Inventory =  new Inventory(14);
     private hotbar: Inventory =  new Inventory(7, "hotbar");
+
+
+    private hotbarUi: UIInventory;
+    private invUi: UIInventory;
 
     private movementButtons = [new UIComponentButton((document.getElementById(Constants.CANVAS_ID) as HTMLCanvasElement), {x:10, y:270, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "<-", undefined, 15, "center", {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
         Constants.INPUT_HANDLER.getKeys()[this.controls.left] = false;
@@ -65,7 +59,10 @@ export class Player extends Entity {
         // this.inventory.getSlot(6).setItem(Items.STICK);
         // this.inventory.getSlot(8).setItem(Items.STICK);
         this.inventory.getSlot(10).setItem(Items.STICK, 1);
-        this.inventory.getSlot(12).setItem(Items.SWORD, 1);
+        // this.inventory.getSlot(12).setItem(Items.SWORD);
+
+        this.hotbarUi = new UIInventory(document.getElementById(Constants.CANVAS_ID) as HTMLCanvasElement, this.hotbar, {x: 0, y: 0, row: 1, col: 7}, { red: 128, green: 128, blue: 128, alpha: 1.0}, false);
+        this.invUi = new UIInventory(document.getElementById(Constants.CANVAS_ID) as HTMLCanvasElement, this.inventory, {x: 0, y: 18, row: 2, col: 7}, undefined, false);
 
         this.hotbar.setSelecteSlot(0);
 
@@ -100,80 +97,65 @@ export class Player extends Entity {
         Constants.COMMAND_SYSTEM.addCommand("layer", (args:string[]) => {
             this.layer = parseInt(args[0]);    
         })
-
-        Constants.COMMAND_SYSTEM.addCommand("setControl", (args:string[]) => {
-            // https://stackoverflow.com/questions/58960077/how-to-check-if-a-strongly-typed-object-contains-a-given-key-in-typescript-witho
-            if(args[0] in this.controls) {
-                this.controls[args[0] as keyof typeof this.controls] = args[1];
-            }
-        })
     }
 
     public setControls(controls: {
         up: string,
         down: string,
         left: string,
-        right: string,
-        inventory: string,
-        break: string,
-        place: string,
-        drop: string
-    } = {
+        right: string
+    } ={
         up: 'w',
         down: 's',
         left: 'a',
-        right: 'd',
-        inventory: 'e',
-        break: "MLeft",
-        place: "MRight",
-        drop: "q"
+        right: 'd'
     }) {
         this.controls = controls;
     }
 
     public update(): void {
         this.velocity = {x:0, y:0};
-        if (Constants.INPUT_HANDLER.checkControl(this.controls.up)) {
+        if (Constants.INPUT_HANDLER.getKeys()[this.controls.up]) {
             this.direction = "up";
             this.velocity.y = -this.speed;
         } 
-        if (Constants.INPUT_HANDLER.checkControl(this.controls.down)) {
+        if (Constants.INPUT_HANDLER.getKeys()[this.controls.down]) {
             this.direction = "down";
             this.velocity.y = this.speed;
         }
-        if (Constants.INPUT_HANDLER.checkControl(this.controls.left)) {
+        if (Constants.INPUT_HANDLER.getKeys()[this.controls.left]) {
             this.direction = "left";
             this.velocity.x = -this.speed;
         }
-        if (Constants.INPUT_HANDLER.checkControl(this.controls.right)) {
+        if (Constants.INPUT_HANDLER.getKeys()[this.controls.right]) {
             this.direction = "right";
             this.velocity.x = this.speed;
         }
 
-        if(Constants.INPUT_HANDLER.checkControl("1")) {
+        if(Constants.INPUT_HANDLER.getKeys()["1"]) {
             this.hotbar.setSelecteSlot(0);
-        } else if(Constants.INPUT_HANDLER.checkControl("2")) {
+        } else if(Constants.INPUT_HANDLER.getKeys()["2"]) {
             this.hotbar.setSelecteSlot(1);
-        } else if(Constants.INPUT_HANDLER.checkControl("3")) {
+        } else if(Constants.INPUT_HANDLER.getKeys()["3"]) {
             this.hotbar.setSelecteSlot(2);
-        } else if(Constants.INPUT_HANDLER.checkControl("4")) {
+        } else if(Constants.INPUT_HANDLER.getKeys()["4"]) {
             this.hotbar.setSelecteSlot(3);
-        } else if(Constants.INPUT_HANDLER.checkControl("5")) {
+        } else if(Constants.INPUT_HANDLER.getKeys()["5"]) {
             this.hotbar.setSelecteSlot(4);
-        } else if(Constants.INPUT_HANDLER.checkControl("6")) {
+        } else if(Constants.INPUT_HANDLER.getKeys()["6"]) {
             this.hotbar.setSelecteSlot(5);
-        } else if(Constants.INPUT_HANDLER.checkControl("7")) {
+        } else if(Constants.INPUT_HANDLER.getKeys()["7"]) {
             this.hotbar.setSelecteSlot(6);
         }
 
-        // if(Constants.INPUT_HANDLER.checkControl("e")) {
-        //     if(this.invUi.ishidden()) {
-        //         this.invUi.show();
-        //     } else {
-        //         this.invUi.hide();
-        //     }
-        //     Constants.INPUT_HANDLER.checkControl("e"] = false;
-        // }
+        if(Constants.INPUT_HANDLER.getKeys()["e"]) {
+            if(this.invUi.ishidden()) {
+                this.invUi.show();
+            } else {
+                this.invUi.hide();
+            }
+            Constants.INPUT_HANDLER.getKeys()["e"] = false;
+        }
 
         if(this.touchMode) {
             for(var button of  this.movementButtons) {
@@ -186,7 +168,7 @@ export class Player extends Entity {
         }
         this.frame += 1;
 
-        if(Constants.INPUT_HANDLER.checkControl("p")) {
+        if(Constants.INPUT_HANDLER.getKeys()["p"]) {
             if(this.isArrows) {
                 this.setControls();
                 this.isArrows = false;
@@ -194,7 +176,7 @@ export class Player extends Entity {
                 this.setControls({...this.controls, up: "ArrowUp", down: "ArrowDown", left: "ArrowLeft", right: "ArrowRight"});
                 this.isArrows = true;
             }
-            Constants.INPUT_HANDLER.setKey("p", false);
+            Constants.INPUT_HANDLER.getKeys()["p"] = false;
         }
 
         super.update();
@@ -290,7 +272,7 @@ export class Player extends Entity {
                     } else {
                         ctx.drawImage(this.img, Constants.TILE_SIZE*3, Constants.TILE_SIZE*3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
-                } else if(this.frame % 80 < 60) {
+                } else if(this.frame % 80  < 60) {
                     if(this.direction === "left") {
                         ctx.drawImage(this.img, Constants.TILE_SIZE*4, Constants.TILE_SIZE*2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     } else {
@@ -326,23 +308,19 @@ export class Player extends Entity {
         }
     }
 
+    public getHotbarUI(): UIInventory {
+        return this.hotbarUi;
+    }
+
+    public getInventoryUI(): UIInventory {
+        return this.invUi;
+    }
+
     public setImage(img: HTMLImageElement) {
         this.img = img;
     }
 
-    public getHotbarInventory(): Inventory {
-        return this.hotbar;
-    }
-
-    public getMainInventory(): Inventory {
-        return this.inventory
-    }
-
-    public getBreaking(): boolean {
-        return this.isBreaking;
-    }
-
-    public setBreaking(bool: boolean) {
-        this.isBreaking = bool;
+    public isInventoryOpen(): boolean {
+        return !this.invUi.ishidden()
     }
 }

@@ -11,9 +11,6 @@ import { WorldHandler } from "./world/WorldHandler.js";
 import { Tile } from "./world/Tile.js";
 import { ImageLoader } from "./utils/ImageLoader.js";
 import { CollisionHandler } from "./utils/CollisionHandler.js";
-import { InteractionHandler } from "./utils/InteractionHandler.js";
-import { Inventory } from "./inventory/Inventory.js";
-import { InventoryHandler } from "./inventory/InventoryHandler.js";
 
 declare const io: any;
 class Game {
@@ -27,8 +24,6 @@ class Game {
     private camera: Camera;
     private worldHandler: WorldHandler;
     private collisionHandler: CollisionHandler;
-    private interactionHandler: InteractionHandler;
-    private inventoryHandler: InventoryHandler;
 
     private players: Record<string, Entity> = {};
     private isMultiplayer: boolean = false;
@@ -62,9 +57,6 @@ class Game {
         requestAnimationFrame(this.gameLoop.bind(this));
 
         this.collisionHandler = new CollisionHandler();
-
-        this.inventoryHandler = new InventoryHandler(this.canvas);
-        this.interactionHandler = new InteractionHandler(this.player, this.worldHandler, this.camera, this.inventoryHandler);
         
         document.addEventListener("keydown", (event) => {if(event.key === "?"){event.preventDefault();this.toggleFullScreen()} if(event.key === "c") {this.collisionHandler.setPlayerCollisions(false)} if(event.key === "C") {this.collisionHandler.setPlayerCollisions(true)}});
         document.getElementById("fullscreenButton")!.addEventListener("click", () => {this.toggleFullScreen()});
@@ -91,7 +83,6 @@ class Game {
                 document.getElementsByClassName("hideFull")[i].innerHTML = this.fullscreenhtml[i];
             }
             this.fullscreenhtml = []
-            document.getElementById("fullscreenButton")!.addEventListener("click", () => {this.toggleFullScreen()});
         }
         this.isFullscreen = !this.isFullscreen;
     }
@@ -249,25 +240,15 @@ class Game {
         if(this.isMultiplayer && this.socket) {
             this.worldHandler.updateServer(this.camera, this.socket);
         } else {
-            this.worldHandler.update(this.camera);
+            this.worldHandler.update(this.camera, this.player, dt);
         }
-        this.interactionHandler.update(dt);
         if (this.player.isMoving() && this.isMultiplayer && this.socket) {
             this.socket.emit("updatePlayer", this.player.serialize());
         }
-        this.inventoryHandler.update();
         this.uiHandler.update();
 
-        if(Constants.INPUT_HANDLER.wasJustLeftClicked()) {
-            Constants.INPUT_HANDLER.setJustLeftClicked(false);
-        }
-
-        if(Constants.INPUT_HANDLER.wasJustRightClicked()) {
-            Constants.INPUT_HANDLER.setJustRightClicked(false);
-        }
-
-        if(Constants.INPUT_HANDLER.wasJustMiddleClicked()) {
-            Constants.INPUT_HANDLER.setJustMiddleClicked(false);
+        if(Constants.INPUT_HANDLER.wasJustClicked()) {
+            Constants.INPUT_HANDLER.setJustClicked(false);
         }
     }
 
@@ -299,7 +280,6 @@ class Game {
         }
         this.ctx.restore();
 
-        this.inventoryHandler.render(this.ctx);
         this.uiHandler.render(this.ctx);
     }
 }

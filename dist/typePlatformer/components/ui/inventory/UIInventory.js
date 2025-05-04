@@ -205,7 +205,4 @@ export class UIInventory {
     update(mI) {
         this.mouseItem = mI;
     }
-    setInventory(inv) {
-        this.inventory = inv;
-    }
 }
