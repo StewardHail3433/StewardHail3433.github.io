@@ -91,21 +91,21 @@ export class Player extends Entity {
         });
     }
     setControls(controls = {
-        up: 'MLeft',
-        down: 'MLeft',
-        left: 'MLeft',
-        right: 'MLeft',
-        inventory: 'MLeft',
+        up: 'w',
+        down: 's',
+        left: 'a',
+        right: 'd',
+        inventory: 'e',
         break: "MLeft",
-        place: "MLeft",
-        drop: "MLeft",
-        selectSlot0: "MLeft",
-        selectSlot1: "MLeft",
-        selectSlot2: "MLeft",
-        selectSlot3: "MLeft",
-        selectSlot4: "MLeft",
-        selectSlot5: "MLeft",
-        selectSlot6: "MLeft",
+        place: "MRight",
+        drop: "q",
+        selectSlot0: "1",
+        selectSlot1: "2",
+        selectSlot2: "3",
+        selectSlot3: "4",
+        selectSlot4: "5",
+        selectSlot5: "6",
+        selectSlot6: "7",
     }) {
         this.controls = controls;
     }
