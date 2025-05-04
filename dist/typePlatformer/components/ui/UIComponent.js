@@ -19,8 +19,9 @@ export class UIComponent extends HitboxComponent {
         var x = this.hitbox.x;
         var y = this.hitbox.y;
         if (this.parentComponent && !this.parentComponent.isHidden()) {
-            x += this.parentComponent.getHitbox().x;
-            y += this.parentComponent.getHitbox().y;
+            const parentComponentHitbox = this.parentComponent.getHitbox();
+            x += parentComponentHitbox.x;
+            y += parentComponentHitbox.y;
         }
         ctx.fillRect(x, y, this.hitbox.width, this.hitbox.height);
     }

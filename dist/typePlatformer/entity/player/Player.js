@@ -191,121 +191,122 @@ export class Player extends Entity {
         return this.touchMode;
     }
     render(ctx) {
+        const hitbox = this.hitboxComponent.getHitbox();
         if (this.velocity.x != 0 || this.velocity.y != 0) {
             ctx.imageSmoothingEnabled = false;
             if (this.direction === "up" || this.direction === "down") {
                 if (this.frame % 40 < 10) {
                     if (this.direction === "down") {
-                        ctx.drawImage(this.img, 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                     else {
-                        ctx.drawImage(this.img, 0, Constants.TILE_SIZE * 1, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, 0, Constants.TILE_SIZE * 1, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                 }
                 else if (this.frame % 40 < 20) {
                     if (this.direction === "down") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 1, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 1, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                     else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 1, Constants.TILE_SIZE * 1, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 1, Constants.TILE_SIZE * 1, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                 }
                 else if (this.frame % 40 < 30) {
                     if (this.direction === "down") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 2, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 2, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                     else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 2, Constants.TILE_SIZE * 1, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 2, Constants.TILE_SIZE * 1, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                 }
                 else if (this.frame % 40 < 40) {
                     if (this.direction === "down") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 3, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 3, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                     else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 3, Constants.TILE_SIZE * 1, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 3, Constants.TILE_SIZE * 1, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                 }
             }
             else {
                 if (this.frame % 80 < 10) {
                     if (this.direction === "left") {
-                        ctx.drawImage(this.img, 0, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, 0, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                     else {
-                        ctx.drawImage(this.img, 0, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, 0, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                 }
                 else if (this.frame % 80 < 20) {
                     if (this.direction === "left") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 1, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 1, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                     else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 1, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 1, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                 }
                 else if (this.frame % 80 < 30) {
                     if (this.direction === "left") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 2, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 2, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                     else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 2, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 2, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                 }
                 else if (this.frame % 80 < 40) {
                     if (this.direction === "left") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 4, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 4, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                     else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 4, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 4, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                 }
                 else if (this.frame % 80 < 50) {
                     if (this.direction === "left") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 3, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 3, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                     else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 3, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 3, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                 }
                 else if (this.frame % 80 < 60) {
                     if (this.direction === "left") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 4, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 4, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                     else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 4, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 4, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                 }
                 else if (this.frame % 80 < 70) {
                     if (this.direction === "left") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 5, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 5, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                     else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 5, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 5, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                 }
                 else if (this.frame % 80 < 80) {
                     if (this.direction === "left") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 1, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 1, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                     else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE * 1, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                        ctx.drawImage(this.img, Constants.TILE_SIZE * 1, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
                     }
                 }
             }
         }
         else {
             if (this.direction === "up") {
-                ctx.drawImage(this.img, 0, Constants.TILE_SIZE * 1, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                ctx.drawImage(this.img, 0, Constants.TILE_SIZE * 1, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
             }
             else if (this.direction === "down") {
-                ctx.drawImage(this.img, 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                ctx.drawImage(this.img, 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
             }
             else if (this.direction === "right") {
-                ctx.drawImage(this.img, 0, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                ctx.drawImage(this.img, 0, Constants.TILE_SIZE * 3, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
             }
             else if (this.direction === "left") {
-                ctx.drawImage(this.img, Constants.TILE_SIZE * 2, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, this.hitboxComponent.getHitbox().x + (this.hitboxComponent.getHitbox().width / 2) - (Constants.TILE_SIZE / 2), this.hitboxComponent.getHitbox().y + (this.hitboxComponent.getHitbox().height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                ctx.drawImage(this.img, Constants.TILE_SIZE * 2, Constants.TILE_SIZE * 2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
             }
         }
         if (Constants.INPUT_HANDLER.getKeyToggled()["F3"] && Constants.INPUT_HANDLER.getKeyToggled()["b"]) {

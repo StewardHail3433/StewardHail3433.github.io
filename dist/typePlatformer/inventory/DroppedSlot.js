@@ -6,10 +6,13 @@ export class DroppedSlot {
         this.slot = slot;
     }
     update(dt, attactionPt) {
-        this.hitboxComponent.setHitbox(Object.assign(Object.assign({}, this.hitboxComponent.getHitbox()), { x: this.hitboxComponent.getHitbox().x + this.velocity.x * dt, y: this.hitboxComponent.getHitbox().y + this.velocity.y * dt }));
+        const hitbox = this.hitboxComponent.getHitbox();
+        this.hitboxComponent.setHitbox(Object.assign(Object.assign({}, hitbox), { x: hitbox.x + this.velocity.x * dt, y: hitbox.y + this.velocity.y * dt }));
         if (attactionPt) {
-            if (Math.sqrt(Math.pow(attactionPt.x - this.hitboxComponent.getHitbox().x, 2) + Math.pow(attactionPt.y - this.hitboxComponent.getHitbox().y, 2)) < 50) {
-                let angle = Math.atan2(attactionPt.y - this.hitboxComponent.getHitbox().y, attactionPt.x - this.hitboxComponent.getHitbox().x);
+            const deltaX = attactionPt.x - hitbox.x;
+            const deltaY = attactionPt.y - hitbox.y;
+            if ((deltaX * deltaX) + (deltaY * deltaY) < 50 * 50) {
+                let angle = Math.atan2(deltaY, deltaX);
                 this.velocity.x = 30 * Math.cos(angle);
                 this.velocity.y = 30 * Math.sin(angle);
             }
@@ -25,16 +28,18 @@ export class DroppedSlot {
     }
     render(ctx) {
         if (!this.slot.isEmpty()) {
-            if (this.slot.getItem().getImage()) {
-                ctx.drawImage(this.slot.getItem().getImage(), this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+            const img = this.slot.getItem().getImage();
+            const hitbox = this.hitboxComponent.getHitbox();
+            if (img) {
+                ctx.drawImage(img, hitbox.x, hitbox.y, hitbox.width, hitbox.height);
             }
             else {
                 ctx.fillStyle = "#FF13F0";
-                ctx.fillRect(this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width / 2, this.hitboxComponent.getHitbox().height / 2);
-                ctx.fillRect(this.hitboxComponent.getHitbox().x + this.hitboxComponent.getHitbox().width / 2, this.hitboxComponent.getHitbox().y + this.hitboxComponent.getHitbox().height / 2, this.hitboxComponent.getHitbox().width / 2, this.hitboxComponent.getHitbox().height / 2);
+                ctx.fillRect(hitbox.x, hitbox.y, hitbox.width / 2, hitbox.height / 2);
+                ctx.fillRect(hitbox.x + hitbox.width / 2, hitbox.y + hitbox.height / 2, hitbox.width / 2, hitbox.height / 2);
                 ctx.fillStyle = "rgb(0,0,0)";
-                ctx.fillRect(this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y + this.hitboxComponent.getHitbox().height / 2, this.hitboxComponent.getHitbox().width / 2, this.hitboxComponent.getHitbox().height / 2);
-                ctx.fillRect(this.hitboxComponent.getHitbox().x + this.hitboxComponent.getHitbox().width / 2, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width / 2, this.hitboxComponent.getHitbox().height / 2);
+                ctx.fillRect(hitbox.x, hitbox.y + hitbox.height / 2, hitbox.width / 2, hitbox.height / 2);
+                ctx.fillRect(hitbox.x + hitbox.width / 2, hitbox.y, hitbox.width / 2, hitbox.height / 2);
             }
         }
     }

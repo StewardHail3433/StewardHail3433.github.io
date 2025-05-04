@@ -26,8 +26,9 @@ export class UIComponentImage extends UIComponent {
         var x: number = this.hitbox.x; 
         var y: number = this.hitbox.y;
         if(this.parentComponent && !this.parentComponent.isHidden()) {
-            x += this.parentComponent.getHitbox().x;
-            y += this.parentComponent.getHitbox().y;
+            const parentComponentHitbox = this.parentComponent.getHitbox();
+            x += parentComponentHitbox.x;
+            y += parentComponentHitbox.y;
         }
         if(this.sHitbox) {
             ctx.drawImage(this.image, this.sHitbox?.x, this.sHitbox?.y, this.sHitbox?.width, this.sHitbox?.height, x, y, this.hitbox.width, this.hitbox.height)

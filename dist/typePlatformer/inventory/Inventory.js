@@ -40,18 +40,19 @@ export class Inventory {
         let emptyIndex = -1;
         if (slot.getItem().getId() != "empty") {
             for (let i = 0; i < inv.getSize(); i++) {
-                if (inv.getSlot(i).isEmpty() && emptyIndex == -1)
+                const invSlot = inv.getSlot(i);
+                if (invSlot.isEmpty() && emptyIndex == -1)
                     emptyIndex = i;
-                if (inv.getSlot(i).getItem().getId() == slot.getItem().getId()) {
+                if (invSlot.getItem().getId() == slot.getItem().getId()) {
                     if (amount === 0) {
-                        amount = inv.getSlot(i).addItems(slot.getItemCount());
+                        amount = invSlot.addItems(slot.getItemCount());
                         if (amount === 0) {
                             slot.removeItem();
                             break;
                         }
                     }
                     else {
-                        amount = inv.getSlot(i).addItems(amount);
+                        amount = invSlot.addItems(amount);
                         if (amount === 0) {
                             slot.removeItem();
                             break;
@@ -61,14 +62,15 @@ export class Inventory {
             }
             if (emptyIndex != -1) {
                 for (let i = emptyIndex; i < inv.getSize(); i++) {
-                    if (inv.getSlot(i).isEmpty()) {
+                    const invSlot = inv.getSlot(i);
+                    if (invSlot.isEmpty()) {
                         if (amount === 0) {
                             if (slot.getItemCount() > slot.getItem().getMaxStackAmount()) {
-                                inv.getSlot(i).setItem(slot.getItem(), slot.getItem().getMaxStackAmount());
+                                invSlot.setItem(slot.getItem(), slot.getItem().getMaxStackAmount());
                                 amount = slot.getItemCount() - slot.getItem().getMaxStackAmount();
                             }
                             else {
-                                inv.getSlot(i).setItem(slot.getItem(), slot.getItemCount());
+                                invSlot.setItem(slot.getItem(), slot.getItemCount());
                                 amount = 0;
                             }
                             if (amount === 0) {
@@ -78,11 +80,11 @@ export class Inventory {
                         }
                         else {
                             if (amount > slot.getItem().getMaxStackAmount()) {
-                                inv.getSlot(i).setItem(slot.getItem(), slot.getItem().getMaxStackAmount());
+                                invSlot.setItem(slot.getItem(), slot.getItem().getMaxStackAmount());
                                 amount = amount - slot.getItem().getMaxStackAmount();
                             }
                             else {
-                                inv.getSlot(i).setItem(slot.getItem(), amount);
+                                invSlot.setItem(slot.getItem(), amount);
                                 amount = 0;
                             }
                             if (amount === 0) {
@@ -92,6 +94,9 @@ export class Inventory {
                         }
                     }
                 }
+            }
+            else {
+                amount = slot.getItemCount();
             }
         }
         if (amount <= 0) {

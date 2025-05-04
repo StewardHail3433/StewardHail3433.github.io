@@ -18,8 +18,9 @@ export class UIComponentTextbox extends UIComponentLabel {
             var boxx = this.hitbox.x;
             var boxy = this.hitbox.y;
             if (this.parentComponent && !this.parentComponent.isHidden()) {
-                boxx += this.parentComponent.getHitbox().x;
-                boxy += this.parentComponent.getHitbox().y;
+                const parentComponentHitbox = this.parentComponent.getHitbox();
+                boxx += parentComponentHitbox.x;
+                boxy += parentComponentHitbox.y;
             }
             if (isInside(Constants.INPUT_HANDLER.getMousePosition(), Object.assign(Object.assign({}, this.hitbox), { x: boxx, y: boxy }))) {
                 this.startTextElement();
@@ -41,8 +42,9 @@ export class UIComponentTextbox extends UIComponentLabel {
         var boxx = this.hitbox.x;
         var boxy = this.hitbox.y;
         if (this.parentComponent && !this.parentComponent.isHidden()) {
-            boxx += this.parentComponent.getHitbox().x;
-            boxy += this.parentComponent.getHitbox().y;
+            const parentComponentHitbox = this.parentComponent.getHitbox();
+            boxx += parentComponentHitbox.x;
+            boxy += parentComponentHitbox.y;
         }
         if (isInside({ x, y }, Object.assign(Object.assign({}, this.hitbox), { x: boxx, y: boxy }))) {
             this.startTextElement();
@@ -85,8 +87,9 @@ export class UIComponentTextbox extends UIComponentLabel {
         var x = this.hitbox.x;
         var y = this.hitbox.y;
         if (this.parentComponent) {
-            x += this.parentComponent.getHitbox().x;
-            y += this.parentComponent.getHitbox().y;
+            const parentComponentHitbox = this.parentComponent.getHitbox();
+            x += parentComponentHitbox.x;
+            y += parentComponentHitbox.y;
         }
         const rect = this.canvas.getBoundingClientRect();
         this.inputElement.style.left = rect.left + x + ((rect.width - Constants.CANVAS_WIDTH) / 2) + "px";

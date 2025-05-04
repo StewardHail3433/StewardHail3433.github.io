@@ -16,8 +16,9 @@ export class UIComponentImage extends UIComponent {
         var x = this.hitbox.x;
         var y = this.hitbox.y;
         if (this.parentComponent && !this.parentComponent.isHidden()) {
-            x += this.parentComponent.getHitbox().x;
-            y += this.parentComponent.getHitbox().y;
+            const parentComponentHitbox = this.parentComponent.getHitbox();
+            x += parentComponentHitbox.x;
+            y += parentComponentHitbox.y;
         }
         if (this.sHitbox) {
             ctx.drawImage(this.image, (_a = this.sHitbox) === null || _a === void 0 ? void 0 : _a.x, (_b = this.sHitbox) === null || _b === void 0 ? void 0 : _b.y, (_c = this.sHitbox) === null || _c === void 0 ? void 0 : _c.width, (_d = this.sHitbox) === null || _d === void 0 ? void 0 : _d.height, x, y, this.hitbox.width, this.hitbox.height);

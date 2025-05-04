@@ -22,8 +22,10 @@ export class Entity {
         }
     }
     render(ctx) {
-        ctx.fillStyle = ("rgb(" + this.hitboxComponent.getColor().red.toString() + "," + this.hitboxComponent.getColor().green.toString() + "," + this.hitboxComponent.getColor().blue.toString() + ")");
-        ctx.fillRect(this.hitboxComponent.getHitbox().x, this.hitboxComponent.getHitbox().y, this.hitboxComponent.getHitbox().width, this.hitboxComponent.getHitbox().height);
+        const hitbox = this.hitboxComponent.getHitbox();
+        const color = this.hitboxComponent.getColor();
+        ctx.fillStyle = ("rgb(" + color.red.toString() + "," + color.green.toString() + "," + color.blue.toString() + ")");
+        ctx.fillRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
     }
     getHitboxComponent() {
         return this.hitboxComponent;

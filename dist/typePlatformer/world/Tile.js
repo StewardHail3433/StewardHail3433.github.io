@@ -31,23 +31,24 @@ export class Tile {
         return this.name;
     }
     render(ctx, hitboxComponent) {
+        const hitbox = hitboxComponent.getHitbox();
         if (this.numberID <= 5) {
             let spriteSheetMapX = (this.numberID % 3) * Constants.TILE_SIZE;
             let spriteSheetMapY = Math.floor(this.numberID / 3) * Constants.TILE_SIZE;
             ctx.imageSmoothingEnabled = false;
-            ctx.drawImage(ImageLoader.getImages()[0], spriteSheetMapX, spriteSheetMapY, Constants.TILE_SIZE, Constants.TILE_SIZE, hitboxComponent.getHitbox().x, hitboxComponent.getHitbox().y, Constants.TILE_SIZE, Constants.TILE_SIZE);
+            ctx.drawImage(ImageLoader.getImages()[0], spriteSheetMapX, spriteSheetMapY, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x, hitbox.y, Constants.TILE_SIZE, Constants.TILE_SIZE);
         }
         else {
             if (this.img) {
-                ctx.drawImage(this.img, 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, hitboxComponent.getHitbox().x, hitboxComponent.getHitbox().y, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                ctx.drawImage(this.img, 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x, hitbox.y, Constants.TILE_SIZE, Constants.TILE_SIZE);
             }
             else {
                 ctx.fillStyle = "#FF13F0";
-                ctx.fillRect(hitboxComponent.getHitbox().x, hitboxComponent.getHitbox().y, Constants.TILE_SIZE / 2, Constants.TILE_SIZE / 2);
-                ctx.fillRect(hitboxComponent.getHitbox().x + Constants.TILE_SIZE / 2, hitboxComponent.getHitbox().y + Constants.TILE_SIZE / 2, Constants.TILE_SIZE / 2, Constants.TILE_SIZE / 2);
+                ctx.fillRect(hitbox.x, hitbox.y, Constants.TILE_SIZE / 2, Constants.TILE_SIZE / 2);
+                ctx.fillRect(hitbox.x + Constants.TILE_SIZE / 2, hitbox.y + Constants.TILE_SIZE / 2, Constants.TILE_SIZE / 2, Constants.TILE_SIZE / 2);
                 ctx.fillStyle = "rgb(0,0,0)";
-                ctx.fillRect(hitboxComponent.getHitbox().x, hitboxComponent.getHitbox().y + Constants.TILE_SIZE / 2, Constants.TILE_SIZE / 2, Constants.TILE_SIZE / 2);
-                ctx.fillRect(hitboxComponent.getHitbox().x + Constants.TILE_SIZE / 2, hitboxComponent.getHitbox().y, Constants.TILE_SIZE / 2, Constants.TILE_SIZE / 2);
+                ctx.fillRect(hitbox.x, hitbox.y + Constants.TILE_SIZE / 2, Constants.TILE_SIZE / 2, Constants.TILE_SIZE / 2);
+                ctx.fillRect(hitbox.x + Constants.TILE_SIZE / 2, hitbox.y, Constants.TILE_SIZE / 2, Constants.TILE_SIZE / 2);
             }
         }
     }

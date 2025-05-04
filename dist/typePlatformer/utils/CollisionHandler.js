@@ -16,11 +16,13 @@ export class CollisionHandler {
         }
     }
     handleAxisEntityMovement(axis, entity, dt) {
+        const entityHBComponent = entity.getHitboxComponent();
+        const entityHB = entityHBComponent.getHitbox();
         if (axis === "x") {
-            entity.getHitboxComponent().setHitbox(Object.assign(Object.assign({}, entity.getHitboxComponent().getHitbox()), { x: entity.getHitboxComponent().getHitbox()[axis] + entity.getVelocity()[axis] * dt }));
+            entityHBComponent.setHitbox(Object.assign(Object.assign({}, entityHB), { x: entityHB[axis] + entity.getVelocity()[axis] * dt }));
         }
         else {
-            entity.getHitboxComponent().setHitbox(Object.assign(Object.assign({}, entity.getHitboxComponent().getHitbox()), { y: entity.getHitboxComponent().getHitbox()[axis] + entity.getVelocity()[axis] * dt }));
+            entityHBComponent.setHitbox(Object.assign(Object.assign({}, entityHB), { y: entityHB[axis] + entity.getVelocity()[axis] * dt }));
         }
     }
     handleAxisCollision(axis, entity, chunks) {
@@ -31,24 +33,27 @@ export class CollisionHandler {
             for (let [key, chunk] of chunks) {
                 let x = parseInt(key.substring(0, key.indexOf(", "))) * Constants.TILE_SIZE * Constants.CHUNK_SIZE;
                 let y = parseInt(key.substring(key.indexOf(", ") + 2)) * Constants.TILE_SIZE * Constants.CHUNK_SIZE;
-                if (containBox(entity.getHitboxComponent().getHitbox(), { x, y, width: Constants.TILE_SIZE * Constants.CHUNK_SIZE, height: Constants.TILE_SIZE * Constants.CHUNK_SIZE })) {
+                const entHitboxComponent = entity.getHitboxComponent();
+                const entHitbox = entHitboxComponent.getHitbox();
+                if (containBox(entHitbox, { x, y, width: Constants.TILE_SIZE * Constants.CHUNK_SIZE, height: Constants.TILE_SIZE * Constants.CHUNK_SIZE })) {
                     for (let tx = 0; tx < Constants.CHUNK_SIZE; tx++) {
                         for (let ty = 0; ty < Constants.CHUNK_SIZE; ty++) {
-                            if (containBox(entity.getHitboxComponent().getHitbox(), chunk[tx][ty].getHitboxComponent().getHitbox()) && chunk[tx][ty].getLayers()[entity.getLayer()].tile != Tiles.EMPTY) {
+                            const chunkHitbox = chunk[tx][ty].getHitboxComponent().getHitbox();
+                            if (containBox(entHitbox, chunkHitbox) && chunk[tx][ty].getLayers()[entity.getLayer()].tile != Tiles.EMPTY) {
                                 if (axis === "x") {
                                     if (entity.getVelocity()[axis] > 0) {
-                                        entity.getHitboxComponent().setHitbox(Object.assign(Object.assign({}, entity.getHitboxComponent().getHitbox()), { x: chunk[tx][ty].getHitboxComponent().getHitbox().x - entity.getHitboxComponent().getHitbox().width }));
+                                        entHitboxComponent.setHitbox(Object.assign(Object.assign({}, entHitbox), { x: chunkHitbox.x - entHitbox.width }));
                                     }
                                     else {
-                                        entity.getHitboxComponent().setHitbox(Object.assign(Object.assign({}, entity.getHitboxComponent().getHitbox()), { x: chunk[tx][ty].getHitboxComponent().getHitbox().x + Constants.TILE_SIZE }));
+                                        entHitboxComponent.setHitbox(Object.assign(Object.assign({}, entHitbox), { x: chunkHitbox.x + Constants.TILE_SIZE }));
                                     }
                                 }
                                 else if (axis === "y") {
                                     if (entity.getVelocity()[axis] > 0) {
-                                        entity.getHitboxComponent().setHitbox(Object.assign(Object.assign({}, entity.getHitboxComponent().getHitbox()), { y: chunk[tx][ty].getHitboxComponent().getHitbox().y - entity.getHitboxComponent().getHitbox().height }));
+                                        entHitboxComponent.setHitbox(Object.assign(Object.assign({}, entHitbox), { y: chunkHitbox.y - entHitbox.height }));
                                     }
                                     else {
-                                        entity.getHitboxComponent().setHitbox(Object.assign(Object.assign({}, entity.getHitboxComponent().getHitbox()), { y: chunk[tx][ty].getHitboxComponent().getHitbox().y + Constants.TILE_SIZE }));
+                                        entHitboxComponent.setHitbox(Object.assign(Object.assign({}, entHitbox), { y: chunkHitbox.y + Constants.TILE_SIZE }));
                                     }
                                 }
                                 const updatedVel = entity.getVelocity();

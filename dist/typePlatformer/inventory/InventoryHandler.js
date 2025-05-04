@@ -8,6 +8,7 @@ export class InventoryHandler {
         this.UIInventories = [];
         this.mouseItem = { inv: new Inventory(0), index: -1, x: 0, y: 0, holdingItem: false };
         this.drop = false;
+        this.canDrop = false;
         this.emptySlot = new Slot();
         this.canvas = canvas;
         this.inventories = [];
@@ -15,12 +16,13 @@ export class InventoryHandler {
     mouseDown() {
         if (Constants.INPUT_HANDLER.isLeftDown() && Constants.INPUT_HANDLER.wasJustLeftClicked()) {
             for (let i = 0; i < this.inventories.length; i++) {
-                if (isInside(Constants.INPUT_HANDLER.getMousePosition(), Object.assign({}, this.UIInventories[i].getPlacementBox())) && !this.UIInventories[i].ishidden()) {
+                const uiInv = this.UIInventories[i];
+                if (isInside(Constants.INPUT_HANDLER.getMousePosition(), Object.assign({}, uiInv.getPlacementBox())) && !uiInv.ishidden()) {
                     if (this.inventories[i].getType() == "hotbar" && !this.isMainInventoryOpen()) {
-                        this.UIInventories[i].mouseDownSelction();
+                        uiInv.mouseDownSelction();
                     }
                     else {
-                        this.UIInventories[i].mouseDown(this.mouseItem);
+                        uiInv.mouseDown(this.mouseItem);
                     }
                     return;
                 }
@@ -83,10 +85,11 @@ export class InventoryHandler {
         this.mouseDown();
         this.mouseMove();
         for (let i = 0; i < this.inventories.length; i++) {
-            if (this.UIInventories[i].ishidden() && this.mouseItem.inv == this.inventories[i] && this.mouseItem.holdingItem) {
+            const uiInv = this.UIInventories[i];
+            if (uiInv.ishidden() && this.mouseItem.inv == this.inventories[i] && this.mouseItem.holdingItem) {
                 this.mouseItem.index = -1;
                 this.mouseItem.holdingItem = false;
-                this.UIInventories[i].update(this.mouseItem);
+                uiInv.update(this.mouseItem);
                 break;
             }
         }
@@ -120,5 +123,11 @@ export class InventoryHandler {
             this.mouseItem.index = -1;
         }
         this.drop = false;
+    }
+    setCanDrop(canDrop) {
+        this.canDrop = canDrop;
+    }
+    getCanDrop() {
+        return this.canDrop;
     }
 }

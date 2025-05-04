@@ -19,6 +19,7 @@ export class UIChatHandler {
         });
 
         Constants.COMMAND_SYSTEM.addCommand("chatui", (args) => {
+            const chatComponentHitbox = this.chatComponent.getHitbox()
             if(args[0] === "set") {
                 if(args[1] === "hitbox") {
                     this.chatComponent.setHitbox({x: Number(args[2]), y: Number(args[3]), width: Number(args[4]), height: Number(args[5])});
@@ -31,33 +32,33 @@ export class UIChatHandler {
                 }
             } else if (args[0] === "changesize") {
                 if(args[1] === "width") {
-                    if(this.chatComponent.getHitbox().x + Number(args[2]) > Constants.CANVAS_WIDTH) {
+                    if(chatComponentHitbox.x + Number(args[2]) > Constants.CANVAS_WIDTH) {
                         if(Constants.CANVAS_WIDTH - Number(args[2]) < 0) {return;}
-                        this.chatComponent.setHitbox({...this.chatComponent.getHitbox(), 
+                        this.chatComponent.setHitbox({...chatComponentHitbox, 
                             x:  Constants.CANVAS_WIDTH - Number(args[2]),
                             width: Number(args[2])
                         })
                     } else {
-                        this.chatComponent.setHitbox({...this.chatComponent.getHitbox(), 
+                        this.chatComponent.setHitbox({...chatComponentHitbox, 
                             width: Number(args[2])
                         })
                     }
                 } else if(args[1] === "height") {
-                    if(this.chatComponent.getHitbox().y + Number(args[2]) > Constants.CANVAS_HEIGHT) {
+                    if(chatComponentHitbox.y + Number(args[2]) > Constants.CANVAS_HEIGHT) {
                         if(Constants.CANVAS_HEIGHT - Number(args[2]) < 0) {return;}
-                        this.chatComponent.setHitbox({...this.chatComponent.getHitbox(), 
+                        this.chatComponent.setHitbox({...chatComponentHitbox, 
                             y:  Constants.CANVAS_HEIGHT - Number(args[2]),
                             height: Number(args[2])
                         })
                     } else {
-                        this.chatComponent.setHitbox({...this.chatComponent.getHitbox(), 
+                        this.chatComponent.setHitbox({...chatComponentHitbox, 
                             height: Number(args[2])
                         })
                     }
                 }
             }
-            this.chatbox.setHitbox({x: 5, y: 5, width: this.chatComponent.getHitbox().width - 10, height: this.chatComponent.getHitbox().height * .8 - 15});
-            this.textbox.setHitbox({x: 5, y: this.chatbox.getHitbox().y + this.chatbox.getHitbox().height + 5 , width: this.chatComponent.getHitbox().width - 10, height: this.chatComponent.getHitbox().height * .2 - 15})
+            this.chatbox.setHitbox({x: 5, y: 5, width: chatComponentHitbox.width - 10, height: chatComponentHitbox.height * .8 - 15});
+            this.textbox.setHitbox({x: 5, y: this.chatbox.getHitbox().y + this.chatbox.getHitbox().height + 5 , width: chatComponentHitbox.width - 10, height: chatComponentHitbox.height * .2 - 15})
         });
         this.chatbox = new UIComponentLabel({
                     x: 5, y: 5, width: this.chatComponent.getHitbox().width - 10, height: this.chatComponent.getHitbox().height * .8 - 15

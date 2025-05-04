@@ -99,9 +99,10 @@ export class WorldHandler {
         }
 
         if(this.heldItem != Items.EMPTY) {
-            if(this.heldItem.getImage()) {
+            const img = this.heldItem.getImage()
+            if(img) {
                 ctx.globalAlpha = 0.5;
-                ctx.drawImage(this.heldItem.getImage()!, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).x  * Constants.TILE_SIZE, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).y * Constants.TILE_SIZE)
+                ctx.drawImage(img!, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).x  * Constants.TILE_SIZE, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).y * Constants.TILE_SIZE)
                 ctx.globalAlpha = 1.0;
             }
         }
@@ -271,10 +272,11 @@ export class WorldHandler {
     public breakTile(layer: number) {
         if(this.breakingTile) {
             const item = DropTableHandler.getTileDrop(this.breakingTile.getLayers()[layer].tile)
+            const breakingTileHitbox = this.breakingTile.getHitboxComponent().getHitbox();
             if(item != Items.EMPTY) {
-                this.dropItem(new Slot(item, 1), this.breakingTile.getHitboxComponent().getHitbox())
+                this.dropItem(new Slot(item, 1), breakingTileHitbox)
             } else {
-                this.dropItem(new Slot(this.breakingTile.getLayers()[layer].tile.getItem(), 1), this.breakingTile.getHitboxComponent().getHitbox())
+                this.dropItem(new Slot(this.breakingTile.getLayers()[layer].tile.getItem(), 1), breakingTileHitbox)
             }
             this.breakingTile?.setLayer(layer, Tiles.EMPTY);
             this.clearBreakingTile()

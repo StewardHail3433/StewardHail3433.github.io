@@ -8,19 +8,9 @@ export class WorldTile {
         this.hitboxComponent = hitboxComponent;
     }
     setLayer(layer, tile) {
-        // tried but broken
-        // if(this.layers[layer] == undefined) {
-        //     for(let i = this.layers.length; i != layer+1; i = this.layers.length) {
-        //         this.layers.push({tile: Tiles.EMPTY})
-        //     }
-        // }
         if (tile) {
             this.layers[layer].tile = tile;
         }
-        else {
-            this.layers[layer].tile = Tiles.TREE_LEAVES;
-        }
-        // getTileByNumberId(indexTile);
     }
     getLayers() {
         return Object.assign({}, this.layers);

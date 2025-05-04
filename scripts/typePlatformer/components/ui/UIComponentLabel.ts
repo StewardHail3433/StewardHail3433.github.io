@@ -33,8 +33,9 @@ export class UIComponentLabel extends UIComponent {
         var x: number = this.hitbox.x; 
         var y: number = this.hitbox.y;
         if(this.parentComponent) {
-            x += this.parentComponent.getHitbox().x;
-            y += this.parentComponent.getHitbox().y;
+            const parentComponentHitbox = this.parentComponent.getHitbox();
+            x += parentComponentHitbox.x;
+            y += parentComponentHitbox.y;
         }
 
         ctx.textAlign = this.textAlign;
@@ -83,13 +84,13 @@ export class UIComponentLabel extends UIComponent {
         y -= 3;
 
         for (let i = 0; i < lines.length; i++) {
-
+            const line = lines[i];
             if(this.textAlign === "left") {
-                ctx.fillText(lines[i], x , y+lineHeight );
+                ctx.fillText(line, x , y+lineHeight );
             } else if(this.textAlign === "center") {
-                ctx.fillText(lines[i], x + this.hitbox.width / 2, y + this.hitbox.height / 2);
+                ctx.fillText(line, x + this.hitbox.width / 2, y + this.hitbox.height / 2);
             } else {
-                ctx.fillText(lines[i], x + this.hitbox.width / 2, y + this.hitbox.height / 2);
+                ctx.fillText(line, x + this.hitbox.width / 2, y + this.hitbox.height / 2);
             }
             y += lineHeight; // Move down for next full line (after \n)
         }

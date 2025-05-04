@@ -37,10 +37,7 @@ export class InteractionHandler {
         if(this.inventoryHandler.shouldDrop()) {
             if(!this.inventoryHandler.getHeldSlot().isEmpty()) {
                 this.worldHandler.dropItem(this.inventoryHandler.getHeldSlot(),{x: (Constants.INPUT_HANDLER.getMousePosition().x / this.camera.getView().zoom + this.camera.getView().x), y: (Constants.INPUT_HANDLER.getMousePosition().y / this.camera.getView().zoom + this.camera.getView().y)});
-                this.inventoryHandler.resetDroppedItem();
-                return;
-            }
-            if(!this.player.getHotbarInventory().getSelecteSlot().isEmpty()) {
+            } else if(!this.player.getHotbarInventory().getSelecteSlot().isEmpty()) {
                 this.worldHandler.dropItem(this.player.getHotbarInventory().getSelecteSlot(),{x: (Constants.INPUT_HANDLER.getMousePosition().x / this.camera.getView().zoom + this.camera.getView().x), y: (Constants.INPUT_HANDLER.getMousePosition().y / this.camera.getView().zoom + this.camera.getView().y)});
             }
             this.inventoryHandler.resetDroppedItem();
@@ -62,8 +59,11 @@ export class InteractionHandler {
             this.inventoryHandler.getUIInventory("mainInventory")?.hide();
         }
 
-        if(Constants.INPUT_HANDLER.checkControl(this.player.getControls().drop)) {
-            this.inventoryHandler.setDrop(true); 
+        if(Constants.INPUT_HANDLER.checkControl(this.player.getControls().drop) && this.inventoryHandler.getCanDrop()) {
+            this.inventoryHandler.setDrop(true);
+            this.inventoryHandler.setCanDrop(false);
+        } else if(!Constants.INPUT_HANDLER.checkControl(this.player.getControls().drop)) {
+            this.inventoryHandler.setCanDrop(true);
         }
 
         if(Constants.INPUT_HANDLER.checkControl(this.player.getControls().break) && !this.player.getBreaking()) {
@@ -131,22 +131,29 @@ export class InteractionHandler {
 
         for(let i = 0; i < droppedItems.length; i++) {
             let slot = droppedItems[i].getSlot();
-            if(containBox(this.player.getHitboxComponent().getHitbox(), droppedItems[i].getHitboxComponent().getHitbox())) {
+            const DIHitbox = droppedItems[i].getHitboxComponent().getHitbox()
+            const playerHitbox = this.player.getHitboxComponent().getHitbox()
+
+            if(!containBox(this.camera.getView(), DIHitbox)) {
+                continue;
+            }
+            if(containBox(playerHitbox, droppedItems[i].getHitboxComponent().getHitbox())) {
                 const playerHotBar = this.player.getHotbarInventory();
                 const playerInv = this.player.getMainInventory();
 
                 slot = Inventory.transferItems(playerHotBar, slot);
-                    
                 if (slot.getItemCount() != 0) {
-                    slot = Inventory.transferItems(playerInv, slot);            
+                    slot = Inventory.transferItems(playerInv, slot);   
+                    if(slot.isEmpty()) {
+                        droppedItems.splice(i, 1);
+                    }         
                 }
-                droppedItems[i].setSlot(slot);
             }
 
             if (slot.getItemCount() != 0) {
                 droppedItems[i].update(dt, {
-                    x: this.player.getHitboxComponent().getHitbox().x + this.player.getHitboxComponent().getHitbox().width / 2,
-                    y: this.player.getHitboxComponent().getHitbox().y + this.player.getHitboxComponent().getHitbox().height / 2
+                    x: playerHitbox.x + playerHitbox.width / 2,
+                    y: playerHitbox.y + playerHitbox.height / 2
                 })
             }
 

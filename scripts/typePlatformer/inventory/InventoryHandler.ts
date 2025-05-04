@@ -14,6 +14,7 @@ export class InventoryHandler {
     private mouseItem: {inv: Inventory,index: number, x: number, y: number, holdingItem: boolean} = {inv: new Inventory(0),index:-1,x:0,y:0,holdingItem: false};
     private canvas: HTMLCanvasElement;
     private drop = false;
+    private canDrop = false;
     private readonly emptySlot = new Slot();
 
     constructor(
@@ -27,11 +28,12 @@ export class InventoryHandler {
     
         if(Constants.INPUT_HANDLER.isLeftDown() && Constants.INPUT_HANDLER.wasJustLeftClicked() ) {
             for(let i = 0; i < this.inventories.length; i++) {
-                if(isInside(Constants.INPUT_HANDLER.getMousePosition(), {...this.UIInventories[i].getPlacementBox()}) && !this.UIInventories[i].ishidden()) { 
+                const uiInv = this.UIInventories[i];
+                if(isInside(Constants.INPUT_HANDLER.getMousePosition(), {...uiInv.getPlacementBox()}) && !uiInv.ishidden()) { 
                     if(this.inventories[i].getType() == "hotbar" && !this.isMainInventoryOpen()) {
-                        this.UIInventories[i].mouseDownSelction();
+                        uiInv.mouseDownSelction();
                     } else {
-                        this.UIInventories[i].mouseDown(this.mouseItem)
+                        uiInv.mouseDown(this.mouseItem)
                     }
                     return;
                 }
@@ -102,10 +104,11 @@ export class InventoryHandler {
         this.mouseDown();
         this.mouseMove();
         for(let i = 0; i < this.inventories.length; i++) {
-            if(this.UIInventories[i].ishidden() && this.mouseItem.inv == this.inventories[i] && this.mouseItem.holdingItem) {
+            const uiInv = this.UIInventories[i];
+            if(uiInv.ishidden() && this.mouseItem.inv == this.inventories[i] && this.mouseItem.holdingItem) {
                 this.mouseItem.index = -1;
                 this.mouseItem.holdingItem = false;
-                this.UIInventories[i].update(this.mouseItem);
+                uiInv.update(this.mouseItem);
                 break;
             }
         }
@@ -146,5 +149,13 @@ export class InventoryHandler {
         }
         this.drop = false;
     }
+
+    public setCanDrop(canDrop: boolean) {
+        this.canDrop = canDrop;
+    }
     
+
+    public getCanDrop(): boolean {
+        return this.canDrop;
+    }
 }
