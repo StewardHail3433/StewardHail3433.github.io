@@ -1,7 +1,6 @@
 import { Inventory } from "../inventory/Inventory.js";
 import { containBox, isInside } from "./Collisions.js";
 import { Constants } from "./Constants.js";
-import { Items } from "../item/Items.js";
 import { Tiles } from "../world/Tiles.js";
 export class InteractionHandler {
     constructor(player, worldHandler, camera, inventoryHandler) {
@@ -16,7 +15,7 @@ export class InteractionHandler {
         this.controlActions();
         this.checkBreaking();
         this.checkShouldDropItems();
-        this.updateWorldHeldItem();
+        this.updateWorldSelectedItem();
         this.checkPickupItems(dt);
     }
     checkShouldDropItems() {
@@ -30,12 +29,12 @@ export class InteractionHandler {
             this.inventoryHandler.resetDroppedItem();
         }
     }
-    updateWorldHeldItem() {
+    updateWorldSelectedItem() {
         if (!this.inventoryHandler.getHeldSlot().isEmpty()) {
-            this.worldHandler.setHeldItem(this.inventoryHandler.getHeldSlot().getItem());
+            this.worldHandler.setSelectedItem(this.inventoryHandler.getHeldSlot().getItem());
         }
         else {
-            this.worldHandler.setHeldItem(Items.EMPTY);
+            this.worldHandler.setSelectedItem(this.player.getHotbarInventory().getSelecteSlot().getItem());
         }
     }
     controlActions() {
@@ -75,7 +74,7 @@ export class InteractionHandler {
         let tile = this.worldHandler.getWorldTile(Constants.INPUT_HANDLER.getMouseWorldTilePosition(this.camera));
         if (tile.getLayers()[this.player.getLayer()].tile != Tiles.EMPTY) {
             this.player.setBreaking(true);
-            this.worldHandler.setBreakingTile(tile);
+            this.worldHandler.setBreakingTile(tile, this.player.getLayer());
         }
         else {
             this.player.setBreaking(false);

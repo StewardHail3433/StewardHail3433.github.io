@@ -19,10 +19,10 @@ export class WorldHandler {
     private brekaingImg = new Image();
     private showChunks = false;
     private droppedItems: DroppedSlot[] = [];
-    private heldItem: Item = Items.EMPTY;
+    private selectedItem: Item = Items.EMPTY;
     private breakingTile: WorldTile | undefined = undefined;
     private breakTime: number = 0;
-    
+    private breakingLayer: number = 0;
     constructor() {
         this.worldMap = new Map<string, WorldTile[][]>();
         this.img.src = "./resources/typePlatformer/images/tiles/background/grass.png";
@@ -98,26 +98,29 @@ export class WorldHandler {
             ctx.drawImage(this.mouseImg, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).x  * Constants.TILE_SIZE - 1, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).y * Constants.TILE_SIZE - 1)
         }
 
-        if(this.heldItem != Items.EMPTY) {
-            const img = this.heldItem.getImage()
-            if(img) {
-                ctx.globalAlpha = 0.5;
-                ctx.drawImage(img!, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).x  * Constants.TILE_SIZE, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).y * Constants.TILE_SIZE)
-                ctx.globalAlpha = 1.0;
+        if(this.selectedItem != Items.EMPTY) {
+            if(this.selectedItem.isABlockItem()) {
+                const img = Tiles.getTileById(this.selectedItem.getId()).getImage();
+                if(img) {
+                    ctx.globalAlpha = 0.25;
+                    ctx.drawImage(img!, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).x  * Constants.TILE_SIZE, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).y * Constants.TILE_SIZE)
+                    ctx.globalAlpha = 1.0;
+                }
             }
         }
 
         if(this.breakingTile) {
             if(this.brekaingImg) {
-                if(this.breakTime % 50 < 10) {
+                const tileBreakTime = this.breakingTile.getLayers()[this.breakingLayer].tile.getSettings().breakTime
+                if(this.breakTime % tileBreakTime < tileBreakTime / 5) {
                     ctx.drawImage(this.brekaingImg, 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).x  * Constants.TILE_SIZE - 1, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).y * Constants.TILE_SIZE - 1, Constants.TILE_SIZE, Constants.TILE_SIZE)
-                } else if(this.breakTime % 50 < 20) {
+                } else if(this.breakTime % tileBreakTime < tileBreakTime / 5 * 2) {
                     ctx.drawImage(this.brekaingImg, Constants.TILE_SIZE, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).x  * Constants.TILE_SIZE - 1, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).y * Constants.TILE_SIZE - 1, Constants.TILE_SIZE, Constants.TILE_SIZE)
-                } else if(this.breakTime % 50 < 30) {
+                } else if(this.breakTime % tileBreakTime < tileBreakTime / 5 * 3) {
                     ctx.drawImage(this.brekaingImg, Constants.TILE_SIZE * 2, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).x  * Constants.TILE_SIZE - 1, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).y * Constants.TILE_SIZE - 1, Constants.TILE_SIZE, Constants.TILE_SIZE)
-                } else if(this.breakTime % 50 < 40) {
+                } else if(this.breakTime % tileBreakTime < tileBreakTime / 5 * 4) {
                     ctx.drawImage(this.brekaingImg, Constants.TILE_SIZE * 3, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).x  * Constants.TILE_SIZE - 1, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).y * Constants.TILE_SIZE - 1, Constants.TILE_SIZE, Constants.TILE_SIZE)
-                } else if(this.breakTime % 50 < 50) {
+                } else if(this.breakTime % tileBreakTime < tileBreakTime) {
                     ctx.drawImage(this.brekaingImg, Constants.TILE_SIZE * 4, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).x  * Constants.TILE_SIZE - 1, Constants.INPUT_HANDLER.getMouseWorldTilePosition(camera).y * Constants.TILE_SIZE - 1, Constants.TILE_SIZE, Constants.TILE_SIZE)
                 }
             }
@@ -233,8 +236,8 @@ export class WorldHandler {
         itemSlot.removeItem();
     }
 
-    public setHeldItem(item: Item) {
-        this.heldItem = item;
+    public setSelectedItem(item: Item) {
+        this.selectedItem = item;
     }
 
     public getWorldTile(pos: {x: number, y: number}): WorldTile {
@@ -248,8 +251,10 @@ export class WorldHandler {
         )[mod(pos.y, Constants.CHUNK_SIZE)][mod(pos.x, Constants.CHUNK_SIZE)];
     }
 
-    public setBreakingTile(worldTile: WorldTile) {
+    public setBreakingTile(worldTile: WorldTile, layer: number) {
         this.breakingTile = worldTile;
+        this.breakingLayer = layer;
+        this.breakTime = 0;
     }
 
     public updateBreakTime() {

@@ -74,4 +74,8 @@ export class Tile {
     public getSettings() {
         return this.settings;
     }
+
+    public getImage() {
+        return this.img;
+    }
 }

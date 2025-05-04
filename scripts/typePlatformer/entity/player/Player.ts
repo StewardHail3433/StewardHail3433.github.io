@@ -22,7 +22,15 @@ export class Player extends Entity {
         inventory: 'e',
         break: "MLeft",
         place: "MRight",
-        drop: "q"
+        drop: "q",
+        selectSlot0: "1",
+        selectSlot1: "2",
+        selectSlot2: "3",
+        selectSlot3: "4",
+        selectSlot4: "5",
+        selectSlot5: "6",
+        selectSlot6: "7",
+
     };
     private touchMode = false;
     private frame = 0;
@@ -118,6 +126,13 @@ export class Player extends Entity {
         break: string,
         place: string,
         drop: string
+        selectSlot0: string,
+        selectSlot1: string,
+        selectSlot2: string,
+        selectSlot3: string,
+        selectSlot4: string,
+        selectSlot5: string,
+        selectSlot6: string
     } = {
         up: 'w',
         down: 's',
@@ -126,7 +141,14 @@ export class Player extends Entity {
         inventory: 'e',
         break: "MLeft",
         place: "MRight",
-        drop: "q"
+        drop: "q",
+        selectSlot0: "1",
+        selectSlot1: "2",
+        selectSlot2: "3",
+        selectSlot3: "4",
+        selectSlot4: "5",
+        selectSlot5: "6",
+        selectSlot6: "7",
     }) {
         this.controls = controls;
     }
@@ -150,19 +172,19 @@ export class Player extends Entity {
             this.velocity.x = this.speed;
         }
 
-        if(Constants.INPUT_HANDLER.checkControl("1")) {
+        if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot0)) {
             this.hotbar.setSelecteSlot(0);
-        } else if(Constants.INPUT_HANDLER.checkControl("2")) {
+        } else if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot1)) {
             this.hotbar.setSelecteSlot(1);
-        } else if(Constants.INPUT_HANDLER.checkControl("3")) {
+        } else if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot2)) {
             this.hotbar.setSelecteSlot(2);
-        } else if(Constants.INPUT_HANDLER.checkControl("4")) {
+        } else if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot3)) {
             this.hotbar.setSelecteSlot(3);
-        } else if(Constants.INPUT_HANDLER.checkControl("5")) {
+        } else if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot4)) {
             this.hotbar.setSelecteSlot(4);
-        } else if(Constants.INPUT_HANDLER.checkControl("6")) {
+        } else if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot5)) {
             this.hotbar.setSelecteSlot(5);
-        } else if(Constants.INPUT_HANDLER.checkControl("7")) {
+        } else if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot6)) {
             this.hotbar.setSelecteSlot(6);
         }
 

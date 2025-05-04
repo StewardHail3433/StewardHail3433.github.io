@@ -28,7 +28,7 @@ export class InteractionHandler {
         this.controlActions();
         this.checkBreaking();
         this.checkShouldDropItems();
-        this.updateWorldHeldItem();
+        this.updateWorldSelectedItem();
         this.checkPickupItems(dt);
         
     }
@@ -44,11 +44,11 @@ export class InteractionHandler {
         }
     }
 
-    private updateWorldHeldItem() {
+    private updateWorldSelectedItem() {
         if (!this.inventoryHandler.getHeldSlot().isEmpty()) {
-            this.worldHandler.setHeldItem(this.inventoryHandler.getHeldSlot().getItem());
+            this.worldHandler.setSelectedItem(this.inventoryHandler.getHeldSlot().getItem());
         } else {
-            this.worldHandler.setHeldItem(Items.EMPTY);
+            this.worldHandler.setSelectedItem(this.player.getHotbarInventory().getSelecteSlot().getItem());
         }
     }
 
@@ -88,7 +88,7 @@ export class InteractionHandler {
         let tile: WorldTile = this.worldHandler.getWorldTile(Constants.INPUT_HANDLER.getMouseWorldTilePosition(this.camera));
         if(tile.getLayers()[this.player.getLayer()].tile != Tiles.EMPTY) {
             this.player.setBreaking(true);
-            this.worldHandler.setBreakingTile(tile);
+            this.worldHandler.setBreakingTile(tile, this.player.getLayer());
         } else {
             this.player.setBreaking(false);
             this.worldHandler.clearBreakingTile();
