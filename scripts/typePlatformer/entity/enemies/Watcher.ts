@@ -3,13 +3,13 @@ import { HealthComponent } from "../../components/HealthComponent.js";
 import { HitboxComponent } from "../../components/HitboxComponent.js";
 
 export class Watcher extends Entity {
-    private lockActionTime:number = 0;
+    private lockActionTime:number = 51;
     constructor(healthcomponent: HealthComponent, hitboxComponent: HitboxComponent) {
         super(healthcomponent, hitboxComponent)
     }
 
     public update(): void {
-        if(this.lockActionTime > 200) {
+        if(this.lockActionTime > 50) {
             const random1 = Math.random() * 100;
             const random2 = Math.random() * 100;
             if (random1 < 33) {
