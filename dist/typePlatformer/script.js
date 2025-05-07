@@ -74,6 +74,8 @@ class Game {
             document.getElementById("fullscreenButton").addEventListener("click", () => { this.toggleFullScreen(); });
         }
         this.isFullscreen = !this.isFullscreen;
+        const entities = this.enemies;
+        entities.push(this.player);
     }
     setupEventListeners() {
         this.multiplayerEvents();
@@ -200,9 +202,7 @@ class Game {
         // for(let i = 0; i < this.enemies.length; i++) {
         //     this.enemies[i].update();
         // }
-        const entities = this.enemies;
-        entities.push(this.player);
-        this.collisionHandler.update(entities, this.worldHandler.getWorldMap(), dt);
+        this.collisionHandler.update([this.player], this.worldHandler.getWorldMap(), dt);
         this.camera.update();
         if (this.isMultiplayer && this.socket) {
             this.worldHandler.updateServer(this.camera, this.socket);
