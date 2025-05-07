@@ -1,7 +1,7 @@
 import { ImageLoader } from "../utils/ImageLoader.js";
 export class Item {
     constructor(id, name, discription = "This is an item(I think)", isBlockItem = false) {
-        this.maxStackAmount = 12;
+        this.maxStackAmount = 999;
         this.id = id;
         this.name = name;
         this.discription = discription;
