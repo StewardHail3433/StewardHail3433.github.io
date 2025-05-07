@@ -25,7 +25,7 @@ export class Watcher extends Entity {
             if (random2 < 33) {
                 this.direction = "left";
                 this.velocity.x = -this.speed;
-            } else if(rendom2 < 66) {
+            } else if(random2 < 66) {
                 this.direction = "right";
                 this.velocity.x = this.speed;
             } else {
