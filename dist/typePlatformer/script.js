@@ -30,9 +30,11 @@ class Game {
         this.player = new Player("TIm", new HealthComponent(100, 100), new HitboxComponent({
             x: 100, y: 100, width: 8, height: 8,
         }));
-        this.enemies = [new Watcher(new HealthComponent(100, 100), new HitboxComponent({
+        this.enemies = [
+            new Watcher(new HealthComponent(100, 100), new HitboxComponent({
                 x: 50, y: 50, width: 10, height: 10
-            }))];
+            }))
+        ];
         this.camera = new Camera({ x: 100, y: 100, width: Constants.CANVAS_WIDTH, height: Constants.CANVAS_HEIGHT, zoom: 1.35 }, "main");
         this.camera.trackEntity(this.player);
         this.worldHandler = new WorldHandler();
@@ -199,9 +201,9 @@ class Game {
     }
     update(dt) {
         this.player.update();
-        // for(let i = 0; i < this.enemies.length; i++) {
-        //     this.enemies[i].update();
-        // }
+        for (let i = 0; i < this.enemies.length; i++) {
+            this.enemies[i].update();
+        }
         this.collisionHandler.update([this.player], this.worldHandler.getWorldMap(), dt);
         this.camera.update();
         if (this.isMultiplayer && this.socket) {
