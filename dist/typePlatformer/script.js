@@ -227,6 +227,12 @@ class Game {
         if (Constants.INPUT_HANDLER.wasJustMiddleClicked()) {
             Constants.INPUT_HANDLER.setJustMiddleClicked(false);
         }
+        if (Constants.INPUT_HANDLER.getKeyToggled()["0"]) {
+            this.camera.trackEntity(this.enemies[0]);
+        }
+        else {
+            this.camera.trackEntity(this.player);
+        }
     }
     render() {
         this.ctx.clearRect(0, 0, Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
