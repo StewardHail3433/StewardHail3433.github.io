@@ -298,9 +298,9 @@ class Game {
             this.worldHandler.renderLayer(i, this.ctx, this.camera);
         }
         this.worldHandler.renderDropItems(this.ctx, this.camera);
-        // for(let i = 0; i < this.enemies.length; i++) {
-        //     this.enemies[i].render(this.ctx);
-        // }
+        for(let i = 0; i < this.enemies.length; i++) {
+            this.enemies[i].render(this.ctx);
+        }
         this.player.render(this.ctx);
         for(let i = this.player.getLayer()+1; i < 2; i++) {
             this.worldHandler.renderLayer(i, this.ctx, this.camera);
