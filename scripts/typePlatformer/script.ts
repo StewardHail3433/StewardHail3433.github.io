@@ -99,6 +99,9 @@ class Game {
             document.getElementById("fullscreenButton")!.addEventListener("click", () => {this.toggleFullScreen()});
         }
         this.isFullscreen = !this.isFullscreen;
+
+        const entities = this.enemies;
+        entities.push(this.player);
     }
 
     private setupEventListeners() {
@@ -250,9 +253,7 @@ class Game {
         //     this.enemies[i].update();
         // }
 
-        const entities = this.enemies;
-        entities.push(this.player);
-        this.collisionHandler.update(entities, this.worldHandler.getWorldMap(), dt);
+        this.collisionHandler.update([this.player], this.worldHandler.getWorldMap(), dt);
 
         this.camera.update();
         
