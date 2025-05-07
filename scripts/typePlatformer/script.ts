@@ -246,9 +246,9 @@ class Game {
 
     private update(dt:number) {
         this.player.update();
-        for(let i = 0; i < this.enemies.length; i++) {
-            this.enemies[i].update();
-        }
+        // for(let i = 0; i < this.enemies.length; i++) {
+        //     this.enemies[i].update();
+        // }
 
         const entities = this.enemies;
         entities.push(this.player);
