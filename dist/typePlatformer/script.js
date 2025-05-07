@@ -44,6 +44,8 @@ class Game {
         this.collisionHandler = new CollisionHandler();
         this.inventoryHandler = new InventoryHandler(this.canvas);
         this.interactionHandler = new InteractionHandler(this.player, this.worldHandler, this.camera, this.inventoryHandler);
+        this.entities = this.enemies;
+        this.entities.push(this.player);
         document.addEventListener("keydown", (event) => { if (event.key === "?") {
             event.preventDefault();
             this.toggleFullScreen();
@@ -76,8 +78,6 @@ class Game {
             document.getElementById("fullscreenButton").addEventListener("click", () => { this.toggleFullScreen(); });
         }
         this.isFullscreen = !this.isFullscreen;
-        // const entities = this.enemies;
-        // entities.push(this.player);
     }
     setupEventListeners() {
         this.multiplayerEvents();
@@ -204,7 +204,7 @@ class Game {
         for (let i = 0; i < this.enemies.length; i++) {
             this.enemies[i].update();
         }
-        this.collisionHandler.update([this.player], this.worldHandler.getWorldMap(), dt);
+        this.collisionHandler.update(this.entities, this.worldHandler.getWorldMap(), dt);
         this.camera.update();
         if (this.isMultiplayer && this.socket) {
             this.worldHandler.updateServer(this.camera, this.socket);
