@@ -25,7 +25,7 @@ class Game {
 
     private player: Player;
     private enemies: Entity[];
-    private enities: Entity[];
+    private entities: Entity[];
     private uiHandler: UIHandler;
     private camera: Camera;
     private worldHandler: WorldHandler;
