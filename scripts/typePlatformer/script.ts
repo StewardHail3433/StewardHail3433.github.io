@@ -14,6 +14,7 @@ import { CollisionHandler } from "./utils/CollisionHandler.js";
 import { InteractionHandler } from "./utils/InteractionHandler.js";
 import { Inventory } from "./inventory/Inventory.js";
 import { InventoryHandler } from "./inventory/InventoryHandler.js";
+import { Watcher } from "./entity/enemies/Watcher.js"
 
 declare const io: any;
 class Game {
@@ -23,6 +24,7 @@ class Game {
     private warningDiv: HTMLElement;
 
     private player: Player;
+    private enemies: Entity[];
     private uiHandler: UIHandler;
     private camera: Camera;
     private worldHandler: WorldHandler;
@@ -53,6 +55,9 @@ class Game {
         this.player = new Player("TIm", new HealthComponent(100, 100), new HitboxComponent({
             x: 100, y: 100, width: 8, height: 8,
         }));
+        this.enemies = [new Watcher(new HealthComponent(100, 100), new HitboxComponent({
+            x: 50, y: 50, width: 10, height: 10
+        }))]
         this.camera = new Camera({ x: 100, y: 100, width: Constants.CANVAS_WIDTH, height: Constants.CANVAS_HEIGHT, zoom: 1.35}, "main");
         this.camera.trackEntity(this.player);
 
@@ -241,8 +246,13 @@ class Game {
 
     private update(dt:number) {
         this.player.update();
+        for(let i = 0; i < this.enemies.length; i++) {
+            this.enemies[i].update();
+        }
 
-        this.collisionHandler.update([this.player], this.worldHandler.getWorldMap(), dt);
+        const entities = this.enemies;
+        entities.push(this.player);
+        this.collisionHandler.update(entities, this.worldHandler.getWorldMap(), dt);
 
         this.camera.update();
         
@@ -285,6 +295,9 @@ class Game {
             this.worldHandler.renderLayer(i, this.ctx, this.camera);
         }
         this.worldHandler.renderDropItems(this.ctx, this.camera);
+        for(let i = 0; i < this.enemies.length; i++) {
+            this.enemies[i].render(ctx);
+        }
         this.player.render(this.ctx);
         for(let i = this.player.getLayer()+1; i < 2; i++) {
             this.worldHandler.renderLayer(i, this.ctx, this.camera);

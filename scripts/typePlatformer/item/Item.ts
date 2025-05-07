@@ -4,7 +4,7 @@ export class Item {
     private id:string;
     private name:string;
     private discription:string;
-    private maxStackAmount: number = 12;
+    private maxStackAmount: number = 999;
     private isBlockItem: boolean
     private img: HTMLImageElement | undefined;
     constructor(id: string, name: string, discription:string = "This is an item(I think)", isBlockItem = false) {
