@@ -2,10 +2,10 @@ import { Entity } from "../Entity.js";
 export class Watcher extends Entity {
     constructor(healthcomponent, hitboxComponent) {
         super(healthcomponent, hitboxComponent);
-        this.lockActionTime = 0;
+        this.lockActionTime = 51;
     }
     update() {
-        if (this.lockActionTime > 200) {
+        if (this.lockActionTime > 50) {
             const random1 = Math.random() * 100;
             const random2 = Math.random() * 100;
             if (random1 < 33) {
