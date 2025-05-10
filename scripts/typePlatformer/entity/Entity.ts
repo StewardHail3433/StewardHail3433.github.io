@@ -1,6 +1,7 @@
 import { normalize } from "path";
 import { HealthComponent } from "../components/HealthComponent.js";
 import { HitboxComponent } from "../components/HitboxComponent.js";
+import { Node } from "../utils/pathfinding/Node.js";
 
 export class Entity {
     protected healthComponent: HealthComponent;

@@ -16,9 +16,9 @@ export class CollisionHandler {
         for(let i = 0; i < entities.length; i++) {
             //thanks to this dude he help me with the bug https://github.com/akon47/shoot_game/blob/master/player_class.js
             this.handleAxisEntityMovement("x", entities[i], dt);
-            if(entities[i] instanceof Player) this.handleAxisCollision("x", entities[i], chunks);
+            this.handleAxisCollision("x", entities[i], chunks);
             this.handleAxisEntityMovement("y", entities[i], dt)
-            if(entities[i] instanceof Player) this.handleAxisCollision("y", entities[i], chunks);
+            this.handleAxisCollision("y", entities[i], chunks);
         }
     }
 

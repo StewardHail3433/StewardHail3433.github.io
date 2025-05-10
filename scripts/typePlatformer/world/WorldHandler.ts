@@ -149,28 +149,6 @@ export class WorldHandler {
         return this.droppedItems;
     }
 
-    public updateServer(camera: Camera, socket: any) {
-        if(socket) {
-            // cause crasing because spaming load chuns but now only calling when new chuns are found. WOW look at me commenting haha
-            let x = Math.floor((camera.getView().x+camera.getView().width/2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
-            let y = Math.floor((camera.getView().y+camera.getView().height/2) / (Constants.TILE_SIZE * Constants.CHUNK_SIZE));
-
-            
-            let cx = x - Constants.RENDER_DISTANCE+1;
-            let cy = y - Constants.RENDER_DISTANCE+1;
-            top:
-            for (let i = cy; i < y + ((Constants.RENDER_DISTANCE)); i++) {
-                for (let j = cx; j < x + ((Constants.RENDER_DISTANCE)); j++) {
-                    if (!this.worldMap.has(j+", "+i)) {
-                        socket.emit("loadChunk", camera.getView());
-                        break top;
-                    }
-                }
-            }
-        }
-
-    }
-
     private generateChunk(chunkX: number, chunkY: number, seed: number): WorldTile[][] {
         let chunk: WorldTile[][] = [];
         let leavesPos: {x:number, y:number}[] = []

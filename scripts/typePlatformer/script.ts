@@ -15,6 +15,7 @@ import { InteractionHandler } from "./utils/InteractionHandler.js";
 import { Inventory } from "./inventory/Inventory.js";
 import { InventoryHandler } from "./inventory/InventoryHandler.js";
 import { Watcher } from "./entity/enemies/Watcher.js"
+import { PathFinder } from "./utils/pathfinding/PathFinder.js";
 
 declare const io: any;
 class Game {
@@ -33,9 +34,9 @@ class Game {
     private interactionHandler: InteractionHandler;
     private inventoryHandler: InventoryHandler;
 
-    private players: Record<string, Entity> = {};
-    private isMultiplayer: boolean = false;
-    private socket: any = null;
+    private pathUpdateTime = 0;
+    private pathUpdateInterval = 0.5; 
+
     private lastTime: number = 0;
     private isFullscreen: boolean =false;
     private fullscreenhtml: string[] = [];
@@ -59,6 +60,9 @@ class Game {
         this.enemies = [
             new Watcher(new HealthComponent(100, 100), new HitboxComponent({
                 x: 50, y: 50, width: 10, height: 10
+            })),
+            new Watcher(new HealthComponent(100, 100), new HitboxComponent({
+                x: 75, y: 50, width: 16, height: 16
             }))
         ]
         this.camera = new Camera({ x: 100, y: 100, width: Constants.CANVAS_WIDTH, height: Constants.CANVAS_HEIGHT, zoom: 1.35}, "main");
@@ -76,6 +80,7 @@ class Game {
 
         this.entities = this.enemies;
         this.entities.push(this.player);
+        PathFinder.initNode();
         
         document.addEventListener("keydown", (event) => {if(event.key === "?"){event.preventDefault();this.toggleFullScreen()} if(event.key === "c") {this.collisionHandler.setPlayerCollisions(false)} if(event.key === "C") {this.collisionHandler.setPlayerCollisions(true)}});
         document.getElementById("fullscreenButton")!.addEventListener("click", () => {this.toggleFullScreen()});
@@ -114,132 +119,13 @@ class Game {
             var hexValue = (document.getElementById("playerColor") as HTMLInputElement).value.replace("#","");
             
             this.player.getHitboxComponent().setColor({hex: hexValue});
-            if(this.isMultiplayer) {
-                this.socket.emit("updatePlayer", this.player.serialize());
-                this.warningDiv.textContent = "";
-            }
+
         });
 
     }
 
     private multiplayerEvents() {
-        this.joinButton.addEventListener("click", () => {
-            if (this.isMultiplayer) return;
         
-            console.log("Attempting to join multiplayer...");
-            this.socket = io("https://webserver-production-ec5c.up.railway.app");
-        
-            this.socket.on("connect", () => {
-                console.log("Connected to multiplayer server!");
-                this.isMultiplayer = true;
-                this.joinButton.textContent = "Connected!";
-                this.socket.emit("newPlayer", this.player.serialize());
-                this.uiHandler.getChatHandler().setSocket(this.socket);
-            });
-        
-            this.socket.on("updatePlayers", (data: Record<string, any>) => {
-                this.players = {};
-                for (const id in data) {
-                    if (id !== this.socket.id) {
-                        this.players[id] = Entity.deserialize(data[id]);
-                    }
-                }
-            });
-        
-            this.socket.on("AFKWarning", (data: any) => {
-                this.warningDiv.textContent = data.message;
-                this.warningDiv.style.color = "red"; 
-        
-                setTimeout(() => {
-                    this.warningDiv.style.color = "";
-                }, 500);
-        
-            });
-        
-            this.socket.on("forceDisconnect", (data: any) => {
-                this.socket.disconnect();
-                alert(data.message);
-                this.warningDiv.textContent = "";
-                this.uiHandler.getChatHandler().setSocket(null);
-            });
-        
-            this.socket.on("disconnect", () => {
-                console.log("Disconnected from server. Returning to single-player mode.");
-                this.isMultiplayer = false;
-                this.joinButton.textContent = "Join Multiplayer";
-                this.uiHandler.getChatHandler().setSocket(null);
-            });
-        
-            this.socket.on("connect_error", () => {
-                console.log("Multiplayer server not available.");
-                this.isMultiplayer = false;
-                this.joinButton.textContent = "Join Multiplayer";
-                this.uiHandler.getChatHandler().setSocket(null);
-            });
-
-            this.socket.on("initNewWorld", (data: any) => {
-                // const deserializedChunks = new Map<string, Tile[][]>();
-            
-                // for (const key in data) {
-                //     const tileMatrix = data[key];
-            
-                //     if (Array.isArray(tileMatrix)) {
-                //         const chunk: Tile[][] = tileMatrix.map((row: any[]) =>
-                //             row.map((tileData: any) => Tile.deserialize(tileData))
-                //         );
-                //         deserializedChunks.set(key, chunk);
-                //     }
-                // }
-            
-                // this.worldHandler.loadChunksFromServer(deserializedChunks);
-            });
-            
-
-            this.socket.on("loadChunks", (data: any) => {
-
-                // so from my understanding the data was record in server and then a json object to send and then cnoverted to map here and this stop the crashing because the JSON.stringify can do the record with eaiser tha map so no crashing so server end
-                // const deserializedChunks = new Map<string, Tile[][]>();
-            
-                // for (const key in data) {
-                //     const tileMatrix = data[key];
-            
-                //     if (Array.isArray(tileMatrix)) {
-                //         const chunk: Tile[][] = tileMatrix.map((row: any[]) =>
-                //             row.map((tileData: any) => Tile.deserialize(tileData))
-                //         );
-                //         deserializedChunks.set(key, chunk);
-                //     }
-                // }
-            
-                // this.worldHandler.loadChunksFromServer(deserializedChunks);
-            });
-
-            
-        });
-        Constants.COMMAND_SYSTEM.addCommand("server", (args: string[]) => {
-            if(args.length > 0) {
-                if(args[0] == "reloadWorld") {
-                    if(this.socket) {
-                        if(args.length >= 2) {
-                            if(args[1] == "seed") {
-                                if(isNaN(parseFloat(args[2]))) {
-                                    this.socket.emit("loadWorld", {seed: parseFloat(args[2])});
-                                } 
-                            } else {
-                                Constants.COMMAND_SYSTEM.outputArgsError("/server reloadWorld seed? ###?")
-                            }
-                        } else {
-                            this.socket.emit("loadWorld", {seed:-1});
-                        }
-                    }
-                    else {
-                        Constants.COMMAND_SYSTEM.outputCustomError("/server reloadWorld seed? ###?", "Not connected to a server")
-                    }
-                }
-            } else {
-                Constants.COMMAND_SYSTEM.outputArgsError("/server reloadWorld seed? ###?")
-            }
-        });
     }
 
     private gameLoop(currentTime: number) {
@@ -261,15 +147,8 @@ class Game {
 
         this.camera.update();
         
-        if(this.isMultiplayer && this.socket) {
-            this.worldHandler.updateServer(this.camera, this.socket);
-        } else {
-            this.worldHandler.update(this.camera);
-        }
+        this.worldHandler.update(this.camera);
         this.interactionHandler.update(dt);
-        if (this.player.isMoving() && this.isMultiplayer && this.socket) {
-            this.socket.emit("updatePlayer", this.player.serialize());
-        }
         this.inventoryHandler.update();
         this.uiHandler.update();
 
@@ -290,6 +169,22 @@ class Game {
         } else {
             this.camera.trackEntity(this.player);
         }
+
+        this.pathUpdateTime += dt;
+        if (this.pathUpdateTime >= this.pathUpdateInterval) {
+            this.pathUpdateTime = 0;
+
+            PathFinder.setNodes(Math.floor(this.enemies[0].getHitboxComponent().getHitbox().x / Constants.TILE_SIZE), Math.floor(this.enemies[0].getHitboxComponent().getHitbox().y / Constants.TILE_SIZE), Math.floor(this.player.getHitboxComponent().getHitbox().x / Constants.TILE_SIZE), Math.floor(this.player.getHitboxComponent().getHitbox().y / Constants.TILE_SIZE), this.worldHandler.getWorldMap());
+
+            const path = PathFinder.search();
+
+            PathFinder.setNodes(Math.floor(this.enemies[1].getHitboxComponent().getHitbox().x / Constants.TILE_SIZE), Math.floor(this.enemies[1].getHitboxComponent().getHitbox().y / Constants.TILE_SIZE), Math.floor(this.player.getHitboxComponent().getHitbox().x / Constants.TILE_SIZE), Math.floor(this.player.getHitboxComponent().getHitbox().y / Constants.TILE_SIZE), this.worldHandler.getWorldMap());
+
+            const path2 = PathFinder.search();
+            (this.enemies[0] as Watcher).setPath(path); 
+            (this.enemies[1] as Watcher).setPath(path2); 
+        }
+
     }
 
     private render() {
@@ -310,17 +205,14 @@ class Game {
             this.enemies[i].render(this.ctx);
         }
         this.player.render(this.ctx);
+            PathFinder.render((this.enemies[0] as Watcher).getPath(), this.ctx);
+            PathFinder.render((this.enemies[1] as Watcher).getPath(), this.ctx);
         for(let i = this.player.getLayer()+1; i < 2; i++) {
             this.worldHandler.renderLayer(i, this.ctx, this.camera);
         }
 
         this.worldHandler.renderMouse(this.ctx, this.camera)
 
-        if (this.isMultiplayer) {
-            for (const id in this.players) {
-                this.players[id].render(this.ctx);
-            }
-        }
         this.ctx.restore();
 
         this.inventoryHandler.render(this.ctx);
