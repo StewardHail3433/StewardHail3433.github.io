@@ -6,26 +6,26 @@ export default defineConfig({
   root: '',
   base: '/StewardHail3433.github.io/',
   plugins: [
-    // viteStaticCopy({
-    //   targets: [
-    //     {
-    //       src: 'resources/*',
-    //       dest: 'resources'
-    //     },
-    //     // {
-    //     //   src: 'scripts/**/*.js',
-    //     //   dest: 'scripts'
-    //     // },
-    //     {
-    //       src: 'styles/*',
-    //       dest: 'styles/'
-    //     },
-    //     {
-    //       src: '*.html',
-    //       dest: ''
-    //     }
-    //   ]
-    // })
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'resources/*',
+          dest: 'resources'
+        },
+        {
+          src: 'scripts/**/*.js',
+          dest: 'scripts'
+        },
+        {
+          src: 'styles/*',
+          dest: 'styles/'
+        },
+        {
+          src: '*.html',
+          dest: ''
+        }
+      ]
+    })
   ],
     build: {
     rollupOptions: {
