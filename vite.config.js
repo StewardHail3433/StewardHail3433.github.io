@@ -11,7 +11,10 @@ export default defineConfig({
           dest: 'resources'
         },
         {
-          src: 'scripts/*',
+          src: [
+            'scripts/**',          // everything in scripts
+            '!scripts/typePlatformer/**' // except this folder and its contents
+        ],
           dest: 'scripts/'
         },
         {
