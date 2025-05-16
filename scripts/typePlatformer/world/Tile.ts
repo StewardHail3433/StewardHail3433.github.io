@@ -10,19 +10,23 @@ export class Tile {
     private name: string;
     private item: Item;
     private img: HTMLImageElement | undefined;
-    private settings: {breakTime: number} 
+    private settings: {breakTime: number, solid: boolean} 
 
     constructor(
         id:string,
         numberID:number,
         name: string = "TILEHE",
-        settings: {breakTime: number} = {breakTime: 50}
+        settings: {breakTime: number, solid: boolean} = {breakTime: 50, solid: false},
     ) {
         this.id = id;
         this.numberID = numberID;
         this.name = name;
         this.item = Items.registerTileItem(this);
         this.settings = settings;
+        // this.loadImage();
+    }
+
+    public loadImage() {
         if(this.numberID > 5) {
             let src = "resources/typePlatformer/images/tiles/" + this.id + ".png";
             ImageLoader.getImages().forEach(img => {
@@ -31,7 +35,6 @@ export class Tile {
                 }
             })
         }
-
     }
 
     public getItem() {
@@ -72,7 +75,7 @@ export class Tile {
     }
 
     public getSettings() {
-        return this.settings;
+        return {...this.settings};
     }
 
     public getImage() {

@@ -46,7 +46,7 @@ export class CollisionHandler {
                     for(let tx = 0; tx < Constants.CHUNK_SIZE; tx++) {
                         for(let ty = 0; ty < Constants.CHUNK_SIZE; ty++) {
                             const chunkHitbox = chunk[tx][ty].getHitboxComponent().getHitbox();
-                            if(containBox(entHitbox, chunkHitbox) && chunk[tx][ty].getLayers()[entity.getLayer()].tile != Tiles.EMPTY) {
+                            if(containBox(entHitbox, chunkHitbox) && chunk[tx][ty].getLayers()[entity.getLayer()].tile.getSettings().solid) {
 
                                 if (axis === "x") {
                                     if (entity.getVelocity()[axis] > 0) {

@@ -5,7 +5,8 @@
       "outDir": "dist",
       "rootDir": "scripts",
       "strict": true,
-      "moduleResolution": "node"
+      "moduleResolution": "node",
+      "esModuleInterop": true
     }
   }
   

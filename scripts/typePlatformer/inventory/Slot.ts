@@ -37,7 +37,7 @@ export class Slot {
 
     public removeCount(num: number) {
         this.count -= num;
-        if(this.count == 0) {
+        if(this.count <= 0) {
             this.item = Items.EMPTY;
             this.count = 0;
             this.empty = true;

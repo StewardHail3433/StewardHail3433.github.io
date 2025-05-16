@@ -1,12 +1,17 @@
 import { Item } from "./Item.js";
 import { Tile } from "../world/Tile.js";
+import { Entity } from "../entity/Entity.js";
 
 export class Items {
     public static readonly EMPTY:Item = new Item("empty", "empty");
     public static readonly SWORD:Item = new Item("sword", "Sword", "This is sharp\nBe careful");
     public static readonly STICK:Item = new Item("stick", "Stick", "This is a stick");
     public static readonly PICKAXE:Item = new Item("pickaxe", "Pickaxe", "Lets Mine");
-    // public static readonly WOOD:Item = new Item("wood", "Wood", "It is wood\nTry crafting");
+    public static readonly SPEED_UP_POTION:Item = new Item("speed_up_potion", "Speed Up Potion", "Speed Me Up", {...this.EMPTY.getSettings(), isConsumable: true}, (entity: Entity) => {
+        entity.setSpeed(entity.getSpeed() + 30);
+    });
+    
+
 
     private static readonly items: Record<string, Item> = {}; // YAY I get to try a record
 
@@ -27,8 +32,14 @@ export class Items {
         }
     }
 
+    public static loadItemsImgs() {
+        for(const id in this.items) {
+            this.items[id].loadImage();
+        }
+    }
+
     public static registerTileItem(tile: Tile): Item {
-        this.items[tile.getId()] = new Item(tile.getId(), tile.getName(), "THIS IS A BLOCK", true);
+        this.items[tile.getId()] = new Item(tile.getId(), tile.getName(), "THIS IS A BLOCK", {isBlockItem: true, isConsumable: false});
         return this.items[tile.getId()];
     }
 }

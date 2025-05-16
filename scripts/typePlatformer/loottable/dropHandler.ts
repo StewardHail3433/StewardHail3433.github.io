@@ -10,6 +10,7 @@ export class DropTableHandler {
         this.DROPS.set(Tiles.GRASS, () => Tiles.GRASS.getItem());
         this.DROPS.set(Tiles.TREE_STUMP, () => Tiles.WOOD.getItem());
         this.DROPS.set(Tiles.TREE_LEAVES, () => DropTableHandler.random([Tiles.WOOD.getItem(), Tiles.TREE_LEAVES.getItem()]));
+        this.DROPS.set(Tiles.POTION_BOWL, () => Items.SPEED_UP_POTION);
     }
 
     private static random(items: Item[]) {

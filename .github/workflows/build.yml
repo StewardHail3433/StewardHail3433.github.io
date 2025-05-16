@@ -54,5 +54,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: main  # Deploy to the main branch
-          folder: .     # Deploy everything in the root directory
+          branch: gh-pages  # Deploy to the main branch
+          folder: dist      # Deploy everything in the root directory

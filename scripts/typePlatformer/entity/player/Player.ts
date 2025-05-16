@@ -30,7 +30,7 @@ export class Player extends Entity {
         selectSlot4: "5",
         selectSlot5: "6",
         selectSlot6: "7",
-
+        useItem: "MRight"
     };
     private touchMode = false;
     private frame = 0;
@@ -133,6 +133,7 @@ export class Player extends Entity {
         selectSlot4: string,
         selectSlot5: string,
         selectSlot6: string
+        useItem: string
     } = {
         up: 'w',
         down: 's',
@@ -149,6 +150,7 @@ export class Player extends Entity {
         selectSlot4: "5",
         selectSlot5: "6",
         selectSlot6: "7",
+        useItem: "MRight"
     }) {
         this.controls = controls;
     }

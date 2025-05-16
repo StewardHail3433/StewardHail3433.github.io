@@ -4,9 +4,7 @@ import { Inventory } from "../inventory/Inventory.js";
 import { WorldHandler } from "../world/WorldHandler.js";
 import { containBox, isInside } from "./Collisions.js";
 import { Constants } from "./Constants.js";
-import { Items } from "../item/Items.js";
 import { Camera } from "../camera/Camera.js";
-import { Tile } from "../world/Tile.js";
 import { Tiles } from "../world/Tiles.js";
 import { WorldTile } from "../world/WorldTile.js";
 
@@ -15,6 +13,9 @@ export class InteractionHandler {
     private camera: Camera;
     private worldHandler: WorldHandler;
     private inventoryHandler: InventoryHandler;
+    
+    private interactionCoodown: number = 0.75;
+    private interactionCount: number = -this.interactionCoodown;
     constructor(player: Player, worldHandler: WorldHandler, camera: Camera, inventoryHandler: InventoryHandler) {
         this.player = player;
         this.worldHandler = worldHandler;
@@ -35,20 +36,24 @@ export class InteractionHandler {
 
     private checkShouldDropItems() {
         if(this.inventoryHandler.shouldDrop()) {
-            if(!this.inventoryHandler.getHeldSlot().isEmpty()) {
-                this.worldHandler.dropItem(this.inventoryHandler.getHeldSlot(),{x: (Constants.INPUT_HANDLER.getMousePosition().x / this.camera.getView().zoom + this.camera.getView().x), y: (Constants.INPUT_HANDLER.getMousePosition().y / this.camera.getView().zoom + this.camera.getView().y)});
-            } else if(!this.player.getHotbarInventory().getSelecteSlot().isEmpty()) {
-                this.worldHandler.dropItem(this.player.getHotbarInventory().getSelecteSlot(),{x: (Constants.INPUT_HANDLER.getMousePosition().x / this.camera.getView().zoom + this.camera.getView().x), y: (Constants.INPUT_HANDLER.getMousePosition().y / this.camera.getView().zoom + this.camera.getView().y)});
+            const heldSlot = this.inventoryHandler.getHeldSlot();
+            const selectedSlot = this.player.getHotbarInventory().getSelecteSlot();
+            if(!heldSlot.isEmpty()) {
+                this.worldHandler.dropItem(heldSlot,{x: (Constants.INPUT_HANDLER.getMousePosition().x / this.camera.getView().zoom + this.camera.getView().x), y: (Constants.INPUT_HANDLER.getMousePosition().y / this.camera.getView().zoom + this.camera.getView().y)});
+            } else if(!selectedSlot.isEmpty()) {
+                this.worldHandler.dropItem(selectedSlot,{x: (Constants.INPUT_HANDLER.getMousePosition().x / this.camera.getView().zoom + this.camera.getView().x), y: (Constants.INPUT_HANDLER.getMousePosition().y / this.camera.getView().zoom + this.camera.getView().y)});
             }
             this.inventoryHandler.resetDroppedItem();
         }
     }
 
     private updateWorldSelectedItem() {
-        if (!this.inventoryHandler.getHeldSlot().isEmpty()) {
-            this.worldHandler.setSelectedItem(this.inventoryHandler.getHeldSlot().getItem());
+        const heldSlot = this.inventoryHandler.getHeldSlot();
+        const selectedSlot = this.player.getHotbarInventory().getSelecteSlot();
+        if (!heldSlot.isEmpty()) {
+            this.worldHandler.setSelectedItem(heldSlot.getItem());
         } else {
-            this.worldHandler.setSelectedItem(this.player.getHotbarInventory().getSelecteSlot().getItem());
+            this.worldHandler.setSelectedItem(selectedSlot.getItem());
         }
     }
 
@@ -82,6 +87,24 @@ export class InteractionHandler {
         if(Constants.INPUT_HANDLER.checkControl(this.player.getControls().place)) {
             this.checkPlacing();
         }
+
+        if(Constants.INPUT_HANDLER.checkControl(this.player.getControls().useItem) && this.interactionCount + this.interactionCoodown <= Constants.TIME_HANDLER.getTime()) {
+            this.checkUseItem()
+        }
+    }
+
+    private checkUseItem() {
+        const heldSlot = this.inventoryHandler.getHeldSlot();
+        const selectedSlot = this.player.getHotbarInventory().getSelecteSlot();
+        if(heldSlot.getItem().getSettings().isConsumable) {
+            heldSlot.getItem().getConsumableAction()(this.player);
+            heldSlot.removeCount(1);
+            this.interactionCount = Constants.TIME_HANDLER.getTime();
+        } else if(selectedSlot.getItem().getSettings().isConsumable) {
+            selectedSlot.getItem().getConsumableAction()(this.player);
+            selectedSlot.removeCount(1);
+            this.interactionCount = Constants.TIME_HANDLER.getTime();
+        }
     }
 
     private setBreakingAtMouse() {
@@ -109,17 +132,19 @@ export class InteractionHandler {
     private checkPlacing() {
         let tile: WorldTile = this.worldHandler.getWorldTile(Constants.INPUT_HANDLER.getMouseWorldTilePosition(this.camera));
         if(tile.getLayers()[this.player.getLayer()].tile == Tiles.EMPTY) {
-            if(!this.inventoryHandler.getHeldSlot().isEmpty()) {
-                if(this.inventoryHandler.getHeldSlot().getItem().isABlockItem()) {
-                    tile.setLayer(this.player.getLayer(), Tiles.getTileById(this.inventoryHandler.getHeldSlot().getItem().getId()));
-                    this.inventoryHandler.getHeldSlot().removeCount(1);
+            const heldSlot = this.inventoryHandler.getHeldSlot();
+            const selectedSlot = this.player.getHotbarInventory().getSelecteSlot();
+            if(!heldSlot.isEmpty()) {
+                if(heldSlot.getItem().getSettings().isBlockItem) {
+                    tile.setLayer(this.player.getLayer(), Tiles.getTileById(heldSlot.getItem().getId()));
+                    heldSlot.removeCount(1);
                 }
                 return;
             }
-            if(!this.player.getHotbarInventory().getSelecteSlot().isEmpty()) {
-                if(this.player.getHotbarInventory().getSelecteSlot().getItem().isABlockItem()) {
-                    tile.setLayer(this.player.getLayer(), Tiles.getTileById(this.player.getHotbarInventory().getSelecteSlot().getItem().getId()));
-                    this.player.getHotbarInventory().getSelecteSlot().removeCount(1);
+            if(!selectedSlot.isEmpty()) {
+                if(selectedSlot.getItem().getSettings().isBlockItem) {
+                    tile.setLayer(this.player.getLayer(), Tiles.getTileById(selectedSlot.getItem().getId()));
+                    selectedSlot.removeCount(1);
                 }
                 return;
             }

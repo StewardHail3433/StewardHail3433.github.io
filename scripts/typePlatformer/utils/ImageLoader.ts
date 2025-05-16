@@ -1,43 +1,59 @@
 export class ImageLoader {
-    private static images: HTMLImageElement[] = [
-        this.createImage("resources/typePlatformer/images/tiles/fields.png"),
-        this.createImage("resources/typePlatformer/images/tiles/tree_leaves.png"),
-        this.createImage("resources/typePlatformer/images/tiles/tree_stump.png"),
-        this.createImage("resources/typePlatformer/images/entity/player/playerSheet.png"),
-        this.createImage("resources/typePlatformer/images/entity/player/playerSheet3.png"),
-        this.createImage("resources/typePlatformer/images/items/stick.png"),
-        this.createImage("resources/typePlatformer/images/items/sword.png"),
-        this.createImage("resources/typePlatformer/images/items/pickaxe.png"),
-        this.createImage("resources/typePlatformer/images/entity/player/playerSheet2.png"),
-        this.createImage("resources/typePlatformer/images/entity/player/duckMan.png"),
-        this.createImage("resources/typePlatformer/images/entity/player/theVoid.png"),
-        this.createImage("resources/typePlatformer/images/misc/mouseSelction.png"),
-        this.createImage("resources/typePlatformer/images/misc/breaking.png"),
-        this.createImage("resources/typePlatformer/images/items/tree_leaves.png"),
-        this.createImage("resources/typePlatformer/images/items/tree_stump.png"),
-        this.createImage("resources/typePlatformer/images/items/wood.png"),
-        this.createImage("resources/typePlatformer/images/items/rock.png"),
-        this.createImage("resources/typePlatformer/images/items/grass.png"),
-        this.createImage("resources/typePlatformer/images/tiles/wood.png")];
+    // https://www.youtube.com/watch?v=9j1dZwFEJ-c
+    private static images: HTMLImageElement[] = [];
+    private static imageSrcs = [
+        "resources/typePlatformer/images/tiles/fields.png",
+        "resources/typePlatformer/images/tiles/tree_leaves.png",
+        "resources/typePlatformer/images/tiles/tree_stump.png",
+        "resources/typePlatformer/images/entity/player/playerSheet.png",
+        "resources/typePlatformer/images/entity/player/playerSheet3.png",
+        "resources/typePlatformer/images/items/stick.png",
+        "resources/typePlatformer/images/items/sword.png",
+        "resources/typePlatformer/images/items/pickaxe.png",
+        "resources/typePlatformer/images/entity/player/playerSheet2.png",
+        "resources/typePlatformer/images/entity/player/duckMan.png",
+        "resources/typePlatformer/images/entity/player/theVoid.png",
+        "resources/typePlatformer/images/misc/mouseSelction.png",
+        "resources/typePlatformer/images/misc/breaking.png",
+        "resources/typePlatformer/images/items/tree_leaves.png",
+        "resources/typePlatformer/images/items/tree_stump.png",
+        "resources/typePlatformer/images/items/wood.png",
+        "resources/typePlatformer/images/items/rock.png",
+        "resources/typePlatformer/images/items/grass.png",
+        "resources/typePlatformer/images/tiles/wood.png",
+        "resources/typePlatformer/images/tiles/potion_bowl.png",
+        "resources/typePlatformer/images/items/speed_up_potion.png"];
 
 
     static getImages(): HTMLImageElement[]  {
         return this.images;
     }
 
+    public static async loadAllImages(): Promise<HTMLImageElement[]> {
+        const promises: Promise<HTMLImageElement>[] = [];
+        for(let i = 0; i < this.imageSrcs.length; i++) {
+            promises.push(this.loadImage(this.imageSrcs[i]));
+        }        
+        this.images = await Promise.all(promises);
+        return this.images;
+    }
 
-    private static createImage(src: string): HTMLImageElement {
-        let img = new Image()
 
-        img.onload = () => {
-            console.log("Succesfully loaded -> " + src);
-        }
+    private static loadImage(src: string): Promise<HTMLImageElement> {
+        return new Promise((resolve, reject) => {
+            let img = new Image()
 
-        img.onerror = () => {
-            console.log("Failed loading -> " + src);
-        }
+            img.onload = () => {
+                console.log("Succesfully loaded -> " + src);
+                resolve(img);
+            }
 
-        img.src = src;
-        return img;
+            img.onerror = () => {
+                console.log("Failed loading -> " + src);
+                reject(new Error("Failed to load image: " + src));
+            }
+
+            img.src = src;
+        });
     }
 }

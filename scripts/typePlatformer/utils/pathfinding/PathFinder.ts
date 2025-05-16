@@ -131,12 +131,12 @@ export class PathFinder {
                 const tileY = ((y % Constants.CHUNK_SIZE) + Constants.CHUNK_SIZE) % Constants.CHUNK_SIZE;;
                 const tile = map.get(Math.floor(x / Constants.CHUNK_SIZE) + ", " + Math.floor(y / Constants.CHUNK_SIZE))?.[tileY]?.[tileX];
 
-                if(x == goalX && y == goalY && tile?.getLayers()[0].tile != Tiles.EMPTY) {
+                if(x == goalX && y == goalY && tile?.getLayers()[0].tile.getSettings().solid) {
                     this.goalReached = true;
                     return;
                 }
                 node.setPos({x, y});
-                if(tile?.getLayers()[0].tile != Tiles.EMPTY) {
+                if(tile?.getLayers()[0].tile.getSettings().solid) {
                     node.setSolid(true);
                 }
                 this.getCost(node);

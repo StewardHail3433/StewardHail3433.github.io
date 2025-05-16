@@ -1,28 +1,24 @@
-import { error } from "console";
 import { Camera } from "./camera/Camera.js";
 import { HealthComponent } from "./components/HealthComponent.js";
 import { HitboxComponent } from "./components/HitboxComponent.js";
 import { Entity } from "./entity/Entity.js";
 import { Player } from "./entity/player/Player.js";
 import { UIHandler } from "./ui/UIHandler.js";
-import { CommandSystem } from "./utils/CommandSystem.js";
 import { Constants } from "./utils/Constants.js";
 import { WorldHandler } from "./world/WorldHandler.js";
-import { Tile } from "./world/Tile.js";
-import { ImageLoader } from "./utils/ImageLoader.js";
 import { CollisionHandler } from "./utils/CollisionHandler.js";
 import { InteractionHandler } from "./utils/InteractionHandler.js";
-import { Inventory } from "./inventory/Inventory.js";
 import { InventoryHandler } from "./inventory/InventoryHandler.js";
 import { Watcher } from "./entity/enemies/Watcher.js"
 import { PathFinder } from "./utils/pathfinding/PathFinder.js";
+import { ImageLoader } from "./utils/ImageLoader.js";
+import { Tiles } from "./world/Tiles.js";
+import { Items } from "./item/Items.js";
+import { AudioHandler } from "./utils/AudioHandler.js";
 
-declare const io: any;
 class Game {
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
-    private joinButton: HTMLButtonElement;
-    private warningDiv: HTMLElement;
 
     private player: Player;
     private enemies: Entity[];
@@ -40,6 +36,7 @@ class Game {
     private lastTime: number = 0;
     private isFullscreen: boolean =false;
     private fullscreenhtml: string[] = [];
+    private renderPath = false;
 
     constructor() {
         this.canvas = document.getElementById(Constants.CANVAS_ID) as HTMLCanvasElement;
@@ -51,8 +48,6 @@ class Game {
         this.ctx.imageSmoothingEnabled =false;
         this.ctx.imageSmoothingQuality = "high";
         this.ctx.scale(window.devicePixelRatio*3.25, window.devicePixelRatio*3.25);
-        this.joinButton = document.getElementById("joinMultiplayer") as HTMLButtonElement;
-        this.warningDiv = document.getElementById("test") as HTMLElement;
         
         this.player = new Player("TIm", new HealthComponent(100, 100), new HitboxComponent({
             x: 100, y: 100, width: 8, height: 8,
@@ -81,12 +76,14 @@ class Game {
         this.entities = this.enemies;
         this.entities.push(this.player);
         PathFinder.initNode();
+        AudioHandler.init();
         
         document.addEventListener("keydown", (event) => {if(event.key === "?"){event.preventDefault();this.toggleFullScreen()} if(event.key === "c") {this.collisionHandler.setPlayerCollisions(false)} if(event.key === "C") {this.collisionHandler.setPlayerCollisions(true)}});
         document.getElementById("fullscreenButton")!.addEventListener("click", () => {this.toggleFullScreen()});
 
         Constants.COMMAND_SYSTEM.addCommand("fullscreen", () =>this.toggleFullScreen());
 
+        Constants.COMMAND_SYSTEM.addCommand("renderPath", () =>this.renderPath = !this.renderPath);
     }
 
     private toggleFullScreen() {
@@ -185,6 +182,7 @@ class Game {
             (this.enemies[1] as Watcher).setPath(path2); 
         }
 
+        Constants.TIME_HANDLER.addTime(dt);
     }
 
     private render() {
@@ -205,8 +203,10 @@ class Game {
             this.enemies[i].render(this.ctx);
         }
         this.player.render(this.ctx);
+        if(this.renderPath) {
             PathFinder.render((this.enemies[0] as Watcher).getPath(), this.ctx);
             PathFinder.render((this.enemies[1] as Watcher).getPath(), this.ctx);
+        }
         for(let i = this.player.getLayer()+1; i < 2; i++) {
             this.worldHandler.renderLayer(i, this.ctx, this.camera);
         }
@@ -217,7 +217,21 @@ class Game {
 
         this.inventoryHandler.render(this.ctx);
         this.uiHandler.render(this.ctx);
+        this.ctx.fillStyle = "black"
+        this.ctx.font = 20 + "px serif";
+        this.ctx.fillText(Constants.TIME_HANDLER.getTime() + " ", Constants.CANVAS_WIDTH / 2, 10);
     }
 }
 
-new Game;
+
+(async () => {
+    await ImageLoader.loadAllImages();
+    Tiles.loadTilesImgs();
+    Items.loadItemsImgs();
+    new Game();
+})()
+
+
+
+
+    

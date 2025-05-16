@@ -2,14 +2,15 @@ import { Tile } from "./Tile.js";
 
 export class Tiles {
     public static readonly EMPTY:Tile = new Tile("empty", 0);
-    public static readonly GRASS:Tile = new Tile("grass", 1);
-    public static readonly ROCK:Tile = new Tile("rock", 2);
-    public static readonly HOLE:Tile = new Tile("hole", 3);
-    public static readonly TREE:Tile = new Tile("tree", 4);
-    public static readonly DEAD_TREE:Tile = new Tile("deadtree", 5);
-    public static readonly TREE_STUMP:Tile = new Tile("tree_stump", 6);
-    public static readonly TREE_LEAVES:Tile = new Tile("tree_leaves", 7);
-    public static readonly WOOD:Tile = new Tile("wood", 8, "Wood", {breakTime: 25});
+    public static readonly GRASS:Tile = new Tile("grass", 1, "Grass", {breakTime: 50, solid: false});
+    public static readonly ROCK:Tile = new Tile("rock", 2, "Rock", {...this.GRASS.getSettings(), solid: true});
+    public static readonly HOLE:Tile = new Tile("hole", 3, "Hole", this.ROCK.getSettings());
+    public static readonly TREE:Tile = new Tile("tree", 4, "Small Tree", this.ROCK.getSettings());
+    public static readonly DEAD_TREE:Tile = new Tile("deadtree", 5, "Dead Small Tree", this.ROCK.getSettings());
+    public static readonly TREE_STUMP:Tile = new Tile("tree_stump", 6, "Tree Stump", this.ROCK.getSettings());
+    public static readonly TREE_LEAVES:Tile = new Tile("tree_leaves", 7, "Tree Leave", this.ROCK.getSettings());
+    public static readonly WOOD:Tile = new Tile("wood", 8, "Wood", {breakTime: 25, solid: true});
+    public static readonly POTION_BOWL:Tile = new Tile("potion_bowl", 9, "Potion Bowl", {breakTime: 5, solid: false});
 
     private static readonly tiles: Record<string, Tile> = {}; // YAY I get to try a record
 
@@ -27,6 +28,12 @@ export class Tiles {
             return this.tiles[id];
         }
         return this.EMPTY// this.EMPTY;
+    }
+
+    public static loadTilesImgs() {
+        for(const id in this.tiles) {
+            this.tiles[id].loadImage();
+        }
     }
     
 

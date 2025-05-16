@@ -99,7 +99,7 @@ export class WorldHandler {
         }
 
         if(this.selectedItem != Items.EMPTY) {
-            if(this.selectedItem.isABlockItem()) {
+            if(this.selectedItem.getSettings().isBlockItem) {
                 const img = Tiles.getTileById(this.selectedItem.getId()).getImage();
                 if(img) {
                     ctx.globalAlpha = 0.25;
@@ -162,7 +162,8 @@ export class WorldHandler {
                     row.push(new WorldTile([{tile: Tiles.EMPTY}, {tile: Tiles.EMPTY}], new HitboxComponent({x:worldX, y:worldY, width:Constants.TILE_SIZE,height:Constants.TILE_SIZE}, {red:0,green:0,blue:0,alpha:0.0})));
                 }
                 else {
-                    let treemaybe = Math.floor(Math.random() * 7);
+                    let treemaybe = Math.floor(Math.random() * 8);
+                    if(treemaybe + 2 == 9) treemaybe = treemaybe + 2;
                     row.push(new WorldTile([{tile: Tiles.getTileByNumberId(treemaybe)}, {tile: Tiles.EMPTY}], new HitboxComponent({x:worldX, y:worldY, width:Constants.TILE_SIZE,height:Constants.TILE_SIZE}, {red:0,green:0,blue:0,alpha:0.0})));
                     if(treemaybe == 6) {
                         leavesPos.push({x: (worldX/Constants.TILE_SIZE - chunkX * Constants.CHUNK_SIZE), y: (worldY/Constants.TILE_SIZE - chunkY * Constants.CHUNK_SIZE) -1});

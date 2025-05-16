@@ -1,3 +1,4 @@
+import { Entity } from "../entity/Entity.js";
 import { ImageLoader } from "../utils/ImageLoader.js";
 
 export class Item {
@@ -5,13 +6,18 @@ export class Item {
     private name:string;
     private discription:string;
     private maxStackAmount: number = 999;
-    private isBlockItem: boolean
+    private consumeAction: (entity: Entity) => void;
+    private settings: {isBlockItem: boolean, isConsumable: boolean}
     private img: HTMLImageElement | undefined;
-    constructor(id: string, name: string, discription:string = "This is an item(I think)", isBlockItem = false) {
+    constructor(id: string, name: string, discription:string = "This is an item(I think)", settings = {isBlockItem: false, isConsumable: false}, consumeAction: (entity: Entity) => void =  (entity: Entity) => {}) {
         this.id = id;
         this.name = name;
         this.discription = discription;
-        this.isBlockItem = isBlockItem;
+        this.settings = settings;
+        this.consumeAction = consumeAction;
+    }
+
+    public loadImage() {
         let src = "resources/typePlatformer/images/items/" + this.id + ".png";
         ImageLoader.getImages().forEach(img => {
             if(img.src.substring(img.src.match("resources")?.index!) === src) {
@@ -36,7 +42,11 @@ export class Item {
         return this.id;
     }
 
-    public isABlockItem() {
-        return this.isBlockItem;
+    public getSettings() {
+        return {...this.settings};
+    }
+
+    public getConsumableAction() {
+        return this.consumeAction;
     }
 }
