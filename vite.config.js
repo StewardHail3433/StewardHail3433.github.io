@@ -9,6 +9,18 @@ export default defineConfig({
         {
           src: 'resources/*',
           dest: ''
+        },
+        {
+          src: 'scripts/*',
+          dest: 'scripts/'
+        },
+        {
+          src: 'styles/*',
+          dest: 'styles/'
+        },
+        {
+          src: './*.html',
+          dest: ''
         }
       ]
     })
