@@ -124,13 +124,7 @@ export class UIHandler {
         this.characterChooserRightButton.setParentComponent(this.characterChooserComponent);
 
         Constants.COMMAND_SYSTEM.addCommand("debug", (args) => {
-            if(args[0] === "show") {
-                Constants.INPUT_HANDLER.setToggle("F3", true);
-            } else if(args[0] === "hide") {
-                Constants.INPUT_HANDLER.setToggle("F3", false);
-            } else {
-                Constants.COMMAND_SYSTEM.outputArgsError("/debug (hide || show)");
-            }
+                Constants.INPUT_HANDLER.setToggle("F3", !Constants.INPUT_HANDLER.getKeyToggled()["F3"]);
         });
 
 
