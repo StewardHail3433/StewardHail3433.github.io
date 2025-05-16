@@ -32,10 +32,19 @@ export default defineConfig({
       input: {
         // manually define TS entry points — you must list them here
         script: path.resolve(__dirname, 'scripts/typePlatformer/script.ts'),
+        plat3: path.resolve(__dirname, 'scripts/platformer3/main.js'),
         // add more as needed
       },
       output: {
-        entryFileNames: 'scripts/typePlatformer/[name].js',
+        entryFileNames: chunk =>  {
+          if (chunk.name === "script") {
+            return 'scripts/typePlatformer/[name].js';
+          } else if (chunk.name === "plat3") {
+            return 'scripts/platformer3/[name].js';
+          } else {
+            return 'scripts/[name].js';
+          }
+        },
       },
     },
     outDir: 'dist',
