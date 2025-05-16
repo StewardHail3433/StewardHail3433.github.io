@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+   <head>
+        <title>Breakout</title>
+        <link rel="stylesheet" href="./styles/style.css">
+    </head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <body>
+        <div class="hideFull">
+            <ul class="nav">
+                <li class="nav"><a href="./index.html">Home</a></li>
+                <li class="nav"><a href="./breakout.html">Breakout</a></li>
+                <li class="nav"><a href="./badPlatformer.html">BAD PLATFORMER</a></li>
+                <li class="nav"><a href="./platformer2.html">plat2</a></li>
+                <li class="nav"><a href="./platformer3.html">plat3</a></li>
+                <li class="nav"><a href="./levelCreator.html">level creator</a></li>
+                <li class="nav"><a class="active" href="./typePlatformer.html">TypePlat</a></li>
+            </ul>
+        </div>
+        <div class="hideFull">
+        <div style="padding:20px 0 0 5px;margin-top:30px;"></div>
+        </div>
+        <div class="hideFull">
+            <h1>Survive</h1>
+        </div>
+        <div id="gameDiv">
+            <canvas id="gameCanvas" tabindex='0' style="overflow: hidden; width: 640px; height: 360px;image-rendering: pixelated"></canvas>
+        </div>
+        <div class="hideFull">
+            <button id="joinMultiplayer">DONT USE</button><br>
+            <input type="color" id="playerColor" value="#ff0000"><br>
+            <button id="fullscreenButton">fullscreenButton</button><br>
+            <p>pls use chrome if you can</p>
+            <div id="test"></div>
+            <div id="test2"></div>
+            <div id="test3">jdskmfh</div>
+        </div>
+    </body>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script type="module" src="./scripts/typePlatformer/script.js"></script>
+</html>
