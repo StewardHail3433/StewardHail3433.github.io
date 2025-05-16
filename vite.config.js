@@ -19,7 +19,7 @@ export default defineConfig({
           dest: 'styles/'
         },
         {
-          src: './*.html',
+          src: '*.html',
           dest: ''
         }
       ]
