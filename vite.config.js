@@ -12,8 +12,8 @@ export default defineConfig({
         },
         {
           src: [
-            'scripts/**/*.js',
-            '!scripts/typePlatformer/*.ts' 
+            'scripts/**/*.js',          
+            '!scripts/typePlatformer/**/*.ts' 
         ],
           dest: 'scripts/'
         },
