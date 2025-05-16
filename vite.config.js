@@ -8,7 +8,7 @@ export default defineConfig({
       targets: [
         {
           src: 'resources/*',
-          dest: ''
+          dest: 'resources'
         },
         {
           src: 'scripts/*',
