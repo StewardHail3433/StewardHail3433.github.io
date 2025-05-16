@@ -13,8 +13,24 @@ export default defineConfig({
           dest: 'resources'
         },
         {
-          src: ['scripts/**/*.js', '!scripts/typePlatformer/script.ts'],
-          dest: 'scripts'
+          src: 'scripts/platformer3/*',
+          dest: 'scripts/platformer3'
+        },
+        {
+          src: 'scripts/platformer2/*',
+          dest: 'scripts/platformer2'
+        },
+        {
+          src: 'scripts/badPlatformer/*',
+          dest: 'scripts/badPlatformer'
+        },
+        {
+          src: 'scripts/breakout/*',
+          dest: 'scripts/breakout'
+        },
+        {
+          src: 'scripts/levelCreator/*',
+          dest: 'scripts/levelCreator'
         },
         {
           src: 'styles/*',
