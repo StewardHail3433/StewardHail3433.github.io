@@ -11,8 +11,8 @@ export default defineConfig({
           dest: 'resources'
         },
         {
-          src: 'scripts/**/*.js',
-          dest: 'scripts/'
+          src: 'scripts/*',
+          dest: 'scripts'
         },
         {
           src: 'styles/*',
