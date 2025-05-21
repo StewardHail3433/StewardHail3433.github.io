@@ -98,6 +98,7 @@ export class UIComponentLabel extends UIComponent {
 
     public update(text: string = this.text) {
         this.text = text;
+        // this.update(text);
     }
 
     public getText(): string {

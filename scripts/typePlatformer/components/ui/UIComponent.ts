@@ -3,10 +3,12 @@ import { HitboxComponent } from "../HitboxComponent.js";
 export class UIComponent extends HitboxComponent {
     protected hidden: boolean;
     protected parentComponent?: UIComponent;
+    protected text = ""; // unused
     
     constructor(hitbox: {x: number; y: number; width: number; height: number}, color: {red: number; green: number; blue: number; alpha?: number} = { red: 255, green: 0, blue: 255, alpha: 1.0}, hidden: boolean) {
         super(hitbox, color);
         this.hidden = hidden;
+        return this;
     }
 
     public render(ctx: CanvasRenderingContext2D) {
@@ -38,6 +40,10 @@ export class UIComponent extends HitboxComponent {
 
     public isHidden(): boolean {
         return this.hidden
+    }
+
+    public update(text: string = this.text) {
+        
     }
 
 

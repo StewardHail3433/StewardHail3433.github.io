@@ -34,6 +34,7 @@ export class UIComponentButton extends UIComponentLabel {
         onFalse?: () => void,
         whileTrue?: () => void,
         whileFalse?: () => void,
+        shouldOnFalse = true
     ) {
         super(hitbox, color, hidden, text, textColor, fontSize, textAlign);
         this.hoverColor = hoverColor;
@@ -47,7 +48,7 @@ export class UIComponentButton extends UIComponentLabel {
         this.whileFalse = whileFalse;
         this.canvas = canvas;
         this.shouldOnTrue = false;
-        this.shouldOnFalse = true
+        this.shouldOnFalse = shouldOnFalse;
         
         document.addEventListener("touchstart", (event) => this.handleTouchStart(event));
         document.addEventListener("touchmove", (event) => this.handleTouchMove(event));

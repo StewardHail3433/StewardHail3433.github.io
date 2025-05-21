@@ -44,7 +44,7 @@ export class ImageLoader {
             let img = new Image()
 
             img.onload = () => {
-                console.log("Succesfully loaded -> " + src);
+                console.log("Image: Succesfully loaded -> " + src);
                 resolve(img);
             }
 

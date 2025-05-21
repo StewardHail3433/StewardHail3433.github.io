@@ -8,6 +8,7 @@ import { Constants } from "../utils/Constants.js";
 import { ImageLoader } from "../utils/ImageLoader.js";
 import { WorldHandler } from "../world/WorldHandler.js";
 import { UIChatHandler } from "./UIChatHandler.js";
+import { UIPauseHandler } from "./UIPauseHandler.js";
 
 export class UIHandler {
     private debug: UIComponent;
@@ -19,6 +20,7 @@ export class UIHandler {
     private debugSpeedDown: UIComponentButton;
     private uiChatHandler: UIChatHandler;
     private playermovement?: UIComponent[];
+    private uiPauseHandler: UIPauseHandler
     private player: Player;
     private camera: Camera;
     private characterChooserComponent: UIComponent;
@@ -127,6 +129,7 @@ export class UIHandler {
                 Constants.INPUT_HANDLER.setToggle("F3", !Constants.INPUT_HANDLER.getKeyToggled()["F3"]);
         });
 
+        this.uiPauseHandler = new UIPauseHandler(canvas, new UIComponent({x:20,y:20,width:Constants.CANVAS_WIDTH - 40, height:Constants.CANVAS_HEIGHT - 40}, { red: 100, green: 100, blue: 100, alpha: 0.5 },false))
 
     }
 
@@ -148,6 +151,8 @@ export class UIHandler {
         this.characterChooserLabel.render(ctx);
         this.characterChooserLeftButton.render(ctx);
         this.characterChooserRightButton.render(ctx);
+
+        this.uiPauseHandler.render(ctx);
     }
 
     public update() {
@@ -213,6 +218,7 @@ export class UIHandler {
                 (button as UIComponentButton).update();
             }
         }
+        this.uiPauseHandler.update();
     }
 
     public getChatHandler(): UIChatHandler {

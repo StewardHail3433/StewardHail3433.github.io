@@ -7,6 +7,7 @@ import { Constants } from "./Constants.js";
 import { Camera } from "../camera/Camera.js";
 import { Tiles } from "../world/Tiles.js";
 import { WorldTile } from "../world/WorldTile.js";
+import { AudioHandler, SFX } from "./audio/AudioHandler.js";
 
 export class InteractionHandler {
     private player: Player;
@@ -112,9 +113,13 @@ export class InteractionHandler {
         if(tile.getLayers()[this.player.getLayer()].tile != Tiles.EMPTY) {
             this.player.setBreaking(true);
             this.worldHandler.setBreakingTile(tile, this.player.getLayer());
+            if(!AudioHandler.getSounds()[SFX.BREAKING_0]?.playing()) {
+                AudioHandler.getSounds()[SFX.BREAKING_0]?.loop(true).play();
+            }
         } else {
             this.player.setBreaking(false);
             this.worldHandler.clearBreakingTile();
+            AudioHandler.getSounds()[SFX.BREAKING_0]?.loop(false).stop();
         }
     }
 
@@ -123,9 +128,13 @@ export class InteractionHandler {
             if(this.worldHandler.getBreakTime() >= this.worldHandler.getBreakingTile()!.getLayers()[this.player.getLayer()].tile.getSettings().breakTime) {
                 this.worldHandler.breakTile(this.player.getLayer());
                 this.player.setBreaking(false);
+                AudioHandler.getSounds()[SFX.BREAKING_0]?.loop(false).stop();
+                AudioHandler.getSounds()[SFX.FINISH_BREKAING_0]?.play();
                 return;
             }
             this.worldHandler.updateBreakTime();
+        } else {
+            AudioHandler.getSounds()[SFX.BREAKING_0]?.loop(false).stop();
         }
     }
 
@@ -138,6 +147,7 @@ export class InteractionHandler {
                 if(heldSlot.getItem().getSettings().isBlockItem) {
                     tile.setLayer(this.player.getLayer(), Tiles.getTileById(heldSlot.getItem().getId()));
                     heldSlot.removeCount(1);
+                    AudioHandler.getSounds()[SFX.PLACE]?.play();
                 }
                 return;
             }
@@ -145,6 +155,7 @@ export class InteractionHandler {
                 if(selectedSlot.getItem().getSettings().isBlockItem) {
                     tile.setLayer(this.player.getLayer(), Tiles.getTileById(selectedSlot.getItem().getId()));
                     selectedSlot.removeCount(1);
+                    AudioHandler.getSounds()[SFX.PLACE]?.play();
                 }
                 return;
             }
@@ -168,10 +179,12 @@ export class InteractionHandler {
 
                 slot = Inventory.transferItems(playerHotBar, slot);
                 if (slot.getItemCount() != 0) {
-                    slot = Inventory.transferItems(playerInv, slot);   
-                    if(slot.isEmpty()) {
-                        droppedItems.splice(i, 1);
-                    }         
+                    slot = Inventory.transferItems(playerInv, slot);    
+                }
+
+                if(slot.isEmpty()) {
+                    droppedItems.splice(i, 1);
+                    AudioHandler.getSounds()[SFX.PICKUP]?.play();
                 }
             }
 

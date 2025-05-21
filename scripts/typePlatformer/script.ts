@@ -14,7 +14,7 @@ import { PathFinder } from "./utils/pathfinding/PathFinder.js";
 import { ImageLoader } from "./utils/ImageLoader.js";
 import { Tiles } from "./world/Tiles.js";
 import { Items } from "./item/Items.js";
-import { AudioHandler } from "./utils/AudioHandler.js";
+import { AudioHandler, MUSIC } from "./utils/audio/AudioHandler.js";
 
 class Game {
     private canvas: HTMLCanvasElement;
@@ -76,7 +76,7 @@ class Game {
         this.entities = this.enemies;
         this.entities.push(this.player);
         PathFinder.initNode();
-        AudioHandler.init();
+        // AudioHandler.init();
         
         document.addEventListener("keydown", (event) => {if(event.key === "?"){event.preventDefault();this.toggleFullScreen()} if(event.key === "c") {this.collisionHandler.setPlayerCollisions(false)} if(event.key === "C") {this.collisionHandler.setPlayerCollisions(true)}});
         document.getElementById("fullscreenButton")!.addEventListener("click", () => {this.toggleFullScreen()});
@@ -228,6 +228,12 @@ class Game {
     await ImageLoader.loadAllImages();
     Tiles.loadTilesImgs();
     Items.loadItemsImgs();
+    await AudioHandler.loadAllSounds();
+    if(Math.random() * 2 < 1) {
+        AudioHandler.getSounds()[MUSIC.MUSIC0]?.loop(true).play()
+    } else {
+        AudioHandler.getSounds()[MUSIC.LIVING]?.loop(true).play()
+    }
     new Game();
 })()
 
