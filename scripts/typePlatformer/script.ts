@@ -50,7 +50,7 @@ class Game {
         this.ctx.scale(window.devicePixelRatio*3.25, window.devicePixelRatio*3.25);
         
         this.player = new Player("TIm", new HealthComponent(100, 100), new HitboxComponent({
-            x: 100, y: 100, width: 8, height: 8,
+            x: 100, y: 100, width: 8, height: 12,
         }));
         this.enemies = [
             new Watcher(new HealthComponent(100, 100), new HitboxComponent({

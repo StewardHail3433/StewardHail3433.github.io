@@ -22,7 +22,9 @@ export class ImageLoader {
         "resources/typePlatformer/images/items/grass.png",
         "resources/typePlatformer/images/tiles/wood.png",
         "resources/typePlatformer/images/tiles/potion_bowl.png",
-        "resources/typePlatformer/images/items/speed_up_potion.png"];
+        "resources/typePlatformer/images/items/speed_up_potion.png",
+        "resources/typePlatformer/images/items/sword2.png",
+        "resources/typePlatformer/images/tiles/tool_loot_box.png"];
 
 
     static getImages(): HTMLImageElement[]  {

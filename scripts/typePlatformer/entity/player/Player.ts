@@ -11,6 +11,9 @@ import { Constants } from "../../utils/Constants.js";
 import { ImageLoader } from "../../utils/ImageLoader.js";
 import { Entity } from "../Entity.js";
 import { Slot } from "../../inventory/Slot.js";
+import { ToolItem } from "../../item/tools/ToolItem.js";
+import { rectCorners } from "../../utils/Collisions.js";
+import { drawRoatatedImage } from "../../utils/ImageManipulation.js";
 
 export class Player extends Entity {
     private name: string;
@@ -21,6 +24,7 @@ export class Player extends Entity {
         right: 'd',
         inventory: 'e',
         break: "MLeft",
+        useTool: "MLeft",
         place: "MRight",
         drop: "q",
         selectSlot0: "1",
@@ -36,6 +40,9 @@ export class Player extends Entity {
     private frame = 0;
     private img: HTMLImageElement;
     private isBreaking: boolean = false;
+    private usingTool: boolean = true;
+    private toolHitbox: {pts: number[][], angle: number} = {pts: [], angle: -90};
+    private directionChanged = false;
 
     private inventory: Inventory =  new Inventory(14, "mainInventory");
     private hotbar: Inventory =  new Inventory(7, "hotbar");
@@ -124,6 +131,7 @@ export class Player extends Entity {
         right: string,
         inventory: string,
         break: string,
+        useTool: string,
         place: string,
         drop: string
         selectSlot0: string,
@@ -141,6 +149,7 @@ export class Player extends Entity {
         right: 'd',
         inventory: 'e',
         break: "MLeft",
+        useTool: "MLeft",
         place: "MRight",
         drop: "q",
         selectSlot0: "1",
@@ -158,18 +167,38 @@ export class Player extends Entity {
     public update(): void {
         this.velocity = {x:0, y:0};
         if (Constants.INPUT_HANDLER.checkControl(this.controls.up)) {
+            if(!this.directionChanged && this.direction != "up") {
+                this.directionChanged = true;
+            } else {
+                this.directionChanged = false;
+            }
             this.direction = "up";
             this.velocity.y = -this.speed;
         } 
         if (Constants.INPUT_HANDLER.checkControl(this.controls.down)) {
+            if(!this.directionChanged && this.direction != "down") {
+                this.directionChanged = true;
+            } else {
+                this.directionChanged = false;
+            }
             this.direction = "down";
             this.velocity.y = this.speed;
         }
         if (Constants.INPUT_HANDLER.checkControl(this.controls.left)) {
+            if(!this.directionChanged && this.direction != "left") {
+                this.directionChanged = true;
+            } else {
+                this.directionChanged = false;
+            }
             this.direction = "left";
             this.velocity.x = -this.speed;
         }
         if (Constants.INPUT_HANDLER.checkControl(this.controls.right)) {
+            if(!this.directionChanged && this.direction != "right") {
+                this.directionChanged = true;
+            } else {
+                this.directionChanged = false;
+            }
             this.direction = "right";
             this.velocity.x = this.speed;
         }
@@ -221,7 +250,51 @@ export class Player extends Entity {
             Constants.INPUT_HANDLER.setKey("p", false);
         }
 
+        if(Constants.INPUT_HANDLER.checkControl(this.controls.useTool)) {
+            this.usingTool = true;
+        } else {
+            this.usingTool = false;
+        }
+
         super.update();
+        this.updateToolItem();
+    }
+
+    private updateToolItem() {
+
+        if(this.hotbar.getSelecteSlot().getItem() instanceof ToolItem) {
+            const tool = this.hotbar.getSelecteSlot().getItem() as ToolItem;
+            const playerHitbox = this.hitboxComponent.getHitbox()
+            const playerCenterX = playerHitbox.x + playerHitbox.width/2;
+            const playerCenterY = playerHitbox.y + playerHitbox.height/2;
+
+            this.toolHitbox.pts = rectCorners({...tool.getHitbox(), x: playerCenterX - tool.getHitbox().width/2, y: playerCenterY - tool.getHitbox().height});
+
+            const startAngle = this.getDirectionAsAngle() - tool.getSwingAngleSettings().totalRotationAmount / 2;
+            const endAngle = this.getDirectionAsAngle() + tool.getSwingAngleSettings().totalRotationAmount / 2;
+
+            if (this.directionChanged) {
+                this.toolHitbox.angle = startAngle;
+            }
+
+            this.toolHitbox.angle += tool.getSwingAngleSettings().step;
+
+            if (this.toolHitbox.angle > endAngle) {
+                this.toolHitbox.angle = startAngle;
+            }
+
+            // https://stackoverflow.com/questions/2259476/rotating-a-point-about-another-point-2d
+            for(let i = 0; i < this.toolHitbox.pts.length; i++) {
+                const originalX = this.toolHitbox.pts[i][0];
+                const originalY = this.toolHitbox.pts[i][1];
+                this.toolHitbox.pts[i] = [Math.cos(this.toolHitbox.angle*(Math.PI/180)) * (originalX-playerCenterX) - Math.sin(this.toolHitbox.angle*(Math.PI/180)) * (originalY-playerCenterY) + playerCenterX,
+                                Math.sin(this.toolHitbox.angle*(Math.PI/180)) * (originalX-playerCenterX) + Math.cos(this.toolHitbox.angle*(Math.PI/180)) * (originalY-playerCenterY) + playerCenterY]
+            }
+        }
+    }
+
+    private getDirectionAsAngle() {
+        return (this.direction == "right" ? 90 : (this.direction == "down" ? 180 : (this.direction == "left" ? 270 : 0)));
     }
 
     public getControls() {
@@ -346,8 +419,30 @@ export class Player extends Entity {
                 ctx.drawImage(this.img, Constants.TILE_SIZE*2, Constants.TILE_SIZE*2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
             }
         }
+        this.renderItem(ctx);
         if(Constants.INPUT_HANDLER.getKeyToggled()["F3"] && Constants.INPUT_HANDLER.getKeyToggled()["b"]) {
             super.render(ctx);
+        }
+    }
+
+    public renderItem(ctx: CanvasRenderingContext2D) {
+
+        if(this.usingTool && this.hotbar.getSelecteSlot().getItem() instanceof ToolItem) {
+
+            ctx.strokeStyle = "red";
+            ctx.lineWidth = 0.5;
+
+            // ctx.moveTo(this.toolHitbox.pts[0][0], this.toolHitbox.pts[0][1]);
+            // ctx.beginPath()
+            // for(let i = 0; i < this.toolHitbox.pts.length; i++) {
+            //     ctx.lineTo(this.toolHitbox.pts[i][0], this.toolHitbox.pts[i][1])
+            // }
+            
+            // ctx.lineTo(this.toolHitbox.pts[0][0], this.toolHitbox.pts[0][1])
+            // ctx.closePath()
+            // ctx.stroke()
+
+            drawRoatatedImage(ctx, this.hotbar.getSelecteSlot().getItem().getImage()!, {x: this.toolHitbox.pts[0][0], y: this.toolHitbox.pts[0][1]}, this.toolHitbox.angle * (Math.PI/180))
         }
     }
 
@@ -369,5 +464,9 @@ export class Player extends Entity {
 
     public setBreaking(bool: boolean) {
         this.isBreaking = bool;
+    }
+
+    public setToolUsing(bool: boolean) {
+        this.usingTool = bool;
     }
 }

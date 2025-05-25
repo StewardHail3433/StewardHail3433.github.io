@@ -11,6 +11,7 @@ export class Tiles {
     public static readonly TREE_LEAVES:Tile = new Tile("tree_leaves", 7, "Tree Leave", this.ROCK.getSettings());
     public static readonly WOOD:Tile = new Tile("wood", 8, "Wood", {breakTime: 25, solid: true});
     public static readonly POTION_BOWL:Tile = new Tile("potion_bowl", 9, "Potion Bowl", {breakTime: 5, solid: false});
+    public static readonly TOOL_LOOT_BOX:Tile = new Tile("tool_loot_box", 10, "Loot Box(tool)", {breakTime: 25, solid: true});
 
     private static readonly tiles: Record<string, Tile> = {}; // YAY I get to try a record
 

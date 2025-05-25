@@ -163,7 +163,8 @@ export class WorldHandler {
                 }
                 else {
                     let treemaybe = Math.floor(Math.random() * 8);
-                    if(treemaybe + 2 == 9) treemaybe = treemaybe + 2;
+                    const tm = treemaybe + Math.round(Math.random()) + 2
+                    if( tm >= 9) treemaybe = tm;
                     row.push(new WorldTile([{tile: Tiles.getTileByNumberId(treemaybe)}, {tile: Tiles.EMPTY}], new HitboxComponent({x:worldX, y:worldY, width:Constants.TILE_SIZE,height:Constants.TILE_SIZE}, {red:0,green:0,blue:0,alpha:0.0})));
                     if(treemaybe == 6) {
                         leavesPos.push({x: (worldX/Constants.TILE_SIZE - chunkX * Constants.CHUNK_SIZE), y: (worldY/Constants.TILE_SIZE - chunkY * Constants.CHUNK_SIZE) -1});

@@ -16,7 +16,7 @@ export class Camera {
         })
     }
 
-    update() {
+    public update() {
         if(this.currentTrackEntity) {
             let entityHitbox: {x: number; y: number; width: number; height: number;} = this.currentTrackEntity.getHitboxComponent().getHitbox()
             this.view.x = (entityHitbox.x + entityHitbox.width / 2) - (this.view.width / 2 / this.view.zoom);

@@ -288,7 +288,7 @@ export class UIPauseHandler {
     }
 
 
-    render(ctx: CanvasRenderingContext2D) {
+    public render(ctx: CanvasRenderingContext2D) {
         if(this.screen == "none") {
             return;
         }
@@ -308,7 +308,7 @@ export class UIPauseHandler {
         }
     } 
     
-    update() {
+    public update() {
         if(Constants.INPUT_HANDLER.checkControl("Escape") && this.screen == "none") {
             this.screen = "pause";
         }
