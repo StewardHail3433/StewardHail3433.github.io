@@ -83,8 +83,6 @@ export class UIHandler {
         this.debugTeleportToCenterButton.setParentComponent(this.debug);
         this.player = player;
 
-        this.playermovement = this.player.getMovementButton(canvas);
-
         this.characterChooserLabel = new UIComponentImage({x: 5, y: 5, width:90, height: 90}, {red: 0, green: 255, blue: 0}, true, ImageLoader.getImages()[1], {x: 0, y: 0, width: Constants.TILE_SIZE, height: Constants.TILE_SIZE});
 
         this.characterChooserLeftButton = new UIComponentButton(canvas, {x: 5, y: 105, width: 25, height: 25},{red: 0, green: 255, blue: 0},true,"<=",undefined,8, "center", undefined, undefined, undefined, () => {
@@ -137,11 +135,6 @@ export class UIHandler {
         this.debug.render(ctx);
         this.debugInfo.render(ctx);
         this.debugTeleportToCenterButton.render(ctx);
-        if(this.player.getTouchMode() && this.playermovement) {
-            for(var button of this.playermovement) {
-                (button as UIComponentButton).render(ctx);
-            }
-        }
         this.debugZoomIn.render(ctx);
         this.debugZoomOut.render(ctx);
         this.debugSpeedUp.render(ctx);
@@ -205,18 +198,6 @@ export class UIHandler {
             this.characterChooserLabel.hide();
             this.characterChooserLeftButton.hide();
             this.characterChooserRightButton.hide();
-        }
-
-        if(Constants.INPUT_HANDLER.getKeyToggled()["l"]) {
-            this.player.setToKeyboard();
-        } else {
-            this.player.setToTouch();
-        }
-
-        if(this.player.getTouchMode() && this.playermovement) {
-            for(var button of this.playermovement) {
-                (button as UIComponentButton).update();
-            }
         }
         this.uiPauseHandler.update();
     }

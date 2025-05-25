@@ -178,8 +178,8 @@ class Game {
             PathFinder.setNodes(Math.floor(this.enemies[1].getHitboxComponent().getHitbox().x / Constants.TILE_SIZE), Math.floor(this.enemies[1].getHitboxComponent().getHitbox().y / Constants.TILE_SIZE), Math.floor(this.player.getHitboxComponent().getHitbox().x / Constants.TILE_SIZE), Math.floor(this.player.getHitboxComponent().getHitbox().y / Constants.TILE_SIZE), this.worldHandler.getWorldMap());
 
             const path2 = PathFinder.search();
-            (this.enemies[0] as Watcher).setPath(path); 
-            (this.enemies[1] as Watcher).setPath(path2); 
+            this.enemies[0].setPath(path); 
+            this.enemies[1].setPath(path2); 
         }
 
         Constants.TIME_HANDLER.addTime(dt);

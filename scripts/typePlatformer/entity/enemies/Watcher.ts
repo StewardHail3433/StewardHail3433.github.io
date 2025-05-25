@@ -3,17 +3,15 @@ import { HealthComponent } from "../../components/HealthComponent.js";
 import { HitboxComponent } from "../../components/HitboxComponent.js";
 import { Constants } from "../../utils/Constants.js";
 import { Node } from "../../utils/pathfinding/Node.js";
+import { Items } from "../../item/Items.js";
 
 export class Watcher extends Entity {
     private lockActionTime:number = 51;
-    private tp = {x:0, y:0};
-    private path: Node[] = [];
-    private onPath: boolean = false;
-    private atGoal: boolean = false;
-    private pathTime: number = 0;
     constructor(healthcomponent: HealthComponent, hitboxComponent: HitboxComponent) {
         super(healthcomponent, hitboxComponent)
         this.speed = (Math.random() * 2 + 1) * 30;
+        this.usingSlot.setItem(Items.SWORD_2, 1);
+        this.usingTool = true;
     }
 
     public update() {
@@ -45,48 +43,7 @@ export class Watcher extends Entity {
                 this.path =[];
             }
         } else {
-            if (this.onPath && this.path.length > 0) {
-                if(this.pathTime < 200) {
-                    const targetNode = this.path[0];
-                    const hitbox = this.getHitboxComponent().getHitbox();
-                    const targetCenterX = targetNode.getPos().x * Constants.TILE_SIZE + Constants.TILE_SIZE / 2;
-                    const targetCenterY = targetNode.getPos().y * Constants.TILE_SIZE + Constants.TILE_SIZE / 2;
-                    const dx = targetCenterX - (hitbox.x + hitbox.width / 2);
-                    const dy = targetCenterY - (hitbox.y + hitbox.height / 2);
-                    if (Math.abs(dx) >= 1) {
-                        this.velocity.x = Math.sign(dx) * this.speed;
-                        this.velocity.y = 0;
-                    } else if (Math.abs(dy) >= 1) {
-                        this.velocity.y = Math.sign(dy) * this.speed;
-                        this.velocity.x = 0;
-                    } else {
-                        this.hitboxComponent.setHitbox({...hitbox,
-                            x: targetCenterX - hitbox.width / 2,
-                            y: targetCenterY - hitbox.height / 2}); 
-
-                        this.path.shift();
-                        this.velocity.x = 0;
-                        this.velocity.y = 0;
-                    }
-
-                    this.pathTime++;
-
-                    if(this.path.length == 0) {
-                        this.onPath = false;
-                        this.atGoal = true;
-                        console.log("end");
-                        this.velocity.x = 0;
-                        this.velocity.y = 0;
-                        this.pathTime = 0;
-                    } else {
-                        this.atGoal = false;
-                    }
-                } else {
-                    this.onPath = false;
-                    this.pathTime = 0;
-                    this.path = [];
-                }
-            }
+            this.followPathAction()
         }
         this.lockActionTime++;
         super.update();
@@ -94,42 +51,6 @@ export class Watcher extends Entity {
 
     public render(ctx: CanvasRenderingContext2D): void {
         super.render(ctx);
-    }
-
-    public setTargetPt(pt: {x:number,  y:number}) {
-        this.tp = pt;
-    }
-
-    public setPath(path: Node[]) {
-        this.path = path;
-        if (this.path.length > 0) {
-            this.onPath = true;
-
-            if (this.path.length > 1) {
-                const targetNode = this.path[1];
-                const hitbox = this.getHitboxComponent().getHitbox();
-                const targetCenterX = targetNode.getPos().x * Constants.TILE_SIZE + Constants.TILE_SIZE / 2;
-                const targetCenterY = targetNode.getPos().y * Constants.TILE_SIZE + Constants.TILE_SIZE / 2;
-                const dx = targetCenterX - (hitbox.x + hitbox.width / 2);
-                const dy = targetCenterY - (hitbox.y + hitbox.height / 2);
-                if (Math.sign(dx) == Math.sign(this.velocity.x) && this.velocity.y == 0) {
-                    this.path.shift();
-                }  else if (Math.sign(dy) == Math.sign(this.velocity.y) && this.velocity.x == 0) {
-                    this.path.shift();
-                } else {
-                    this.velocity.x = 0;
-                    this.velocity.y = 0;
-                }
-            } else {
-                this.velocity.x = 0;
-                this.velocity.y = 0;
-            }
-        } else {
-            this.onPath = false;
-        }
-    }
-
-    public getPath() {
-        return this.path;
+        super.renderUsingItem(ctx)
     }
 }

@@ -36,34 +36,12 @@ export class Player extends Entity {
         selectSlot6: "7",
         useItem: "MRight"
     };
-    private touchMode = false;
     private frame = 0;
     private img: HTMLImageElement;
     private isBreaking: boolean = false;
-    private usingTool: boolean = true;
-    private toolHitbox: {pts: number[][], angle: number} = {pts: [], angle: -90};
-    private directionChanged = false;
 
     private inventory: Inventory =  new Inventory(14, "mainInventory");
     private hotbar: Inventory =  new Inventory(7, "hotbar");
-
-    private movementButtons = [new UIComponentButton((document.getElementById(Constants.CANVAS_ID) as HTMLCanvasElement), {x:10, y:270, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "<-", undefined, 15, "center", {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
-        Constants.INPUT_HANDLER.getKeys()[this.controls.left] = false;
-    }, () => {
-        Constants.INPUT_HANDLER.getKeys()[this.controls.left] = true;
-    }), new UIComponentButton((document.getElementById(Constants.CANVAS_ID) as HTMLCanvasElement), {x:55, y:270, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "v", undefined, 15, "center", {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
-        Constants.INPUT_HANDLER.getKeys()[this.controls.down] = false;
-    }, () => {
-        Constants.INPUT_HANDLER.getKeys()[this.controls.down] = true;
-    }), new UIComponentButton((document.getElementById(Constants.CANVAS_ID) as HTMLCanvasElement), {x:100, y:270, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "->", undefined, 15, "center", {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
-        Constants.INPUT_HANDLER.getKeys()[this.controls.right] = false;
-    },() => {
-        Constants.INPUT_HANDLER.getKeys()[this.controls.right] = true;
-    }), new UIComponentButton((document.getElementById(Constants.CANVAS_ID) as HTMLCanvasElement), {x:55, y:225, width: 40, height: 40}, {red: 255, green:255, blue: 255}, false, "^", undefined, 15, "center", {red:200,green:200, blue:200}, undefined, this.hitboxComponent.getColor(), undefined, () => {
-        Constants.INPUT_HANDLER.getKeys()[this.controls.up] = false;
-    }, () => {
-        Constants.INPUT_HANDLER.getKeys()[this.controls.up] = true;
-    })]
 
     private isArrows = false;
 
@@ -73,18 +51,10 @@ export class Player extends Entity {
         this.speed = 60;
         this.setControls();
 
-        // this.hotbar.getSlot(3).setItem(Items.STICK);
-        // this.inventory.getSlot(0).setItem(Items.STICK);
-        // this.inventory.getSlot(2).setItem(Items.STICK);
-        // this.inventory.getSlot(4).setItem(Items.STICK);
-        // this.inventory.getSlot(6).setItem(Items.STICK);
-        // this.inventory.getSlot(8).setItem(Items.STICK);
         this.inventory.getSlot(10).setItem(Items.STICK, 1);
         this.inventory.getSlot(12).setItem(Items.SWORD, 1);
 
         this.hotbar.setSelecteSlot(0);
-
-        this.setToTouch();
 
         this.img = ImageLoader.getImages()[4];
 
@@ -167,39 +137,15 @@ export class Player extends Entity {
     public update(): void {
         this.velocity = {x:0, y:0};
         if (Constants.INPUT_HANDLER.checkControl(this.controls.up)) {
-            if(!this.directionChanged && this.direction != "up") {
-                this.directionChanged = true;
-            } else {
-                this.directionChanged = false;
-            }
-            this.direction = "up";
             this.velocity.y = -this.speed;
         } 
         if (Constants.INPUT_HANDLER.checkControl(this.controls.down)) {
-            if(!this.directionChanged && this.direction != "down") {
-                this.directionChanged = true;
-            } else {
-                this.directionChanged = false;
-            }
-            this.direction = "down";
             this.velocity.y = this.speed;
         }
         if (Constants.INPUT_HANDLER.checkControl(this.controls.left)) {
-            if(!this.directionChanged && this.direction != "left") {
-                this.directionChanged = true;
-            } else {
-                this.directionChanged = false;
-            }
-            this.direction = "left";
             this.velocity.x = -this.speed;
         }
         if (Constants.INPUT_HANDLER.checkControl(this.controls.right)) {
-            if(!this.directionChanged && this.direction != "right") {
-                this.directionChanged = true;
-            } else {
-                this.directionChanged = false;
-            }
-            this.direction = "right";
             this.velocity.x = this.speed;
         }
 
@@ -227,16 +173,6 @@ export class Player extends Entity {
         //     }
         //     Constants.INPUT_HANDLER.checkControl("e"] = false;
         // }
-
-        if(this.touchMode) {
-            for(var button of  this.movementButtons) {
-                button.show();
-            }
-        } else {
-            for(var button of  this.movementButtons) {
-                button.hide();
-            }
-        }
         this.frame += 1;
 
         if(Constants.INPUT_HANDLER.checkControl("p")) {
@@ -257,45 +193,9 @@ export class Player extends Entity {
         }
 
         super.update();
-        this.updateToolItem();
+        this.updateToolItem(this.hotbar.getSelecteSlot().getItem());
     }
 
-    private updateToolItem() {
-
-        if(this.hotbar.getSelecteSlot().getItem() instanceof ToolItem) {
-            const tool = this.hotbar.getSelecteSlot().getItem() as ToolItem;
-            const playerHitbox = this.hitboxComponent.getHitbox()
-            const playerCenterX = playerHitbox.x + playerHitbox.width/2;
-            const playerCenterY = playerHitbox.y + playerHitbox.height/2;
-
-            this.toolHitbox.pts = rectCorners({...tool.getHitbox(), x: playerCenterX - tool.getHitbox().width/2, y: playerCenterY - tool.getHitbox().height});
-
-            const startAngle = this.getDirectionAsAngle() - tool.getSwingAngleSettings().totalRotationAmount / 2;
-            const endAngle = this.getDirectionAsAngle() + tool.getSwingAngleSettings().totalRotationAmount / 2;
-
-            if (this.directionChanged) {
-                this.toolHitbox.angle = startAngle;
-            }
-
-            this.toolHitbox.angle += tool.getSwingAngleSettings().step;
-
-            if (this.toolHitbox.angle > endAngle) {
-                this.toolHitbox.angle = startAngle;
-            }
-
-            // https://stackoverflow.com/questions/2259476/rotating-a-point-about-another-point-2d
-            for(let i = 0; i < this.toolHitbox.pts.length; i++) {
-                const originalX = this.toolHitbox.pts[i][0];
-                const originalY = this.toolHitbox.pts[i][1];
-                this.toolHitbox.pts[i] = [Math.cos(this.toolHitbox.angle*(Math.PI/180)) * (originalX-playerCenterX) - Math.sin(this.toolHitbox.angle*(Math.PI/180)) * (originalY-playerCenterY) + playerCenterX,
-                                Math.sin(this.toolHitbox.angle*(Math.PI/180)) * (originalX-playerCenterX) + Math.cos(this.toolHitbox.angle*(Math.PI/180)) * (originalY-playerCenterY) + playerCenterY]
-            }
-        }
-    }
-
-    private getDirectionAsAngle() {
-        return (this.direction == "right" ? 90 : (this.direction == "down" ? 180 : (this.direction == "left" ? 270 : 0)));
-    }
 
     public getControls() {
         return {...this.controls};
@@ -310,21 +210,6 @@ export class Player extends Entity {
     }
     public isMoving(): boolean {
         return this.velocity.x != 0 || this.velocity.y != 0;
-    }
-
-    public getMovementButton(canvas: HTMLCanvasElement): UIComponent[] {
-        return this.movementButtons;
-    }
-
-    public setToKeyboard() {
-        this.touchMode = false;
-    }
-    public setToTouch() {
-        this.touchMode = true;
-    }
-
-    public getTouchMode(): boolean {
-        return this.touchMode;
     }
 
     public render(ctx: CanvasRenderingContext2D) {
@@ -419,13 +304,13 @@ export class Player extends Entity {
                 ctx.drawImage(this.img, Constants.TILE_SIZE*2, Constants.TILE_SIZE*2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
             }
         }
-        this.renderItem(ctx);
+        this.renderUsingItem(ctx);
         if(Constants.INPUT_HANDLER.getKeyToggled()["F3"] && Constants.INPUT_HANDLER.getKeyToggled()["b"]) {
             super.render(ctx);
         }
     }
 
-    public renderItem(ctx: CanvasRenderingContext2D) {
+    protected renderUsingItem(ctx: CanvasRenderingContext2D) {
 
         if(this.usingTool && this.hotbar.getSelecteSlot().getItem() instanceof ToolItem) {
 
@@ -442,7 +327,7 @@ export class Player extends Entity {
             // ctx.closePath()
             // ctx.stroke()
 
-            drawRoatatedImage(ctx, this.hotbar.getSelecteSlot().getItem().getImage()!, {x: this.toolHitbox.pts[0][0], y: this.toolHitbox.pts[0][1]}, this.toolHitbox.angle * (Math.PI/180))
+            if(this.toolHitbox.pts[0]) drawRoatatedImage(ctx, this.hotbar.getSelecteSlot().getItem().getImage()!, {x: this.toolHitbox.pts[0][0], y: this.toolHitbox.pts[0][1]}, this.toolHitbox.angle * (Math.PI/180))
         }
     }
 
