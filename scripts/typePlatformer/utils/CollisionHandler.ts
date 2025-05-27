@@ -33,11 +33,11 @@ export class CollisionHandler {
                 const toolEntHitbox = entities[i].getHitboxComponent().getHitbox()
                 if(containEdge(rectCorners(entity.getHitboxComponent().getHitbox()), entities[i].getToolHitboxPts())) {
                     entity.getHealthComponent().damage((entities[i].getToolSlot().getItem() as ToolItem).getDamage());
-                    // if(entity.getHealthComponent().isDead()) {
+                    if(entity.getHealthComponent().isDead()) {
                     //     this.handleEntityDeath(entity, unusedentities);
-                    //     entities.splice(entities.find(entity), 1);
+                        Constants.COMMAND_SYSTEM.outputCustomError("re", entities.splice(entities.find(entity), 1).toString());
                     //     return;
-                    // }
+                    }
                     entity.applyKnockback({x: toolEntHitbox.x + toolEntHitbox.width/2, y: toolEntHitbox.y + toolEntHitbox.height/2}, 100);
                 }
             }
