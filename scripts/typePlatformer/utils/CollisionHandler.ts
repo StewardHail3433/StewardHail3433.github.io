@@ -16,7 +16,7 @@ export class CollisionHandler {
     public update(entities: Entity[], unusedEntities: Entity[], chunks: Map<string, WorldTile[][]>, dt: number) {
         for(let i = 0; i < entities.length; i++) {
             //thanks to this dude he help me with the bug https://github.com/akon47/shoot_game/blob/master/player_class.js
-            this.handleToolCollisions(entities[i], entities, unusedEntities);
+            this.handleToolCollisions(entities[i], i, entities, unusedEntities);
             this.handleAxisEntityMovement("x", entities[i], dt);
             this.handleAxisCollision("x", entities[i], chunks);
             this.handleAxisEntityMovement("y", entities[i], dt)
@@ -24,7 +24,7 @@ export class CollisionHandler {
         }
     }
 
-    private handleToolCollisions(entity: Entity, entities: Entity[], unusedentities: Entity[]) {
+    private handleToolCollisions(entity: Entity, entIndex: number, entities: Entity[], unusedentities: Entity[]) {
         for(let i = 0; i < entities.length; i++) {
             if(entity == entities[i] || entity.getType() == entities[i].getType()) {
                 continue;
@@ -35,7 +35,7 @@ export class CollisionHandler {
                     entity.getHealthComponent().damage((entities[i].getToolSlot().getItem() as ToolItem).getDamage());
                     if(entity.getHealthComponent().isDead()) {
                     //     this.handleEntityDeath(entity, unusedentities);
-                        Constants.COMMAND_SYSTEM.outputCustomError("re", entities.splice(entities.find(entity), 1).toString());
+                        Constants.COMMAND_SYSTEM.outputCustomError("re", entities.splice(entIndex, 1).toString());
                     //     return;
                     }
                     entity.applyKnockback({x: toolEntHitbox.x + toolEntHitbox.width/2, y: toolEntHitbox.y + toolEntHitbox.height/2}, 100);
