@@ -32,7 +32,7 @@ export class CollisionHandler {
             if(entities[i].isUsingTool()) {
                 const toolEntHitbox = entities[i].getHitboxComponent().getHitbox()
                 if(containEdge(rectCorners(entity.getHitboxComponent().getHitbox()), entities[i].getToolHitboxPts())) {
-                    entity.getHealthComponent().damage((entities[i].getToolSlot().getItem() as ToolItem).getDamage())
+                    // entity.getHealthComponent().damage((entities[i].getToolSlot().getItem() as ToolItem).getDamage())
                     // if(entity.getHealthComponent().isDead()) {
                     //     this.handleEntityDeath(entity, unusedentities);
                     //     entities.splice(entities.find(entity), 1);
