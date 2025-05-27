@@ -45,7 +45,7 @@ export class CollisionHandler {
 
     private handleEntityDeath(entity: Entity) {
         // bro is dead
-        if(entity.getType() != "player") delete entity;
+        if(entity.getType() != "player") entity = undefined;
     }
     private handleAxisEntityMovement(axis: "x" | "y", entity: Entity, dt: number) {
         const entityHBComponent = entity.getHitboxComponent();
