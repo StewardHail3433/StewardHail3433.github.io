@@ -16,6 +16,10 @@ export class ToolItem extends Item {
         return this.hitbox;
     }
 
+    public getDamage() {
+        return this.damage;
+    }
+
     public getSwingAngleSettings(): {step: number, totalRotationAmount: number} {
         return this.swingAngle;
     }

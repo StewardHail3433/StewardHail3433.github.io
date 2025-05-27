@@ -1,8 +1,9 @@
 import { Entity } from "../entity/Entity.js";
 import { Player } from "../entity/player/Player.js";
+import { ToolItem } from "../item/tools/ToolItem.js";
 import { Tiles } from "../world/Tiles.js";
 import { WorldTile } from "../world/WorldTile.js";
-import { containBox } from "./Collisions.js";
+import { containBox, containEdge, rectCorners } from "./Collisions.js";
 import { Constants } from "./Constants.js";
 
 export class CollisionHandler {
@@ -15,6 +16,7 @@ export class CollisionHandler {
     public update(entities: Entity[], chunks: Map<string, WorldTile[][]>, dt: number) {
         for(let i = 0; i < entities.length; i++) {
             //thanks to this dude he help me with the bug https://github.com/akon47/shoot_game/blob/master/player_class.js
+            this.handleToolCollisions(entities[i], entities);
             this.handleAxisEntityMovement("x", entities[i], dt);
             this.handleAxisCollision("x", entities[i], chunks);
             this.handleAxisEntityMovement("y", entities[i], dt)
@@ -22,6 +24,27 @@ export class CollisionHandler {
         }
     }
 
+    private handleToolCollisions(entity: Entity, entities: Entity[]) {
+        for(let i = 0; i < entities.length; i++) {
+            if(entity == entities[i] || entity.getType() == entities[i].getType()) {
+                continue;
+            }
+            if(entities[i].isUsingTool()) {
+                const toolEntHitbox = entities[i].getHitboxComponent().getHitbox()
+                if(containEdge(rectCorners(entity.getHitboxComponent().getHitbox()), entities[i].getToolHitboxPts())) {
+                    entity.getHealthComponent().damage((entities[i].getToolSlot().getItem() as ToolItem).getDamage())
+                    if(entity.getHealthComponent().isDead()) {
+                        this.handleEntityDeath();
+                    }
+                    entity.applyKnockback({x: toolEntHitbox.x + toolEntHitbox.width/2, y: toolEntHitbox.y + toolEntHitbox.height/2}, 100);
+                }
+            }
+        }
+    }
+
+    private handleEntityDeath() {
+        // bro is dead
+    }
     private handleAxisEntityMovement(axis: "x" | "y", entity: Entity, dt: number) {
         const entityHBComponent = entity.getHitboxComponent();
         const entityHB = entityHBComponent.getHitbox();

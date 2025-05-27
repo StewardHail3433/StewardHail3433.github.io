@@ -179,7 +179,7 @@ class Game {
 
             const path2 = PathFinder.search();
             this.enemies[0].setPath(path); 
-            this.enemies[1].setPath(path2); 
+            // this.enemies[1].setPath(path2); 
         }
 
         Constants.TIME_HANDLER.addTime(dt);

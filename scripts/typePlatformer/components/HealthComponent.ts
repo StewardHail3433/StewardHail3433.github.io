@@ -31,17 +31,7 @@ export class HealthComponent {
         this.maxHealth = maxHealth;
     }
 
-    // Convert to plain object for sending via WebSocket
-    public serialize() {
-        return {
-            health: this.health,
-            maxHealth: this.maxHealth,
-        };
+    public isDead() {
+        return this.health <= 0;
     }
-
-    // Create an Entity from received JSON data
-    public static deserialize(data: any): HealthComponent {
-        return new HealthComponent(data.health, data.maxHealth);
-    }
-
 }

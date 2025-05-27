@@ -13,7 +13,7 @@ import { Entity } from "../Entity.js";
 import { Slot } from "../../inventory/Slot.js";
 import { ToolItem } from "../../item/tools/ToolItem.js";
 import { rectCorners } from "../../utils/Collisions.js";
-import { drawRoatatedImage } from "../../utils/ImageManipulation.js";
+import { drawRoatatedImage, drawSpriteSheetSprite } from "../../utils/ImageManipulation.js";
 
 export class Player extends Entity {
     private name: string;
@@ -45,10 +45,12 @@ export class Player extends Entity {
 
     private isArrows = false;
 
+
     constructor(name: string, healthComponent: HealthComponent, hitboxComponent: HitboxComponent) {
         super(healthComponent, hitboxComponent);
         this.name = name;
         this.speed = 60;
+        this.type = "player";
         this.setControls();
 
         this.inventory.getSlot(10).setItem(Items.STICK, 1);
@@ -135,18 +137,18 @@ export class Player extends Entity {
     }
 
     public update(): void {
-        this.velocity = {x:0, y:0};
+        this.inputVel = {x:0, y:0};
         if (Constants.INPUT_HANDLER.checkControl(this.controls.up)) {
-            this.velocity.y = -this.speed;
+            this.inputVel.y = -this.speed;
         } 
         if (Constants.INPUT_HANDLER.checkControl(this.controls.down)) {
-            this.velocity.y = this.speed;
+            this.inputVel.y = this.speed;
         }
         if (Constants.INPUT_HANDLER.checkControl(this.controls.left)) {
-            this.velocity.x = -this.speed;
+            this.inputVel.x = -this.speed;
         }
         if (Constants.INPUT_HANDLER.checkControl(this.controls.right)) {
-            this.velocity.x = this.speed;
+            this.inputVel.x = this.speed;
         }
 
         if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot0)) {
@@ -216,83 +218,7 @@ export class Player extends Entity {
         const hitbox = this.hitboxComponent.getHitbox();
         if(this.velocity.x != 0 || this.velocity.y != 0) {
             ctx.imageSmoothingEnabled = false;
-            if(this.direction === "up" || this.direction === "down") {
-                if(this.frame % 40  < 10) {
-                    if(this.direction === "down") {
-                        ctx.drawImage(this.img, 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    } else {
-                        ctx.drawImage(this.img, 0, Constants.TILE_SIZE*1, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    }
-                } else if(this.frame % 40  < 20) {
-                    if(this.direction === "down") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*1, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    } else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*1, Constants.TILE_SIZE*1, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    }
-                } else if(this.frame % 40  < 30) {
-                    if(this.direction === "down") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*2, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    } else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*2, Constants.TILE_SIZE*1, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    }
-                } else if(this.frame % 40  < 40) {
-                    if(this.direction === "down") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*3, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    } else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*3, Constants.TILE_SIZE*1, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    }
-                }
-            } else {
-                if(this.frame % 80  < 10) {
-                    if(this.direction === "left") {
-                        ctx.drawImage(this.img, 0, Constants.TILE_SIZE*2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    } else {
-                        ctx.drawImage(this.img, 0, Constants.TILE_SIZE*3, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    }
-                } else if(this.frame % 80  < 20) {
-                    if(this.direction === "left") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*1, Constants.TILE_SIZE*2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    } else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*1, Constants.TILE_SIZE*3, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    }
-                } else if(this.frame % 80  < 30) {
-                    if(this.direction === "left") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*2, Constants.TILE_SIZE*2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    } else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*2, Constants.TILE_SIZE*3, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    }
-                } else if(this.frame % 80  < 40) {
-                    if(this.direction === "left") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*4, Constants.TILE_SIZE*2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    } else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*4, Constants.TILE_SIZE*3, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    }
-                } else if(this.frame % 80  < 50) {
-                    if(this.direction === "left") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*3, Constants.TILE_SIZE*2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    } else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*3, Constants.TILE_SIZE*3, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    }
-                } else if(this.frame % 80 < 60) {
-                    if(this.direction === "left") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*4, Constants.TILE_SIZE*2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    } else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*4, Constants.TILE_SIZE*3, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    }
-                } else if(this.frame % 80  < 70) {
-                    if(this.direction === "left") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*5, Constants.TILE_SIZE*2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    } else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*5, Constants.TILE_SIZE*3, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    }
-                } else if(this.frame % 80  < 80) {
-                    if(this.direction === "left") {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*1, Constants.TILE_SIZE*2, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    } else {
-                        ctx.drawImage(this.img, Constants.TILE_SIZE*1, Constants.TILE_SIZE*3, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                    }
-                }
-            }
+            drawSpriteSheetSprite(ctx, this.img, 20/3, this.direction, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE)
         } else {
             if(this.direction === "up") {
                 ctx.drawImage(this.img, 0, Constants.TILE_SIZE*1, Constants.TILE_SIZE, Constants.TILE_SIZE, hitbox.x + (hitbox.width / 2) - (Constants.TILE_SIZE / 2), hitbox.y + (hitbox.height) - Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
@@ -353,5 +279,9 @@ export class Player extends Entity {
 
     public setToolUsing(bool: boolean) {
         this.usingTool = bool;
+    }
+
+    public getToolSlot() {
+        return this.hotbar.getSelecteSlot();
     }
 }
