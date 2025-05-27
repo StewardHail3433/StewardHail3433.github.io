@@ -243,15 +243,17 @@ export class Player extends Entity {
             ctx.strokeStyle = "red";
             ctx.lineWidth = 0.5;
 
-            // ctx.moveTo(this.toolHitbox.pts[0][0], this.toolHitbox.pts[0][1]);
-            // ctx.beginPath()
-            // for(let i = 0; i < this.toolHitbox.pts.length; i++) {
-            //     ctx.lineTo(this.toolHitbox.pts[i][0], this.toolHitbox.pts[i][1])
-            // }
-            
-            // ctx.lineTo(this.toolHitbox.pts[0][0], this.toolHitbox.pts[0][1])
-            // ctx.closePath()
-            // ctx.stroke()
+            if(Constants.INPUT_HANDLER.checkControlToggle("F3") && Constants.INPUT_HANDLER.checkControlToggle("b")) {
+                ctx.moveTo(this.toolHitbox.pts[0][0], this.toolHitbox.pts[0][1]);
+                ctx.beginPath()
+                for(let i = 0; i < this.toolHitbox.pts.length; i++) {
+                    ctx.lineTo(this.toolHitbox.pts[i][0], this.toolHitbox.pts[i][1])
+                }
+                
+                ctx.lineTo(this.toolHitbox.pts[0][0], this.toolHitbox.pts[0][1])
+                ctx.closePath()
+                ctx.stroke()
+            }
 
             if(this.toolHitbox.pts[0]) drawRoatatedImage(ctx, this.hotbar.getSelecteSlot().getItem().getImage()!, {x: this.toolHitbox.pts[0][0], y: this.toolHitbox.pts[0][1]}, this.toolHitbox.angle * (Math.PI/180))
         }

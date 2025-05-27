@@ -35,6 +35,7 @@ export class CollisionHandler {
                     entity.getHealthComponent().damage((entities[i].getToolSlot().getItem() as ToolItem).getDamage())
                     if(entity.getHealthComponent().isDead()) {
                         this.handleEntityDeath();
+                        return;
                     }
                     entity.applyKnockback({x: toolEntHitbox.x + toolEntHitbox.width/2, y: toolEntHitbox.y + toolEntHitbox.height/2}, 100);
                 }
@@ -42,8 +43,9 @@ export class CollisionHandler {
         }
     }
 
-    private handleEntityDeath() {
+    private handleEntityDeath(entity: Entity) {
         // bro is dead
+        if(entity.getType() != "player") delete entity;
     }
     private handleAxisEntityMovement(axis: "x" | "y", entity: Entity, dt: number) {
         const entityHBComponent = entity.getHitboxComponent();
