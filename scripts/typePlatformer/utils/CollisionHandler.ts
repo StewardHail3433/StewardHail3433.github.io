@@ -13,10 +13,10 @@ export class CollisionHandler {
 
     }
 
-    public update(entities: Entity[], chunks: Map<string, WorldTile[][]>, dt: number) {
+    public update(entities: Entity[], unusedEntities: Entity[], chunks: Map<string, WorldTile[][]>, dt: number) {
         for(let i = 0; i < entities.length; i++) {
             //thanks to this dude he help me with the bug https://github.com/akon47/shoot_game/blob/master/player_class.js
-            this.handleToolCollisions(entities[i], entities);
+            this.handleToolCollisions(entities[i], entities, unusedEntities);
             this.handleAxisEntityMovement("x", entities[i], dt);
             this.handleAxisCollision("x", entities[i], chunks);
             this.handleAxisEntityMovement("y", entities[i], dt)
@@ -24,7 +24,7 @@ export class CollisionHandler {
         }
     }
 
-    private handleToolCollisions(entity: Entity, entities: Entity[]) {
+    private handleToolCollisions(entity: Entity, entities: Entity[], unusedentities: Entity[]) {
         for(let i = 0; i < entities.length; i++) {
             if(entity == entities[i] || entity.getType() == entities[i].getType()) {
                 continue;
@@ -34,7 +34,8 @@ export class CollisionHandler {
                 if(containEdge(rectCorners(entity.getHitboxComponent().getHitbox()), entities[i].getToolHitboxPts())) {
                     entity.getHealthComponent().damage((entities[i].getToolSlot().getItem() as ToolItem).getDamage())
                     if(entity.getHealthComponent().isDead()) {
-                        this.handleEntityDeath();
+                        this.handleEntityDeath(entity, unusedentities);
+                        entities.splice(entities.find(entity), 1);
                         return;
                     }
                     entity.applyKnockback({x: toolEntHitbox.x + toolEntHitbox.width/2, y: toolEntHitbox.y + toolEntHitbox.height/2}, 100);
@@ -43,9 +44,9 @@ export class CollisionHandler {
         }
     }
 
-    private handleEntityDeath(entity: Entity) {
+    private handleEntityDeath(entity: Entity, unusedEntities: Entity[]) {
         // bro is dead
-        if(entity.getType() != "player") entity = undefined;
+        if(entity.getType() != "player") unusedEntities.push(entity);
     }
     private handleAxisEntityMovement(axis: "x" | "y", entity: Entity, dt: number) {
         const entityHBComponent = entity.getHitboxComponent();

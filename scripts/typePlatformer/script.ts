@@ -23,6 +23,7 @@ class Game {
     private player: Player;
     private enemies: Entity[];
     private entities: Entity[];
+    private unusedEntities: Entity[];
     private uiHandler: UIHandler;
     private camera: Camera;
     private worldHandler: WorldHandler;
@@ -75,6 +76,7 @@ class Game {
 
         this.entities = this.enemies;
         this.entities.push(this.player);
+        this.unusedEntities = [];
         PathFinder.initNode();
         // AudioHandler.init();
         
@@ -140,7 +142,7 @@ class Game {
             this.enemies[i].update();
         }
 
-        this.collisionHandler.update(this.entities, this.worldHandler.getWorldMap(), dt);
+        this.collisionHandler.update(this.entities, this.unusedEntities, this.worldHandler.getWorldMap(), dt);
 
         this.camera.update();
         
