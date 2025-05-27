@@ -96,24 +96,24 @@ export class Entity {
             let playerCenterX = playerHitbox.x + playerHitbox.width/2;
             let playerCenterY = playerHitbox.y + playerHitbox.height/2;
             //maybe
-            switch(this.direction) {
-                case "down":
-                    playerCenterX += 5;
-                    playerCenterY += 3;
-                    break;
-                case "up":
-                    playerCenterX -= 6;
-                    playerCenterY += 3;
-                    break;
-                case "left":
-                    playerCenterX += 3;
-                    playerCenterY += 2;
-                    break;
-                case "right":
-                    playerCenterX += 3;
-                    playerCenterY += 2;
-                    break;
-            }
+            // switch(this.direction) {
+            //     case "down":
+            //         playerCenterX += 5;
+            //         playerCenterY += 3;
+            //         break;
+            //     case "up":
+            //         playerCenterX -= 6;
+            //         playerCenterY += 3;
+            //         break;
+            //     case "left":
+            //         playerCenterX += 3;
+            //         playerCenterY += 2;
+            //         break;
+            //     case "right":
+            //         playerCenterX += 3;
+            //         playerCenterY += 2;
+            //         break;
+            // }
 
             this.toolHitbox.pts = rectCorners({...tool.getHitbox(), x: playerCenterX - tool.getHitbox().width/2, y: playerCenterY - tool.getHitbox().height});
 
