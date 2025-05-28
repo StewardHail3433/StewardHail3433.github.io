@@ -8,19 +8,25 @@ import { Camera } from "../camera/Camera.js";
 import { Tiles } from "../world/Tiles.js";
 import { WorldTile } from "../world/WorldTile.js";
 import { AudioHandler, SFX } from "./audio/AudioHandler.js";
+import { Entity } from "../entity/Entity.js";
+import { EntityDropTableHandler } from "../loottable/EntityDropHandler.js";
+import { Items } from "../item/Items.js";
+import { Slot } from "../inventory/Slot.js";
 
 export class InteractionHandler {
     private player: Player;
     private camera: Camera;
     private worldHandler: WorldHandler;
     private inventoryHandler: InventoryHandler;
+    private entities: Entity[];
     
     private interactionCoodown: number = 0.75;
     private interactionCount: number = -this.interactionCoodown;
-    constructor(player: Player, worldHandler: WorldHandler, camera: Camera, inventoryHandler: InventoryHandler) {
+    constructor(player: Player, worldHandler: WorldHandler, camera: Camera, inventoryHandler: InventoryHandler, entities: Entity[]) {
         this.player = player;
         this.worldHandler = worldHandler;
         this.camera = camera;
+        this.entities = entities;
         this.inventoryHandler = inventoryHandler;
         this.inventoryHandler.addInventory(this.player.getHotbarInventory());
         this.inventoryHandler.addInventory(this.player.getMainInventory());
@@ -37,7 +43,27 @@ export class InteractionHandler {
             this.checkDropInventories()
             this.updateDroppedSlots(dt);
         }
+
+        this.checkDeadEntities()
         
+    }
+    private checkDeadEntities() {
+        for(let i = 0; i < this.entities.length; i++) {
+            if(this.entities[i].getHealthComponent().isDead()) {
+                if(this.entities[i].getType() != "player") {
+                    this.dropEntityItems(this.entities[i]);
+                    this.entities.splice(i, 1);
+                }
+            }
+        }
+    }
+
+    private dropEntityItems(entity: Entity) {
+        const item = EntityDropTableHandler.getEntityDrop(entity)
+        const entHitbox = entity.getHitboxComponent().getHitbox();
+        if(item != Items.EMPTY) {
+            this.worldHandler.dropItem(new Slot(item, 1), entHitbox, {x: (Math.random()*2 == 2 ? 1 : -1)*(Math.random()*3)*60, y: (Math.random()*2 == 2 ? 1 : -1)*(Math.random()*3)*60})
+        }
     }
     private checkDropInventories() {
         const inv = this.player.getMainInventory();
@@ -53,7 +79,7 @@ export class InteractionHandler {
         for(let i = 0; i < inv.getSize(); i++) {
             const slot = inv.getSlot(i);
             if(!slot.isEmpty()) {
-                this.worldHandler.dropItem(slot,{x: this.player.getHitboxComponent().getHitbox().x, y:this.player.getHitboxComponent().getHitbox().y});
+                this.worldHandler.dropItem(slot,{x: this.player.getHitboxComponent().getHitbox().x, y:this.player.getHitboxComponent().getHitbox().y}, {x: (Math.random()*2 == 2 ? 1 : -1)*(Math.random()*3)*60, y: (Math.random()*2 == 2 ? 1 : -1)*(Math.random()*3)*60});
             }
         }
     }

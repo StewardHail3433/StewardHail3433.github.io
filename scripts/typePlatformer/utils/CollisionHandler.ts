@@ -35,7 +35,6 @@ export class CollisionHandler {
                     entity.getHealthComponent().damage((entities[i].getToolSlot().getItem() instanceof ToolItem ? (entities[i].getToolSlot().getItem() as ToolItem).getDamage() : 0));
                     if(entity.getHealthComponent().isDead()) {
                         this.handleEntityDeath(entity, unusedentities);
-                        if(entity.getType() != "player") entities.splice(entIndex, 1) // probaby make error
                         return;
                     }
                     entity.applyKnockback({x: toolEntHitbox.x + toolEntHitbox.width/2, y: toolEntHitbox.y + toolEntHitbox.height/2}, 100);

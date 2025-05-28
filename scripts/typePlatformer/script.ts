@@ -50,7 +50,7 @@ class Game {
         this.ctx.imageSmoothingQuality = "high";
         this.ctx.scale(window.devicePixelRatio*3.25, window.devicePixelRatio*3.25);
         
-        this.player = new Player("TIm", new HealthComponent(100, 100), new HitboxComponent({
+        this.player = new Player("TIm", new HealthComponent(500, 500), new HitboxComponent({
             x: 100, y: 100, width: 8, height: 12,
         }));
         this.enemies = [
@@ -61,6 +61,13 @@ class Game {
                 x: 75, y: 50, width: 16, height: 16
             }))
         ]
+
+        for(let i = 0; i < Math.random() * 10; i++) {
+            this.enemies.push(
+                new Watcher(new HealthComponent(50, 100), new HitboxComponent({
+                x: Math.random() * 200, y: Math.random() * 200, width: 10, height: 10
+            })))
+        }
         this.camera = new Camera({ x: 100, y: 100, width: Constants.CANVAS_WIDTH, height: Constants.CANVAS_HEIGHT, zoom: 1.35}, "main");
         this.camera.trackEntity(this.player);
 
@@ -72,11 +79,14 @@ class Game {
         this.collisionHandler = new CollisionHandler();
 
         this.inventoryHandler = new InventoryHandler(this.canvas);
-        this.interactionHandler = new InteractionHandler(this.player, this.worldHandler, this.camera, this.inventoryHandler);
 
         this.entities = this.enemies;
         this.entities.push(this.player);
         this.unusedEntities = [];
+
+        this.interactionHandler = new InteractionHandler(this.player, this.worldHandler, this.camera, this.inventoryHandler, this.entities);
+
+        
         PathFinder.initNode();
         // AudioHandler.init();
         

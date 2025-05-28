@@ -4,7 +4,7 @@ import { DroppedSlot } from "../inventory/DroppedSlot.js";
 import { Slot } from "../inventory/Slot.js";
 import { Item } from "../item/Item.js";
 import { Items } from "../item/Items.js";
-import { DropTableHandler } from "../loottable/dropHandler.js";
+import { TileDropTableHandler } from "../loottable/TileDropHandler.js";
 import { containBox, isInside } from "../utils/Collisions.js";
 import { Constants } from "../utils/Constants.js";
 import { ImageLoader } from "../utils/ImageLoader.js";
@@ -256,7 +256,7 @@ export class WorldHandler {
 
     public breakTile(layer: number) {
         if(this.breakingTile) {
-            const item = DropTableHandler.getTileDrop(this.breakingTile.getLayers()[layer].tile)
+            const item = TileDropTableHandler.getTileDrop(this.breakingTile.getLayers()[layer].tile)
             const breakingTileHitbox = this.breakingTile.getHitboxComponent().getHitbox();
             if(item != Items.EMPTY) {
                 this.dropItem(new Slot(item, 1), breakingTileHitbox)

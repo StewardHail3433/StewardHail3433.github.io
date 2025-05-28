@@ -6,7 +6,7 @@ import { Node } from "../../utils/pathfinding/Node.js";
 import { Items } from "../../item/Items.js";
 import { drawSpriteSheetSprite } from "../../utils/ImageManipulation.js";
 import { ImageLoader } from "../../utils/ImageLoader.js";
-import { DropTableHandler } from "../../loottable/dropHandler.js";
+import { TileDropTableHandler } from "../../loottable/TileDropHandler.js";
 import { Tiles } from "../../world/Tiles.js";
 
 export class Watcher extends Entity {
@@ -16,7 +16,7 @@ export class Watcher extends Entity {
     constructor(healthcomponent: HealthComponent, hitboxComponent: HitboxComponent) {
         super(healthcomponent, hitboxComponent)
         this.speed = (Math.random() * 2 + 1) * 30;
-        this.usingSlot.setItem(DropTableHandler.getTileDrop(Tiles.TOOL_LOOT_BOX), 1);
+        this.usingSlot.setItem(TileDropTableHandler.getTileDrop(Tiles.TOOL_LOOT_BOX), 1);
         this.usingTool = true;
         this.img = ImageLoader.getImages()[3];
         this.type = "enemy";
