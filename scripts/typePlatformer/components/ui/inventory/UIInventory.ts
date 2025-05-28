@@ -182,7 +182,7 @@ export class UIInventory {
             ctx.strokeStyle = "yellow";
             ctx.strokeRect(
                 (this.inventory.getSelecteSlotIndex() % this.placement.col) * Constants.TILE_SIZE + (this.inventory.getSelecteSlotIndex() % this.placement.col) *2 + ctx.lineWidth,
-                Math.floor(this.inventory.getSelecteSlotIndex()%this.placement.row)*Constants.TILE_SIZE + Math.floor(this.inventory.getSelecteSlotIndex()%this.placement.row)*2 + ctx.lineWidth,
+                Math.floor(this.inventory.getSelecteSlotIndex()%this.placement.row)*Constants.TILE_SIZE + Math.floor(this.inventory.getSelecteSlotIndex()%this.placement.row)*2 + ctx.lineWidth + this.placement.y,
                 Constants.TILE_SIZE+2,
                 Constants.TILE_SIZE+2
             )

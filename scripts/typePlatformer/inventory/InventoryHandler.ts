@@ -75,10 +75,10 @@ export class InventoryHandler {
 
         switch(inv.getType()) {
             case "hotbar":
-                this.UIInventories.push(new UIInventory(this.canvas, inv, {x: 0, y: 0, row: 1, col: 7}, { red: 128, green: 128, blue: 128, alpha: 1.0}, false));
+                this.UIInventories.push(new UIInventory(this.canvas, inv, {x: 0, y: 18, row: 1, col: 7}, { red: 128, green: 128, blue: 128, alpha: 1.0}, false));
                 break;
             case "mainInventory":
-                this.UIInventories.push(new UIInventory(this.canvas, inv, {x: 0, y: 18, row: 2, col: 7}, undefined, false));
+                this.UIInventories.push(new UIInventory(this.canvas, inv, {x: 0, y: 36, row: 2, col: 7}, undefined, false));
                 break;
             default:
                 if(ui) {

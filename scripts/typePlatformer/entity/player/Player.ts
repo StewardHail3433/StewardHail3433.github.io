@@ -94,6 +94,10 @@ export class Player extends Entity {
                 this.controls[args[0] as keyof typeof this.controls] = args[1];
             }
         })
+
+        Constants.COMMAND_SYSTEM.addCommand("heal", (args:string[]) => {
+            healthComponent.heal(Number(args[0]));
+        })
     }
 
     public setControls(controls: {
@@ -138,64 +142,67 @@ export class Player extends Entity {
 
     public update(): void {
         this.inputVel = {x:0, y:0};
-        if (Constants.INPUT_HANDLER.checkControl(this.controls.up)) {
-            this.inputVel.y = -this.speed;
-        } 
-        if (Constants.INPUT_HANDLER.checkControl(this.controls.down)) {
-            this.inputVel.y = this.speed;
-        }
-        if (Constants.INPUT_HANDLER.checkControl(this.controls.left)) {
-            this.inputVel.x = -this.speed;
-        }
-        if (Constants.INPUT_HANDLER.checkControl(this.controls.right)) {
-            this.inputVel.x = this.speed;
-        }
-
-        if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot0)) {
-            this.hotbar.setSelecteSlot(0);
-        } else if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot1)) {
-            this.hotbar.setSelecteSlot(1);
-        } else if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot2)) {
-            this.hotbar.setSelecteSlot(2);
-        } else if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot3)) {
-            this.hotbar.setSelecteSlot(3);
-        } else if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot4)) {
-            this.hotbar.setSelecteSlot(4);
-        } else if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot5)) {
-            this.hotbar.setSelecteSlot(5);
-        } else if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot6)) {
-            this.hotbar.setSelecteSlot(6);
-        }
-
-        // if(Constants.INPUT_HANDLER.checkControl("e")) {
-        //     if(this.invUi.ishidden()) {
-        //         this.invUi.show();
-        //     } else {
-        //         this.invUi.hide();
-        //     }
-        //     Constants.INPUT_HANDLER.checkControl("e"] = false;
-        // }
-        this.frame += 1;
-
-        if(Constants.INPUT_HANDLER.checkControl("p")) {
-            if(this.isArrows) {
-                this.setControls();
-                this.isArrows = false;
-            } else {
-                this.setControls({...this.controls, up: "ArrowUp", down: "ArrowDown", left: "ArrowLeft", right: "ArrowRight"});
-                this.isArrows = true;
+        if(!this.healthComponent.isDead()) {
+            if (Constants.INPUT_HANDLER.checkControl(this.controls.up)) {
+                this.inputVel.y = -this.speed;
+            } 
+            if (Constants.INPUT_HANDLER.checkControl(this.controls.down)) {
+                this.inputVel.y = this.speed;
             }
-            Constants.INPUT_HANDLER.setKey("p", false);
-        }
+            if (Constants.INPUT_HANDLER.checkControl(this.controls.left)) {
+                this.inputVel.x = -this.speed;
+            }
+            if (Constants.INPUT_HANDLER.checkControl(this.controls.right)) {
+                this.inputVel.x = this.speed;
+            }
 
-        if(Constants.INPUT_HANDLER.checkControl(this.controls.useTool)) {
-            this.usingTool = true;
-        } else {
-            this.usingTool = false;
+            if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot0)) {
+                this.hotbar.setSelecteSlot(0);
+            } else if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot1)) {
+                this.hotbar.setSelecteSlot(1);
+            } else if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot2)) {
+                this.hotbar.setSelecteSlot(2);
+            } else if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot3)) {
+                this.hotbar.setSelecteSlot(3);
+            } else if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot4)) {
+                this.hotbar.setSelecteSlot(4);
+            } else if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot5)) {
+                this.hotbar.setSelecteSlot(5);
+            } else if(Constants.INPUT_HANDLER.checkControl(this.controls.selectSlot6)) {
+                this.hotbar.setSelecteSlot(6);
+            }
+
+            // if(Constants.INPUT_HANDLER.checkControl("e")) {
+            //     if(this.invUi.ishidden()) {
+            //         this.invUi.show();
+            //     } else {
+            //         this.invUi.hide();
+            //     }
+            //     Constants.INPUT_HANDLER.checkControl("e"] = false;
+            // }
+            this.frame += 1;
+
+            if(Constants.INPUT_HANDLER.checkControl("p")) {
+                if(this.isArrows) {
+                    this.setControls();
+                    this.isArrows = false;
+                } else {
+                    this.setControls({...this.controls, up: "ArrowUp", down: "ArrowDown", left: "ArrowLeft", right: "ArrowRight"});
+                    this.isArrows = true;
+                }
+                Constants.INPUT_HANDLER.setKey("p", false);
+            }
+
+            if(Constants.INPUT_HANDLER.checkControl(this.controls.useTool)) {
+                this.usingTool = true;
+            } else {
+                this.usingTool = false;
+            }
         }
 
         super.update();
-        this.updateToolItem(this.hotbar.getSelecteSlot().getItem());
+        if(!this.healthComponent.isDead()) 
+            this.updateToolItem(this.hotbar.getSelecteSlot().getItem());
     }
 
 

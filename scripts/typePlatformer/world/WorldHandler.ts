@@ -210,8 +210,8 @@ export class WorldHandler {
         });
     }
 
-    public dropItem(itemSlot: Slot, position: {x: number, y: number}) {
-        this.droppedItems.push(new DroppedSlot(new HitboxComponent({...position, width:Constants.TILE_SIZE/1.5, height:Constants.TILE_SIZE/1.5}), new Slot(itemSlot.getItem(), itemSlot.getItemCount())))
+    public dropItem(itemSlot: Slot, position: {x: number, y: number}, vel = {x:120, y:120}) {
+        this.droppedItems.push(new DroppedSlot(new HitboxComponent({...position, width:Constants.TILE_SIZE/1.5, height:Constants.TILE_SIZE/1.5}), new Slot(itemSlot.getItem(), itemSlot.getItemCount()), vel))
         
         itemSlot.removeItem();
     }

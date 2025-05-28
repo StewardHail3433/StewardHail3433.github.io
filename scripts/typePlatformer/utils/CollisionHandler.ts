@@ -26,17 +26,17 @@ export class CollisionHandler {
 
     private handleToolCollisions(entity: Entity, entIndex: number, entities: Entity[], unusedentities: Entity[]) {
         for(let i = 0; i < entities.length; i++) {
-            if(entity == entities[i] || entity.getType() == entities[i].getType()) {
+            if(entity == entities[i] || entity.getType() == entities[i].getType() || entities[i].getHealthComponent().isDead()) {
                 continue;
             }
             if(entities[i].isUsingTool()) {
                 const toolEntHitbox = entities[i].getHitboxComponent().getHitbox()
                 if(containEdge(rectCorners(entity.getHitboxComponent().getHitbox()), entities[i].getToolHitboxPts())) {
-                    entity.getHealthComponent().damage((entities[i].getToolSlot().getItem() as ToolItem).getDamage());
+                    entity.getHealthComponent().damage((entities[i].getToolSlot().getItem() instanceof ToolItem ? (entities[i].getToolSlot().getItem() as ToolItem).getDamage() : 0));
                     if(entity.getHealthComponent().isDead()) {
-                    //     this.handleEntityDeath(entity, unusedentities);
-                        Constants.COMMAND_SYSTEM.outputCustomError("re", entities.splice(entIndex, 1).toString());
-                    //     return;
+                        this.handleEntityDeath(entity, unusedentities);
+                        if(entity.getType() != "player") entities.splice(entIndex, 1) // probaby make error
+                        return;
                     }
                     entity.applyKnockback({x: toolEntHitbox.x + toolEntHitbox.width/2, y: toolEntHitbox.y + toolEntHitbox.height/2}, 100);
                 }

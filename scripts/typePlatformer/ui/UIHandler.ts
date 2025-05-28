@@ -8,6 +8,7 @@ import { Constants } from "../utils/Constants.js";
 import { ImageLoader } from "../utils/ImageLoader.js";
 import { WorldHandler } from "../world/WorldHandler.js";
 import { UIChatHandler } from "./UIChatHandler.js";
+import { UIDeathHandler } from "./UIDeathHandler.js";
 import { UIPauseHandler } from "./UIPauseHandler.js";
 
 export class UIHandler {
@@ -20,7 +21,8 @@ export class UIHandler {
     private debugSpeedDown: UIComponentButton;
     private uiChatHandler: UIChatHandler;
     private playermovement?: UIComponent[];
-    private uiPauseHandler: UIPauseHandler
+    private uiPauseHandler: UIPauseHandler;
+    private uiDeathHandler: UIDeathHandler;
     private player: Player;
     private camera: Camera;
     private characterChooserComponent: UIComponent;
@@ -129,6 +131,7 @@ export class UIHandler {
 
         this.uiPauseHandler = new UIPauseHandler(canvas, new UIComponent({x:20,y:20,width:Constants.CANVAS_WIDTH - 40, height:Constants.CANVAS_HEIGHT - 40}, { red: 100, green: 100, blue: 100, alpha: 0.5 },false))
 
+        this.uiDeathHandler = new UIDeathHandler(canvas, new UIComponent({x:20,y:20,width:Constants.CANVAS_WIDTH - 40, height:Constants.CANVAS_HEIGHT - 40}, { red: 100, green: 100, blue: 100, alpha: 0.5 },false), player);
     }
 
     public render(ctx: CanvasRenderingContext2D) {
@@ -144,36 +147,72 @@ export class UIHandler {
         this.characterChooserLabel.render(ctx);
         this.characterChooserLeftButton.render(ctx);
         this.characterChooserRightButton.render(ctx);
+        this.uiDeathHandler.renderHealth(ctx);
 
         this.uiPauseHandler.render(ctx);
+        this.uiDeathHandler.render(ctx);
+        
     }
 
     public update() {
-        (this.debugInfo as UIComponentLabel).update("Player coord: (" + (this.player.getHitboxComponent().getHitbox().x)?.toFixed(0) + ", " + (this.player?.getHitboxComponent().getHitbox().y)?.toFixed(0) + ")\nPlayer Direction: " + this.player.getDirection() + "\nPlayer Health: " + this.player.getHealthComponent().getHealth() + "\nCamera zoom" + this.camera.getView().zoom + "\nPlayer speed: " + this.player.getSpeed() + "\nPlayer Layer: " + this.player.getLayer());
-        (this.debugTeleportToCenterButton as UIComponentButton).setOnTrue(() => {
-            this.player.getHitboxComponent().setHitbox({
-                ...this.player.getHitboxComponent().getHitbox(),
-                x: 480/2,
-                y: 320/2
-            })
-        });
-        (this.debugTeleportToCenterButton as UIComponentButton).update();
-        (this.debugZoomIn as UIComponentButton).update();
-        (this.debugZoomOut as UIComponentButton).update();
-        this.debugSpeedUp.update();
-        this.debugSpeedDown.update();
         this.uiChatHandler.update();
-        this.characterChooserLeftButton.update();
-        this.characterChooserRightButton.update();
-        if(Constants.INPUT_HANDLER.getKeyToggled()["F3"]) {
-            this.debug.show();
-            this.debugInfo.show();
-            this.debugTeleportToCenterButton.show();
-            this.debugZoomIn.show();
-            this.debugZoomOut.show();
-            this.debugSpeedUp.show();
-            this.debugSpeedDown.show();
+        if(!this.player.getHealthComponent().isDead()) {
+            (this.debugInfo as UIComponentLabel).update("Player coord: (" + (this.player.getHitboxComponent().getHitbox().x)?.toFixed(0) + ", " + (this.player?.getHitboxComponent().getHitbox().y)?.toFixed(0) + ")\nPlayer Direction: " + this.player.getDirection() + "\nPlayer Health: " + this.player.getHealthComponent().getHealth() + "\nCamera zoom" + this.camera.getView().zoom + "\nPlayer speed: " + this.player.getSpeed() + "\nPlayer Layer: " + this.player.getLayer());
+            (this.debugTeleportToCenterButton as UIComponentButton).setOnTrue(() => {
+                this.player.getHitboxComponent().setHitbox({
+                    ...this.player.getHitboxComponent().getHitbox(),
+                    x: 480/2,
+                    y: 320/2
+                })
+            });
+            (this.debugTeleportToCenterButton as UIComponentButton).update();
+            (this.debugZoomIn as UIComponentButton).update();
+            (this.debugZoomOut as UIComponentButton).update();
+            this.debugSpeedUp.update();
+            this.debugSpeedDown.update();
+            this.characterChooserLeftButton.update();
+            this.characterChooserRightButton.update();
+            if(Constants.INPUT_HANDLER.getKeyToggled()["F3"]) {
+                this.debug.show();
+                this.debugInfo.show();
+                this.debugTeleportToCenterButton.show();
+                this.debugZoomIn.show();
+                this.debugZoomOut.show();
+                this.debugSpeedUp.show();
+                this.debugSpeedDown.show();
+            } else {
+                this.debug.hide();
+                this.debugInfo.hide();
+                this.debugTeleportToCenterButton.hide();
+                this.debugZoomIn.hide();
+                this.debugZoomOut.hide();
+                this.debugSpeedUp.hide();
+                this.debugSpeedDown.hide();
+            }
+            if(Constants.INPUT_HANDLER.getKeyToggled()["/"]) { 
+                this.uiChatHandler.hide()
+            } else {
+                this.uiChatHandler.show()
+            }
+
+            if(Constants.INPUT_HANDLER.getKeyToggled()["m"]) {
+                this.characterChooserComponent.show();
+                this.characterChooserLabel.show();
+                this.characterChooserLeftButton.show();
+                this.characterChooserRightButton.show();
+            } else {
+                this.characterChooserComponent.hide();
+                this.characterChooserLabel.hide();
+                this.characterChooserLeftButton.hide();
+                this.characterChooserRightButton.hide();
+            }
+            this.uiPauseHandler.update();
+            this.uiDeathHandler.hide();
+            this.uiDeathHandler.updateHealth();
         } else {
+            this.uiDeathHandler.show();
+            this.uiDeathHandler.update();
+            // this.uiChatHandler.hide()
             this.debug.hide();
             this.debugInfo.hide();
             this.debugTeleportToCenterButton.hide();
@@ -181,25 +220,8 @@ export class UIHandler {
             this.debugZoomOut.hide();
             this.debugSpeedUp.hide();
             this.debugSpeedDown.hide();
-        }
-        if(Constants.INPUT_HANDLER.getKeyToggled()["/"]) { 
-            this.uiChatHandler.hide()
-        } else {
-            this.uiChatHandler.show()
-        }
-
-        if(Constants.INPUT_HANDLER.getKeyToggled()["m"]) {
-            this.characterChooserComponent.show();
-            this.characterChooserLabel.show();
-            this.characterChooserLeftButton.show();
-            this.characterChooserRightButton.show();
-        } else {
-            this.characterChooserComponent.hide();
-            this.characterChooserLabel.hide();
-            this.characterChooserLeftButton.hide();
-            this.characterChooserRightButton.hide();
-        }
-        this.uiPauseHandler.update();
+            this.uiPauseHandler.setPauseScreen("none")
+        }    
     }
 
     public getChatHandler(): UIChatHandler {

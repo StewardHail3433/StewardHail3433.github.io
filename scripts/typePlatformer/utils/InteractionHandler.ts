@@ -27,12 +27,35 @@ export class InteractionHandler {
     }
 
     public update(dt: number) {
-        this.controlActions();
-        this.checkBreaking();
-        this.checkShouldDropItems();
-        this.updateWorldSelectedItem();
-        this.checkPickupItems(dt);
+        if(!this.player.getHealthComponent().isDead()) {
+            this.controlActions();
+            this.checkBreaking();
+            this.checkShouldDropItems();
+            this.updateWorldSelectedItem();
+            this.checkPickupItems(dt);
+        } else {
+            this.checkDropInventories()
+            this.updateDroppedSlots(dt);
+        }
         
+    }
+    private checkDropInventories() {
+        const inv = this.player.getMainInventory();
+        const hotbar = this.player.getHotbarInventory();
+
+        for(let i = 0; i < hotbar.getSize(); i++) {
+            const slot =hotbar.getSlot(i);
+            if(!slot.isEmpty()) {
+                this.worldHandler.dropItem(slot,{x: this.player.getHitboxComponent().getHitbox().x, y:this.player.getHitboxComponent().getHitbox().y}, {x: (Math.random()*2 == 2 ? 1 : -1)*(Math.random()*3)*60, y: (Math.random()*2 == 2 ? 1 : -1)*(Math.random()*3)*60});
+            }
+        }
+
+        for(let i = 0; i < inv.getSize(); i++) {
+            const slot = inv.getSlot(i);
+            if(!slot.isEmpty()) {
+                this.worldHandler.dropItem(slot,{x: this.player.getHitboxComponent().getHitbox().x, y:this.player.getHitboxComponent().getHitbox().y});
+            }
+        }
     }
 
     private checkShouldDropItems() {
@@ -189,12 +212,34 @@ export class InteractionHandler {
             }
 
             if (slot.getItemCount() != 0) {
-                droppedItems[i].update(dt, {
+                this.updateDroppedSlots(dt, {
                     x: playerHitbox.x + playerHitbox.width / 2,
                     y: playerHitbox.y + playerHitbox.height / 2
-                })
+                }, i)
             }
 
         } 
+    }
+
+    private updateDroppedSlots(dt: number, attactionPt?: {x: number, y: number}, index?: number) {
+        const droppedItems = this.worldHandler.getDroppedItems();
+        if(index){
+            if(attactionPt) {
+                droppedItems[index].update(dt, attactionPt)
+            } else {
+                droppedItems[index].update(dt)
+            }
+            return
+        } 
+
+        if(attactionPt) {
+            for(let i = 0; i < droppedItems.length; i++) {
+                droppedItems[i].update(dt, attactionPt)
+            }
+        } else {
+            for(let i = 0; i < droppedItems.length; i++) {
+                droppedItems[i].update(dt)
+            }
+        }
     }
 }

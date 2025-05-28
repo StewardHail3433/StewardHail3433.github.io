@@ -54,10 +54,10 @@ class Game {
             x: 100, y: 100, width: 8, height: 12,
         }));
         this.enemies = [
-            new Watcher(new HealthComponent(100, 100), new HitboxComponent({
+            new Watcher(new HealthComponent(50, 100), new HitboxComponent({
                 x: 50, y: 50, width: 10, height: 10
             })),
-            new Watcher(new HealthComponent(100, 100), new HitboxComponent({
+            new Watcher(new HealthComponent(50, 100), new HitboxComponent({
                 x: 75, y: 50, width: 16, height: 16
             }))
         ]
@@ -137,7 +137,9 @@ class Game {
     }
 
     private update(dt:number) {
-        this.player.update();
+        if(!this.player.getHealthComponent().isDead()) {
+            this.player.update();
+        }
         for(let i = 0; i < this.enemies.length; i++) {
             this.enemies[i].update();
         }
@@ -173,13 +175,16 @@ class Game {
         if (this.pathUpdateTime >= this.pathUpdateInterval) {
             this.pathUpdateTime = 0;
 
+            if(this.enemies[0] && !this.player.getHealthComponent().isDead()) 
             PathFinder.setNodes(Math.floor(this.enemies[0].getHitboxComponent().getHitbox().x / Constants.TILE_SIZE), Math.floor(this.enemies[0].getHitboxComponent().getHitbox().y / Constants.TILE_SIZE), Math.floor(this.player.getHitboxComponent().getHitbox().x / Constants.TILE_SIZE), Math.floor(this.player.getHitboxComponent().getHitbox().y / Constants.TILE_SIZE), this.worldHandler.getWorldMap());
 
             const path = PathFinder.search();
 
+            if(this.enemies[1] && !this.player.getHealthComponent().isDead()) 
             PathFinder.setNodes(Math.floor(this.enemies[1].getHitboxComponent().getHitbox().x / Constants.TILE_SIZE), Math.floor(this.enemies[1].getHitboxComponent().getHitbox().y / Constants.TILE_SIZE), Math.floor(this.player.getHitboxComponent().getHitbox().x / Constants.TILE_SIZE), Math.floor(this.player.getHitboxComponent().getHitbox().y / Constants.TILE_SIZE), this.worldHandler.getWorldMap());
 
             const path2 = PathFinder.search();
+            if(this.enemies[0]) 
             this.enemies[0].setPath(path); 
             // this.enemies[1].setPath(path2); 
         }

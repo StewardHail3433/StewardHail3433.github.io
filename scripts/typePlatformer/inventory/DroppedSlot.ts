@@ -7,9 +7,9 @@ export class DroppedSlot {
     private velocity = {x: 0, y: 0};
     private slot: Slot;
 
-    constructor(hitboxComponent: HitboxComponent, slot: Slot, velocity?: { x: number, y: number}) {
+    constructor(hitboxComponent: HitboxComponent, slot: Slot, velocity = {x:120, y:120}) {
         this.hitboxComponent = hitboxComponent;
-        this.velocity = {x:120, y:120}
+        this.velocity = velocity;
         this.slot = slot;
     }
 

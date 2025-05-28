@@ -313,4 +313,9 @@ export class Entity {
     public getHealthComponent() {
         return this.healthComponent;
     }
+
+    public getWorldPosition() {
+        return {x: Math.floor(this.hitboxComponent.getHitbox().x / Constants.TILE_SIZE),
+                y: Math.floor(this.hitboxComponent.getHitbox().y / Constants.TILE_SIZE)};
+    }
 }
