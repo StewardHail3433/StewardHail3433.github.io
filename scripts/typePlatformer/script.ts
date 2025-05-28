@@ -15,6 +15,7 @@ import { ImageLoader } from "./utils/ImageLoader.js";
 import { Tiles } from "./world/Tiles.js";
 import { Items } from "./item/Items.js";
 import { AudioHandler, MUSIC } from "./utils/audio/AudioHandler.js";
+import { UIComponentButton } from "./components/ui/UIComponentButton.js";
 
 class Game {
     private canvas: HTMLCanvasElement;
@@ -38,6 +39,7 @@ class Game {
     private isFullscreen: boolean =false;
     private fullscreenhtml: string[] = [];
     private renderPath = false;
+    private run = true;
 
     constructor() {
         this.canvas = document.getElementById(Constants.CANVAS_ID) as HTMLCanvasElement;
@@ -238,23 +240,93 @@ class Game {
         this.ctx.font = 20 + "px serif";
         this.ctx.fillText(Constants.TIME_HANDLER.getTime() + " ", Constants.CANVAS_WIDTH / 2, 10);
     }
+    public running() {
+        return this.run;
+    }
 }
 
 
-(async () => {
-    await ImageLoader.loadAllImages();
-    Tiles.loadTilesImgs();
-    Items.loadItemsImgs();
-    await AudioHandler.loadAllSounds();
-    if(Math.random() * 2 < 1) {
-        AudioHandler.getSounds()[MUSIC.MUSIC0]?.loop(true).play()
-    } else {
-        AudioHandler.getSounds()[MUSIC.LIVING]?.loop(true).play()
+// (async () => {
+//     await ImageLoader.loadAllImages();
+//     Tiles.loadTilesImgs();
+//     Items.loadItemsImgs();
+// })()
+
+
+class Menu {
+
+    private playButton: UIComponentButton;
+    private canvas: HTMLCanvasElement;
+    private ctx: CanvasRenderingContext2D;
+    private img: HTMLImageElement | undefined;
+    private game: Game |undefined;
+    private frameId: number | null = null; 
+    constructor() {
+        this.canvas = document.getElementById(Constants.CANVAS_ID) as HTMLCanvasElement;
+        this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
+        this.canvas.width = Constants.CANVAS_WIDTH * window.devicePixelRatio*3.25;
+        this.canvas.height = Constants.CANVAS_HEIGHT * window.devicePixelRatio*3.25;
+        
+        this.ctx.imageSmoothingEnabled =false;
+        this.ctx.imageSmoothingQuality = "high";
+        this.ctx.scale(window.devicePixelRatio*3.25, window.devicePixelRatio*3.25);
+
+        this.playButton = new UIComponentButton(this.canvas, {x: 490, y: 145, width: 128, height: 60}, {red: 0, green: 0, blue: 0, alpha: 0.001}, false, "", {red: 0, green: 0, blue: 0, alpha: 0.0001}, 1, "center", {red: 0, green: 0, blue: 0, alpha: 0.0001}, {red: 0, green: 0, blue: 0, alpha: 0.0001}, {red: 0, green: 0, blue: 0, alpha: 0.0001}, () => {
+            this.startGame();
+        })
+        this.init();
     }
-    new Game();
-})()
 
+    private async init() {
+        await this.loadRes();
+        ImageLoader.getImages().forEach(img => {
+            if(img.src.substring(img.src.match("resources")?.index!) === "resources/typePlatformer/images/menu/main.png") {
+                this.img = img;
+            }
+        }) 
+        this.frameId = requestAnimationFrame(this.gameLoop.bind(this));
+    }
 
+    private async loadRes() {
+        await ImageLoader.loadAllImages();
+        Tiles.loadTilesImgs();
+        Items.loadItemsImgs();
+        await AudioHandler.loadAllSounds();
+    }
 
+    private startGame() {
+        if (this.frameId !== null) {
+            cancelAnimationFrame(this.frameId);
+            this.frameId = null;
+        }
 
+        if(Math.random() * 2 < 1) {
+            AudioHandler.getSounds()[MUSIC.MUSIC0]?.loop(true).play()
+        } else {
+            AudioHandler.getSounds()[MUSIC.LIVING]?.loop(true).play()
+        }
+        this.game = new Game();
+    }
+
+    private render() {
+        if(this.img) {
+            this.ctx.drawImage(this.img, 0, 0, Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT, 0, 0, Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
+        }
+        this.playButton.render(this.ctx);
+    }
+
+    private update() {
+        this.playButton.update();
+    }
+
+    private gameLoop(currentTime: number) {
+        this.update();
+        this.render();
+        if(this.frameId != null)
+        this.frameId = requestAnimationFrame(this.gameLoop.bind(this));
+    }
+
+}
+
+new Menu();
     
