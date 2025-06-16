@@ -8,8 +8,8 @@ export class Items {
     public static readonly SWORD:Item = new Item("sword", "Sword", "This is sharp\nBe careful");
     public static readonly STICK:Item = new Item("stick", "Stick", "This is a stick");
     public static readonly FLESH:Item = new Item("flesh", "Flesh", "Rotten");
-    public static readonly PICKAXE:Item = new ToolItem("pickaxe", "Pickaxe", "Lets Mine", {width: 5, height: 16}, 9);
-    public static readonly SWORD_2:Item = new ToolItem("sword2", "Sword 2", "Lets Mine", {width: 6, height: 22}, 9, {step: 4, totalRotationAmount: 180});
+    public static readonly PICKAXE:Item = new ToolItem("pickaxe", "Pickaxe", "Lets Mine", {width: 5, height: 16}, 10);
+    public static readonly SWORD_2:Item = new ToolItem("sword2", "Sword 2", "Lets Mine", {width: 6, height: 22}, 20, {step: 4, totalRotationAmount: 180});
     public static readonly SPEED_UP_POTION:Item = new Item("speed_up_potion", "Speed Up Potion", "Speed Me Up", {...this.EMPTY.getSettings(), isConsumable: true}, (entity: Entity) => {
         entity.setSpeed(entity.getSpeed() + 30);
     });

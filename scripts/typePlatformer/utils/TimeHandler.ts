@@ -1,10 +1,12 @@
 export class TimeHandler {
     private time = 0;
+    private dt = 0;
     private paused = false;
 
-    public addTime(time: number) {
+    public addTime(dt: number) {
         if(!this.paused) {
-            this.time += time
+            this.dt = dt;
+            this.time += dt;
         }
     }
 
@@ -20,5 +22,7 @@ export class TimeHandler {
         this.paused = false;
     }
 
-
+    public getDeltaTime() {
+        return this.dt;
+    }
 }

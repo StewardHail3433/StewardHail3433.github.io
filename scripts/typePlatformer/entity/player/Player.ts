@@ -34,7 +34,8 @@ export class Player extends Entity {
         selectSlot4: "5",
         selectSlot5: "6",
         selectSlot6: "7",
-        useItem: "MRight"
+        useItem: "MRight",
+        debug: "F3"
     };
     private frame = 0;
     private img: HTMLImageElement;
@@ -117,7 +118,8 @@ export class Player extends Entity {
         selectSlot4: string,
         selectSlot5: string,
         selectSlot6: string
-        useItem: string
+        useItem: string,
+        debug: string
     } = {
         up: 'w',
         down: 's',
@@ -135,7 +137,8 @@ export class Player extends Entity {
         selectSlot4: "5",
         selectSlot5: "6",
         selectSlot6: "7",
-        useItem: "MRight"
+        useItem: "MRight",
+        debug: "F3"
     }) {
         this.controls = controls;
     }

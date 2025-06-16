@@ -52,7 +52,7 @@ class Game {
         this.ctx.imageSmoothingQuality = "high";
         this.ctx.scale(window.devicePixelRatio*3.25, window.devicePixelRatio*3.25);
         
-        this.player = new Player("TIm", new HealthComponent(500, 500), new HitboxComponent({
+        this.player = new Player("TIm", new HealthComponent(100, 100), new HitboxComponent({
             x: 100, y: 100, width: 8, height: 12,
         }));
         this.enemies = [
@@ -244,14 +244,6 @@ class Game {
         return this.run;
     }
 }
-
-
-// (async () => {
-//     await ImageLoader.loadAllImages();
-//     Tiles.loadTilesImgs();
-//     Items.loadItemsImgs();
-// })()
-
 
 class Menu {
 

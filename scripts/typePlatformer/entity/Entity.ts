@@ -29,6 +29,10 @@ export class Entity {
     protected pathTime: number = 0;
     protected usingTool: boolean = false;
     protected type = "unknown";
+    protected invincibilityTimeAmount = 0.17;
+    protected hitInfo = {hit:false, loseInvincibility:0};
+    protected externalTime = 0 ;
+    protected externalDecay = 1
 
 
     constructor(healthComponent: HealthComponent, hitboxComponent: HitboxComponent) {
@@ -51,21 +55,29 @@ export class Entity {
             this.inputVel.y = 0;
         }
 
-        this.velocity.x = this.inputVel.x + this.externalForceVel.x;
-        this.velocity.y = this.inputVel.y + this.externalForceVel.y;
+        this.velocity.x = this.inputVel.x;
+        this.velocity.y = this.inputVel.y;
 
-        this.externalForceVel.x *= 0.9;
-        this.externalForceVel.y *= 0.9;
-
-        if(this.externalForceVel.x < 0.1) {
-            this.externalForceVel.x = 0;
+        if(this.externalTime > 0) {
+            this.externalTime -= Constants.TIME_HANDLER.getDeltaTime();
+            this.velocity.x += this.externalForceVel.x * (this.externalTime/this.externalDecay);
+            this.velocity.y += this.externalForceVel.y * (this.externalTime/this.externalDecay);
+            if (this.externalTime <= 0) {
+                this.externalForceVel = { x: 0, y: 0 };
+            }
         }
-        if(this.externalForceVel.y < 0.1) {
-            this.externalForceVel.y = 0;
-        }
 
-        this.updateDirection()
-        this.updateToolItem(this.usingSlot.getItem())
+        this.updateBeenHit();
+        this.updateDirection();
+        this.updateToolItem(this.usingSlot.getItem());
+    }
+
+    private updateBeenHit() {
+        if(this.hitInfo.hit) {
+            if(this.hitInfo.loseInvincibility <= Constants.TIME_HANDLER.getTime()) {
+                this.hitInfo.hit = false;
+            }
+        }
     }
 
     private updateDirection() {
@@ -303,6 +315,12 @@ export class Entity {
 
         this.externalForceVel.x -= force * Math.cos(angle);
         this.externalForceVel.y -= force * Math.sin(angle);
+        this.externalTime = this.externalDecay;
+
+        if(Math.abs(this.externalForceVel.x) > force * Math.cos(angle) || Math.abs(this.externalForceVel.y) > force * Math.sin(angle)) {
+            this.externalForceVel.x = Math.sign(this.externalForceVel.x) * force * Math.cos(angle);
+            this.externalForceVel.y = Math.sign(this.externalForceVel.x) * force * Math.sin(angle);
+        }
 
     }
 
@@ -318,4 +336,14 @@ export class Entity {
         return {x: Math.floor(this.hitboxComponent.getHitbox().x / Constants.TILE_SIZE),
                 y: Math.floor(this.hitboxComponent.getHitbox().y / Constants.TILE_SIZE)};
     }
+
+    public hit(damage: number) {
+        this.getHealthComponent().damage(damage);
+        this.hitInfo.hit = true;
+        this.hitInfo.loseInvincibility = Constants.TIME_HANDLER.getTime() + this.invincibilityTimeAmount;
+    }
+
+    public isHit() {
+        return this.hitInfo.hit;
+    };
 }
