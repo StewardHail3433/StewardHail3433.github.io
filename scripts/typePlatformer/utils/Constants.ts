@@ -10,7 +10,7 @@ export class Constants {
     public static readonly WORLD_HEIGHT = 50;
     public static readonly COMMAND_SYSTEM = new CommandSystem();
     public static readonly CHUNK_SIZE = 16;
-    public static readonly RENDER_DISTANCE = 3;
+    public static readonly RENDER_DISTANCE = 7;
     public static readonly CANVAS_ID = "gameCanvas";
     // public static readonly INPUT_HANDLER = new InputHandler();
     public static readonly TIME_HANDLER = new TimeHandler();

@@ -226,7 +226,7 @@ class Game {
             PathFinder.render((this.enemies[0] as Watcher).getPath(), this.ctx);
             PathFinder.render((this.enemies[1] as Watcher).getPath(), this.ctx);
         }
-        for(let i = this.player.getLayer()+1; i < 2; i++) {
+        for(let i = this.player.getLayer()+1; i < 3; i++) {
             this.worldHandler.renderLayer(i, this.ctx, this.camera);
         }
 

@@ -12,6 +12,13 @@ export class Tiles {
     public static readonly WOOD:Tile = new Tile("wood", 8, "Wood", {breakTime: 25, solid: true});
     public static readonly POTION_BOWL:Tile = new Tile("potion_bowl", 9, "Potion Bowl", {breakTime: 5, solid: false});
     public static readonly TOOL_LOOT_BOX:Tile = new Tile("tool_loot_box", 10, "Loot Box(tool)", {breakTime: 25, solid: true});
+    public static readonly BIG_TREE_BR:Tile = new Tile("big_tree_br", 11, "Big Tree Part", this.TREE_STUMP.getSettings());
+    public static readonly BIG_TREE_MR:Tile = new Tile("big_tree_mr", 12, "Big Tree Part", this.TREE_STUMP.getSettings());
+    public static readonly BIG_TREE_TR:Tile = new Tile("big_tree_tr", 13, "Big Tree Part", this.TREE_LEAVES.getSettings());
+    public static readonly BIG_TREE_BL:Tile = new Tile("big_tree_bl", 14, "Big Tree Part", this.TREE_LEAVES.getSettings());
+    public static readonly BIG_TREE_ML:Tile = new Tile("big_tree_ml", 15, "Big Tree Part", this.TREE_LEAVES.getSettings());
+    public static readonly BIG_TREE_TL:Tile = new Tile("big_tree_tl", 16, "Big Tree Part", this.TREE_LEAVES.getSettings());
+
 
     private static readonly tiles: Record<string, Tile> = {}; // YAY I get to try a record
 

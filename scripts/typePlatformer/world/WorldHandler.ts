@@ -8,6 +8,9 @@ import { TileDropTableHandler } from "../loottable/TileDropHandler.js";
 import { containBox, isInside } from "../utils/Collisions.js";
 import { Constants } from "../utils/Constants.js";
 import { ImageLoader } from "../utils/ImageLoader.js";
+import { TerrainFeature, TerrainFeatures } from "./TerrainFeatures.js";
+import { createNoise2D, NoiseFunction2D } from 'simplex-noise';
+import alea from 'alea';
 import { Tile } from "./Tile.js";
 import { Tiles } from "./Tiles.js";
 import { WorldTile } from "./WorldTile.js";
@@ -23,6 +26,18 @@ export class WorldHandler {
     private breakingTile: WorldTile | undefined = undefined;
     private breakTime: number = 0;
     private breakingLayer: number = 0;
+    private seed:string = "seed"
+    private prng:{
+        (): number;
+        next(): number;
+        uint32(): number;
+        fract53(): number;
+        version: string;
+        args: any[];
+        exportState(): [number, number, number, number];
+        importState(state: [number, number, number, number]): void;
+    }
+    private noise2D:NoiseFunction2D
     constructor() {
         this.worldMap = new Map<string, WorldTile[][]>();
         this.img.src = "./resources/typePlatformer/images/tiles/background/grass.png";
@@ -53,8 +68,17 @@ export class WorldHandler {
 
         Constants.COMMAND_SYSTEM.addCommand("worldReset", (args: string[]) => {
             this.worldMap = new Map<string, WorldTile[][]>();
+            if(args[0]) {
+                this.seed = args[0];
+                this.prng = alea(this.seed);
+                this.noise2D = createNoise2D(this.prng);
+            }
         })
         this.droppedItems.push(new DroppedSlot(new HitboxComponent({x: 0, y:0, width: Constants.TILE_SIZE/2, height: Constants.TILE_SIZE/2}), new Slot(Items.PICKAXE, 1)))
+    
+        this.prng = alea(this.seed);
+        this.noise2D = createNoise2D(this.prng);
+
     }
 
     public renderBackground(ctx: CanvasRenderingContext2D, camera: Camera) {
@@ -151,34 +175,76 @@ export class WorldHandler {
 
     private generateChunk(chunkX: number, chunkY: number, seed: number): WorldTile[][] {
         let chunk: WorldTile[][] = [];
-        let leavesPos: {x:number, y:number}[] = []
+    
         for (let i = 0; i < Constants.CHUNK_SIZE; i++) {
             const row: WorldTile[] = [];
             for (let j = 0; j < Constants.CHUNK_SIZE; j++) {
                 let worldX = (chunkX * Constants.CHUNK_SIZE + j) * Constants.TILE_SIZE;
                 let worldY = (chunkY * Constants.CHUNK_SIZE + i) * Constants.TILE_SIZE;
-
-                if(Math.floor(Math.random() * 4) > 0) {
-                    row.push(new WorldTile([{tile: Tiles.EMPTY}, {tile: Tiles.EMPTY}], new HitboxComponent({x:worldX, y:worldY, width:Constants.TILE_SIZE,height:Constants.TILE_SIZE}, {red:0,green:0,blue:0,alpha:0.0})));
-                }
-                else {
-                    let treemaybe = Math.floor(Math.random() * 8);
-                    const tm = treemaybe + Math.round(Math.random()) + 2
-                    if( tm >= 9) treemaybe = tm;
-                    row.push(new WorldTile([{tile: Tiles.getTileByNumberId(treemaybe)}, {tile: Tiles.EMPTY}], new HitboxComponent({x:worldX, y:worldY, width:Constants.TILE_SIZE,height:Constants.TILE_SIZE}, {red:0,green:0,blue:0,alpha:0.0})));
-                    if(treemaybe == 6) {
-                        leavesPos.push({x: (worldX/Constants.TILE_SIZE - chunkX * Constants.CHUNK_SIZE), y: (worldY/Constants.TILE_SIZE - chunkY * Constants.CHUNK_SIZE) -1});
-                    }
-                }
+                row.push(new WorldTile([{tile: Tiles.EMPTY}, {tile: Tiles.EMPTY}, {tile: Tiles.EMPTY}, {tile: Tiles.EMPTY}], new HitboxComponent({x:worldX, y:worldY, width:Constants.TILE_SIZE,height:Constants.TILE_SIZE}, {red:0,green:0,blue:0,alpha:0.0})));
             }
             chunk.push(row);
         }
-        for(let i = 0; i < leavesPos.length; i++) {
-            chunk.at(leavesPos[i].y)?.at(leavesPos[i].x)?.setLayer(1, Tiles.TREE_LEAVES);
+
+        const treeChance = 0.1; 
+        for (let y = 0; y < Constants.CHUNK_SIZE; y++) {
+            for (let x = 0; x < Constants.CHUNK_SIZE; x++) {
+                const rng = (this.noise2D(x + chunkX*16, y + chunkY*16) + 1) / 2;
+                if (rng < treeChance) {
+                    this.placeFeature(chunk, TerrainFeatures.TREE, x, y);
+                }
+            }
         }
+
+        const bigTreeChance = 0.2; 
+        for (let y = 0; y < Constants.CHUNK_SIZE; y++) {
+            for (let x = 0; x < Constants.CHUNK_SIZE; x++) {
+                const rng = (this.noise2D(x + chunkX*16, y + chunkY*16) + 1) / 2;
+                if (rng < bigTreeChance && chunk[y][x].getLayers()[TerrainFeatures.BIG_TREE.getShape()[TerrainFeatures.BIG_TREE.getAnchor().y][TerrainFeatures.BIG_TREE.getAnchor().x].layer].tile == Tiles.EMPTY) {
+                    this.placeFeature(chunk, TerrainFeatures.BIG_TREE, x, y);
+                }
+            }
+        }
+
+        const grassChance = 0.25; 
+        for (let y = 0; y < Constants.CHUNK_SIZE; y++) {
+            for (let x = 0; x < Constants.CHUNK_SIZE; x++) {
+                const rng = (this.noise2D(x + chunkX*16, y + chunkY*16) + 1) / 2;
+                if (rng < grassChance && chunk[y][x].getLayers()[TerrainFeatures.GRASS.getShape()[TerrainFeatures.GRASS.getAnchor().y][TerrainFeatures.GRASS.getAnchor().x].layer].tile == Tiles.EMPTY) {
+                    this.placeFeature(chunk, TerrainFeatures.GRASS, x, y);
+                }
+            }
+        }
+
         this.worldMap.set(chunkX+", "+chunkY, chunk);
         return chunk;
     }
+
+    private placeFeature(chunk: WorldTile[][], feature: TerrainFeature, startX: number, startY: number) {
+        const shape = feature.getShape();
+        const anchor = feature.getAnchor();
+
+        for (let y = 0; y < shape.length; y++) {
+            for (let x = 0; x < shape[y].length; x++) {
+                const targetX = startX + x - anchor.x;
+                const targetY = startY + y - anchor.y;
+
+                if (
+                    targetX >= 0 && targetX < Constants.CHUNK_SIZE &&
+                    targetY >= 0 && targetY < Constants.CHUNK_SIZE
+                ) {
+                    let layer = shape[y][x].layer;
+                    const tile = shape[y][x].tile;
+                    while(chunk[targetY][targetX].getLayers()[layer].tile != Tiles.EMPTY) {
+                        layer++;
+                    }
+
+                    chunk[targetY][targetX].setLayer(layer, tile);
+                }
+            }
+        }
+    }
+
 
     public getWorldMap(): Map<string, WorldTile[][]> {
         return this.worldMap;
@@ -202,12 +268,6 @@ export class WorldHandler {
 
     public hideChunksOutlines() {
         this.showChunks = false;
-    }
-
-    public loadChunksFromServer(chunks: Map<string, WorldTile[][]>) {
-        chunks.forEach((value, key) => {
-            this.worldMap.set(key, value);
-        });
     }
 
     public dropItem(itemSlot: Slot, position: {x: number, y: number}, vel = {x:120, y:120}) {

@@ -26,7 +26,19 @@ export class ImageLoader {
         "resources/typePlatformer/images/items/sword2.png",
         "resources/typePlatformer/images/tiles/tool_loot_box.png",
         "resources/typePlatformer/images/items/flesh.png",
-        "resources/typePlatformer/images/menu/main.png"];
+        "resources/typePlatformer/images/menu/main.png",
+        "resources/typePlatformer/images/tiles/big_tree_tl.png",
+        "resources/typePlatformer/images/tiles/big_tree_bl.png",
+        "resources/typePlatformer/images/tiles/big_tree_ml.png",
+        "resources/typePlatformer/images/tiles/big_tree_tr.png",
+        "resources/typePlatformer/images/tiles/big_tree_br.png",
+        "resources/typePlatformer/images/tiles/big_tree_mr.png",
+        "resources/typePlatformer/images/items/big_tree_tl.png",
+        "resources/typePlatformer/images/items/big_tree_bl.png",
+        "resources/typePlatformer/images/items/big_tree_ml.png",
+        "resources/typePlatformer/images/items/big_tree_tr.png",
+        "resources/typePlatformer/images/items/big_tree_br.png",
+        "resources/typePlatformer/images/items/big_tree_mr.png"];
 
 
     static getImages(): HTMLImageElement[]  {
